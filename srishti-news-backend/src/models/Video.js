@@ -12,23 +12,9 @@ const videoSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Video description is required'],
     },
-    videoUrl: {
+    youtubeUrl: {
       type: String,
-      required: [true, 'Video URL is required'],
-    },
-    videoKey: {
-      type: String,   // S3 object key
-    },
-    thumbnailUrl: {
-      type: String,
-      default: '',
-    },
-    thumbnailKey: {
-      type: String,
-    },
-    duration: {
-      type: Number,   // in seconds
-      default: 0,
+      required: [true, 'YouTube URL is required'],
     },
     category: {
       type: String,

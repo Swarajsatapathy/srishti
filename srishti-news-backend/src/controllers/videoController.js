@@ -2,50 +2,19 @@ import Video from '../models/Video.js';
 import ApiError from '../utils/ApiError.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import { uploadToS3, deleteFromS3 } from '../utils/s3Upload.js';
 
 // ─── CREATE VIDEO ───────────────────────────────────────────────
 export const createVideo = asyncHandler(async (req, res) => {
-  const { title, description, category, reporter, tags, duration, isPublished, isFeatured, isTrending } = req.body;
+  const { title, description, youtubeUrl, category, reporter, tags, isPublished, isFeatured, isTrending } = req.body;
 
-  let videoUrl = '';
-  let videoKey = '';
-  let thumbnailUrl = '';
-  let thumbnailKey = '';
-
-  // If a video file was uploaded via multipart form
-  if (req.files) {
-    if (req.files.video && req.files.video[0]) {
-      const vFile = req.files.video[0];
-      const result = await uploadToS3(vFile.buffer, vFile.mimetype, 'videos');
-      videoUrl = result.url;
-      videoKey = result.key;
-    }
-    if (req.files.thumbnail && req.files.thumbnail[0]) {
-      const tFile = req.files.thumbnail[0];
-      const result = await uploadToS3(tFile.buffer, tFile.mimetype, 'thumbnails');
-      thumbnailUrl = result.url;
-      thumbnailKey = result.key;
-    }
-  }
-
-  // Allow passing videoUrl directly (e.g. YouTube embed)
-  if (!videoUrl && req.body.videoUrl) {
-    videoUrl = req.body.videoUrl;
-  }
-
-  if (!videoUrl) {
-    throw new ApiError(400, 'Video file or videoUrl is required');
+  if (!youtubeUrl) {
+    throw new ApiError(400, 'YouTube URL is required');
   }
 
   const video = await Video.create({
     title,
     description,
-    videoUrl,
-    videoKey,
-    thumbnailUrl: thumbnailUrl || req.body.thumbnailUrl || '',
-    thumbnailKey,
-    duration: duration ? parseInt(duration, 10) : 0,
+    youtubeUrl,
     category,
     reporter,
     tags: tags ? (typeof tags === 'string' ? JSON.parse(tags) : tags) : [],
@@ -130,33 +99,14 @@ export const updateVideo = asyncHandler(async (req, res) => {
   const video = await Video.findById(req.params.id);
   if (!video) throw new ApiError(404, 'Video not found');
 
-  const { title, description, category, reporter, tags, duration, isPublished, isFeatured, isTrending } = req.body;
-
-  // Replace video file if uploaded
-  if (req.files && req.files.video && req.files.video[0]) {
-    await deleteFromS3(video.videoKey);
-    const vFile = req.files.video[0];
-    const result = await uploadToS3(vFile.buffer, vFile.mimetype, 'videos');
-    video.videoUrl = result.url;
-    video.videoKey = result.key;
-  }
-
-  // Replace thumbnail if uploaded
-  if (req.files && req.files.thumbnail && req.files.thumbnail[0]) {
-    await deleteFromS3(video.thumbnailKey);
-    const tFile = req.files.thumbnail[0];
-    const result = await uploadToS3(tFile.buffer, tFile.mimetype, 'thumbnails');
-    video.thumbnailUrl = result.url;
-    video.thumbnailKey = result.key;
-  }
+  const { title, description, youtubeUrl, category, reporter, tags, isPublished, isFeatured, isTrending } = req.body;
 
   if (title !== undefined) video.title = title;
   if (description !== undefined) video.description = description;
+  if (youtubeUrl !== undefined) video.youtubeUrl = youtubeUrl;
   if (category !== undefined) video.category = category;
   if (reporter !== undefined) video.reporter = reporter;
-  if (duration !== undefined) video.duration = parseInt(duration, 10);
   if (tags !== undefined) video.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
-  if (req.body.videoUrl && !req.files?.video) video.videoUrl = req.body.videoUrl;
   if (isPublished !== undefined) {
     video.isPublished = isPublished === 'true' || isPublished === true;
     if (video.isPublished && !video.publishedAt) video.publishedAt = new Date();
@@ -174,8 +124,6 @@ export const deleteVideo = asyncHandler(async (req, res) => {
   const video = await Video.findById(req.params.id);
   if (!video) throw new ApiError(404, 'Video not found');
 
-  await deleteFromS3(video.videoKey);
-  await deleteFromS3(video.thumbnailKey);
   await video.deleteOne();
 
   return res.status(200).json(new ApiResponse(200, null, 'Video deleted successfully'));

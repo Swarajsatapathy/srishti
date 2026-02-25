@@ -28,11 +28,7 @@ export interface Video {
   _id: string;
   title: string;
   description: string;
-  videoUrl: string;
-  videoKey: string;
-  thumbnailUrl: string;
-  thumbnailKey: string;
-  duration: number;
+  youtubeUrl: string;
   category: string;
   reporter: string;
   tags: string[];

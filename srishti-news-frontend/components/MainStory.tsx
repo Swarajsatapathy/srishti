@@ -6,6 +6,7 @@ import Image from "next/image";
 import type { Article, Video } from "@/lib/types";
 import { getSlugFromOdia } from "@/lib/categories";
 import { getImageUrl } from "@/lib/imageUrl";
+import { getYouTubeThumbnail } from "@/lib/youtube";
 
 interface MainStoryProps {
   articles: Article[];
@@ -121,9 +122,9 @@ export default function MainStory({ articles, videos }: MainStoryProps) {
         {video ? (
           <Link href={`/videos/${video._id}`} className="block group">
             <div className="relative rounded-lg overflow-hidden aspect-[16/9]">
-              {video.thumbnailUrl ? (
+              {getYouTubeThumbnail(video.youtubeUrl) ? (
                 <Image
-                  src={getImageUrl(video.thumbnailUrl)}
+                  src={getYouTubeThumbnail(video.youtubeUrl)}
                   alt={video.title}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -147,11 +148,6 @@ export default function MainStory({ articles, videos }: MainStoryProps) {
                 </div>
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-4">
-                {video.duration > 0 && (
-                  <span className="inline-block bg-black/70 text-white text-xs px-2 py-0.5 rounded mb-2">
-                    {Math.floor(video.duration / 60)}:{String(video.duration % 60).padStart(2, "0")}
-                  </span>
-                )}
                 <h3 className="text-white text-lg md:text-xl font-bold leading-tight line-clamp-2">
                   {video.title}
                 </h3>

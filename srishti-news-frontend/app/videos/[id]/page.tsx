@@ -2,6 +2,7 @@ import { getVideoById } from "@/lib/api";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -33,17 +34,7 @@ export default async function VideoPage({ params }: PageProps) {
     day: "numeric",
   });
 
-  // Determine if it's a YouTube/embeddable URL
-  const isYouTube =
-    video.videoUrl.includes("youtube.com") ||
-    video.videoUrl.includes("youtu.be");
-  let embedUrl = video.videoUrl;
-  if (isYouTube) {
-    const ytId = video.videoUrl.match(
-      /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]+)/
-    )?.[1];
-    if (ytId) embedUrl = `https://www.youtube.com/embed/${ytId}`;
-  }
+  const embedUrl = getYouTubeEmbedUrl(video.youtubeUrl);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -73,26 +64,15 @@ export default async function VideoPage({ params }: PageProps) {
         <span>{video.views} views</span>
       </div>
 
-      {/* Video Player */}
+      {/* Video Player - YouTube iframe */}
       <div className="relative aspect-video rounded-lg overflow-hidden mb-6 bg-black">
-        {isYouTube ? (
-          <iframe
-            src={embedUrl}
-            title={video.title}
-            className="absolute inset-0 w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        ) : (
-          <video
-            src={video.videoUrl}
-            controls
-            className="absolute inset-0 w-full h-full"
-            poster={video.thumbnailUrl || undefined}
-          >
-            Your browser does not support the video tag.
-          </video>
-        )}
+        <iframe
+          src={embedUrl}
+          title={video.title}
+          className="absolute inset-0 w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
       </div>
 
       {/* Description */}

@@ -8,7 +8,6 @@ import {
   getFeaturedVideos,
   getTrendingVideos,
 } from '../controllers/videoController.js';
-import { uploadVideoFiles } from '../middlewares/upload.js';
 
 const router = Router();
 
@@ -17,10 +16,10 @@ router.get('/featured', getFeaturedVideos);
 router.get('/trending', getTrendingVideos);
 
 // CRUD
-router.post('/', uploadVideoFiles, createVideo);
+router.post('/', createVideo);
 router.get('/', getVideos);
 router.get('/:id', getVideoById);
-router.put('/:id', uploadVideoFiles, updateVideo);
+router.put('/:id', updateVideo);
 router.delete('/:id', deleteVideo);
 
 export default router;

@@ -1,20 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Video } from "@/lib/types";
-import { getImageUrl } from "@/lib/imageUrl";
+import { getYouTubeThumbnail } from "@/lib/youtube";
 
 interface VideoCardProps {
   video: Video;
 }
 
-function formatDuration(seconds: number): string {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
-}
-
 export default function VideoCard({ video }: VideoCardProps) {
-  const thumbnailUrl = getImageUrl(video.thumbnailUrl);
+  const thumbnail = getYouTubeThumbnail(video.youtubeUrl);
   const date = new Date(
     video.publishedAt || video.createdAt
   ).toLocaleDateString("en-US", {
@@ -27,9 +21,9 @@ export default function VideoCard({ video }: VideoCardProps) {
     <Link href={`/videos/${video._id}`} className="group block">
       <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition border border-gray-100">
         <div className="relative aspect-video">
-          {thumbnailUrl ? (
+          {thumbnail ? (
             <Image
-              src={thumbnailUrl}
+              src={thumbnail}
               alt={video.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -48,7 +42,7 @@ export default function VideoCard({ video }: VideoCardProps) {
           )}
           {/* Play button overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-14 h-14 bg-black/60 rounded-full flex items-center justify-center group-hover:bg-primary/80 transition">
+            <div className="w-14 h-14 bg-black/60 rounded-full flex items-center justify-center group-hover:bg-red-600/80 transition">
               <svg
                 className="w-6 h-6 text-white ml-1"
                 fill="currentColor"
@@ -58,12 +52,6 @@ export default function VideoCard({ video }: VideoCardProps) {
               </svg>
             </div>
           </div>
-          {/* Duration badge */}
-          {video.duration > 0 && (
-            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded">
-              {formatDuration(video.duration)}
-            </div>
-          )}
         </div>
         <div className="p-4">
           <span className="text-primary text-xs font-semibold uppercase">

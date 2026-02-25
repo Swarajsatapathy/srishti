@@ -26,9 +26,7 @@ type Video = {
   category: string;
   reporter: string;
   tags: string[];
-  videoUrl: string;
-  thumbnailUrl?: string;
-  duration?: number;
+  youtubeUrl: string;
   isPublished: boolean;
   isFeatured: boolean;
   isTrending: boolean;
@@ -141,15 +139,11 @@ export default function Home() {
     category: "other",
     reporter: "",
     tags: "",
-    videoUrl: "",
-    thumbnailUrl: "",
-    duration: "0",
+    youtubeUrl: "",
     isPublished: false,
     isFeatured: false,
     isTrending: false,
   });
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
   const [reporterForm, setReporterForm] = useState({
     name: "",
@@ -255,15 +249,11 @@ export default function Home() {
       category: "other",
       reporter: "",
       tags: "",
-      videoUrl: "",
-      thumbnailUrl: "",
-      duration: "0",
+      youtubeUrl: "",
       isPublished: false,
       isFeatured: false,
       isTrending: false,
     });
-    setVideoFile(null);
-    setThumbnailFile(null);
   };
 
   const resetReporterForm = () => {
@@ -337,31 +327,26 @@ export default function Home() {
     event.preventDefault();
 
     void withBusy(async () => {
-      const formData = new FormData();
-      formData.append("title", videoForm.title);
-      formData.append("description", videoForm.description);
-      formData.append("category", videoForm.category);
-      formData.append("reporter", videoForm.reporter);
-      formData.append("tags", JSON.stringify(parseTags(videoForm.tags)));
-      formData.append("duration", videoForm.duration || "0");
-      formData.append("videoUrl", videoForm.videoUrl);
-      formData.append("thumbnailUrl", videoForm.thumbnailUrl);
-      formData.append("isPublished", String(videoForm.isPublished));
-      formData.append("isFeatured", String(videoForm.isFeatured));
-      formData.append("isTrending", String(videoForm.isTrending));
-
-      if (videoFile) {
-        formData.append("video", videoFile);
-      }
-
-      if (thumbnailFile) {
-        formData.append("thumbnail", thumbnailFile);
-      }
+      const body = {
+        title: videoForm.title,
+        description: videoForm.description,
+        category: videoForm.category,
+        reporter: videoForm.reporter,
+        tags: JSON.stringify(parseTags(videoForm.tags)),
+        youtubeUrl: videoForm.youtubeUrl,
+        isPublished: String(videoForm.isPublished),
+        isFeatured: String(videoForm.isFeatured),
+        isTrending: String(videoForm.isTrending),
+      };
 
       const path = videoEditId ? `/api/videos/${videoEditId}` : "/api/videos";
       const method = videoEditId ? "PUT" : "POST";
 
-      await apiRequest(path, { method, body: formData });
+      await apiRequest(path, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
       await loadVideos();
       resetVideoForm();
     }, videoEditId ? "Video updated" : "Video created");
@@ -375,9 +360,7 @@ export default function Home() {
       category: video.category,
       reporter: video.reporter,
       tags: video.tags?.join(", ") || "",
-      videoUrl: video.videoUrl || "",
-      thumbnailUrl: video.thumbnailUrl || "",
-      duration: String(video.duration || 0),
+      youtubeUrl: video.youtubeUrl || "",
       isPublished: video.isPublished,
       isFeatured: video.isFeatured,
       isTrending: video.isTrending,
@@ -749,52 +732,15 @@ export default function Home() {
             />
             <input
               className="w-full rounded border border-gray-300 px-3 py-2"
-              placeholder="Video URL (optional if uploading file)"
-              value={videoForm.videoUrl}
+              placeholder="YouTube Video URL"
+              value={videoForm.youtubeUrl}
               onChange={(event) =>
                 setVideoForm((current) => ({
                   ...current,
-                  videoUrl: event.target.value,
+                  youtubeUrl: event.target.value,
                 }))
               }
-            />
-            <input
-              className="w-full rounded border border-gray-300 px-3 py-2"
-              placeholder="Thumbnail URL"
-              value={videoForm.thumbnailUrl}
-              onChange={(event) =>
-                setVideoForm((current) => ({
-                  ...current,
-                  thumbnailUrl: event.target.value,
-                }))
-              }
-            />
-            <input
-              className="w-full rounded border border-gray-300 px-3 py-2"
-              type="number"
-              min={0}
-              placeholder="Duration in seconds"
-              value={videoForm.duration}
-              onChange={(event) =>
-                setVideoForm((current) => ({
-                  ...current,
-                  duration: event.target.value,
-                }))
-              }
-            />
-            <input
-              type="file"
-              accept="video/*"
-              className="w-full rounded border border-gray-300 px-3 py-2"
-              onChange={(event) => setVideoFile(event.target.files?.[0] || null)}
-            />
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full rounded border border-gray-300 px-3 py-2"
-              onChange={(event) =>
-                setThumbnailFile(event.target.files?.[0] || null)
-              }
+              required
             />
             <div className="grid grid-cols-2 gap-2">
               {(
