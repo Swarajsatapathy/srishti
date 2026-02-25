@@ -1,0 +1,90 @@
+service: srishti-news-backend
+
+frameworkVersion: '3'
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'ap-south-1'}
+  memorySize: 512
+  timeout: 30
+  apiGateway:
+    binaryMediaTypes:
+      - 'multipart/form-data'
+      - 'image/*'
+      - 'video/*'
+      - 'application/octet-stream'
+  environment:
+    MONGODB_URI: ${env:MONGODB_URI, ''}
+    S3_BUCKET_NAME: ${env:S3_BUCKET_NAME, ''}
+    AWS_S3_REGION: ${env:AWS_S3_REGION, 'ap-south-1'}
+    NODE_ENV: ${self:provider.stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:GetObject
+            - s3:DeleteObject
+            - s3:ListBucket
+          Resource:
+            - arn:aws:s3:::${self:custom.bucketName}
+            - arn:aws:s3:::${self:custom.bucketName}/*
+
+plugins:
+  - serverless-offline
+
+package:
+  patterns:
+    - '!.env'
+    - '!.env.*'
+    - '!README.md'
+    - '!.git/**'
+    - '!index.html'
+    - '!.serverless/**'
+
+functions:
+  api:
+    handler: handler.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+
+custom:
+  bucketName: ${env:S3_BUCKET_NAME, 'srishti-news-media'}
+  serverless-offline:
+    httpPort: 3000
+    noPrependStageInUrl: true
+    maxRequestBodySize: 52428800
+
+# S3 bucket is managed externally. Public access is configured via AWS CLI:
+#   aws s3api put-public-access-block --bucket srishti-news-media --public-access-block-configuration "BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false"
+#   aws s3api put-bucket-policy --bucket srishti-news-media --policy '{"Version":"2012-10-17","Statement":[{"Sid":"PublicReadGetObject","Effect":"Allow","Principal":"*","Action":"s3:GetObject","Resource":"arn:aws:s3:::srishti-news-media/*"}]}'
