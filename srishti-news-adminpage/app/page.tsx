@@ -540,89 +540,156 @@ export default function Home() {
   };
 
   if (!authReady) {
-    return <div className="p-10">Loading admin...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex items-center gap-3 text-muted">
+          <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          <span className="text-sm font-medium">Loading admin...</span>
+        </div>
+      </div>
+    );
   }
 
   if (!isAuthed) {
     return (
-      <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-6">
-        <h1 className="text-3xl font-bold">Srishti News Admin</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Enter admin password to continue.
-        </p>
-        <form onSubmit={handleLogin} className="mt-6 space-y-4">
-          <input
-            type="password"
-            className="w-full rounded border border-gray-300 px-3 py-2"
-            placeholder="Admin password"
-            value={loginPassword}
-            onChange={(event) => setLoginPassword(event.target.value)}
-          />
-          {authError && <p className="text-sm text-red-600">{authError}</p>}
-          <button
-            type="submit"
-            className="w-full rounded bg-black px-4 py-2 text-white disabled:opacity-50"
-            disabled={!loginPassword.trim()}
-          >
-            Login
-          </button>
-          <p className="text-xs text-gray-500">
-            Set NEXT_PUBLIC_ADMIN_ACCESS_CODE in .env for your custom admin
-            password.
+      <main className="flex min-h-screen items-center justify-center bg-background px-4">
+        <div className="w-full max-w-sm">
+          <div className="rounded-2xl bg-surface p-8 shadow-2xl ring-1 ring-border">
+            <div className="mb-6 text-center">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-accent/15">
+                <svg className="h-7 w-7 text-accent" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+              </div>
+              <h1 className="text-xl font-bold text-foreground">Srishti News Admin</h1>
+              <p className="mt-1 text-sm text-muted">Enter your password to continue</p>
+            </div>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <input
+                type="password"
+                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+                placeholder="Admin password"
+                value={loginPassword}
+                onChange={(event) => setLoginPassword(event.target.value)}
+              />
+              {authError && (
+                <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{authError}</p>
+              )}
+              <button
+                type="submit"
+                className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-bold text-background transition hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/20 disabled:opacity-50"
+                disabled={!loginPassword.trim()}
+              >
+                Sign In
+              </button>
+            </form>
+          </div>
+          <p className="mt-4 text-center text-xs text-muted">
+            Set NEXT_PUBLIC_ADMIN_ACCESS_CODE in .env for your custom password.
           </p>
-        </form>
+        </div>
       </main>
     );
   }
 
+  const tabIcons: Record<TabType, React.ReactNode> = {
+    articles: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6V7.5z" />
+      </svg>
+    ),
+    videos: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+      </svg>
+    ),
+    reporters: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+      </svg>
+    ),
+    advertisements: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
+      </svg>
+    ),
+  };
+
   return (
-    <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-6 md:px-8">
-      <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">Srishti News Admin Panel</h1>
-          <p className="text-sm text-gray-600">Connected to: {API_BASE}</p>
+    <main className="min-h-screen bg-background">
+      {/* Top header bar */}
+      <header className="sticky top-0 z-10 border-b border-border bg-surface/90 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-background">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6V7.5z" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-foreground">Srishti News</h1>
+              <p className="text-xs text-muted">Admin Panel</p>
+            </div>
+          </div>
+          <button
+            onClick={logout}
+            className="rounded-lg border border-border px-3.5 py-2 text-sm font-medium text-muted transition hover:border-danger/50 hover:text-danger"
+          >
+            Logout
+          </button>
         </div>
-        <button
-          onClick={logout}
-          className="rounded border border-gray-300 px-4 py-2 text-sm"
-        >
-          Logout
-        </button>
       </header>
 
-      <div className="mb-6 flex flex-wrap gap-2">
-        {(["articles", "videos", "reporters", "advertisements"] as TabType[]).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`rounded px-4 py-2 text-sm font-medium ${
-              activeTab === tab
-                ? "bg-black text-white"
-                : "border border-gray-300 text-gray-700"
-            }`}
-          >
-            {tab[0].toUpperCase() + tab.slice(1)}
-          </button>
-        ))}
-      </div>
-
-      {status && (
-        <div className="mb-4 rounded border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
-          {status}
+      <div className="mx-auto max-w-7xl px-4 py-6 md:px-8">
+        {/* Tabs */}
+        <div className="mb-6 flex flex-wrap gap-1.5 rounded-xl bg-surface p-1.5 shadow-lg ring-1 ring-border">
+          {(["articles", "videos", "reporters", "advertisements"] as TabType[]).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${
+                activeTab === tab
+                  ? "bg-accent text-background shadow-md shadow-accent/25"
+                  : "text-muted hover:bg-border/50 hover:text-foreground"
+              }`}
+            >
+              {tabIcons[tab]}
+              {tab[0].toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
         </div>
-      )}
+
+        {/* Status toast */}
+        {status && (
+          <div className={`mb-5 flex items-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold shadow-lg ring-1 ${
+            status.toLowerCase().includes("error") || status.toLowerCase().includes("fail")
+              ? "bg-danger/10 text-danger ring-danger/20"
+              : "bg-success/10 text-success ring-success/20"
+          }`}>
+            <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              {status.toLowerCase().includes("error") || status.toLowerCase().includes("fail")
+                ? <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                : <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              }
+            </svg>
+            {status}
+          </div>
+        )}
 
       {activeTab === "articles" && (
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <form
             onSubmit={submitArticle}
-            className="space-y-3 rounded border border-gray-200 p-4"
+            className="space-y-4 rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border"
           >
-            <h2 className="text-lg font-semibold">
+            <h2 className="text-lg font-bold text-foreground">
               {articleEditId ? "Update Article" : "Create Article"}
             </h2>
             <input
-              className="w-full rounded border border-gray-300 px-3 py-2"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Title"
               value={articleForm.title}
               onChange={(event) =>
@@ -634,7 +701,7 @@ export default function Home() {
               required
             />
             <textarea
-              className="h-24 w-full rounded border border-gray-300 px-3 py-2"
+              className="h-24 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Description"
               value={articleForm.description}
               onChange={(event) =>
@@ -646,7 +713,7 @@ export default function Home() {
               required
             />
             <textarea
-              className="h-32 w-full rounded border border-gray-300 px-3 py-2"
+              className="h-32 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Content"
               value={articleForm.content}
               onChange={(event) =>
@@ -658,7 +725,7 @@ export default function Home() {
             />
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               <select
-                className="rounded border border-gray-300 px-3 py-2"
+                className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                 value={articleForm.category}
                 onChange={(event) =>
                   setArticleForm((current) => ({
@@ -674,7 +741,7 @@ export default function Home() {
                 ))}
               </select>
               <input
-                className="rounded border border-gray-300 px-3 py-2"
+                className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                 placeholder="Reporter"
                 value={articleForm.reporter}
                 onChange={(event) =>
@@ -687,7 +754,7 @@ export default function Home() {
               />
             </div>
             <input
-              className="w-full rounded border border-gray-300 px-3 py-2"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Tags (comma separated)"
               value={articleForm.tags}
               onChange={(event) =>
@@ -697,14 +764,17 @@ export default function Home() {
                 }))
               }
             />
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              className="w-full rounded border border-gray-300 px-3 py-2"
-              onChange={(event) => setArticleImages(event.target.files)}
-            />
-            <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted">Images</label>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground file:mr-3 file:rounded-md file:border-0 file:bg-accent/15 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-accent"
+                onChange={(event) => setArticleImages(event.target.files)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-background/50 p-3 md:grid-cols-3">
               {(
                 [
                   ["Publish", "isPublished"],
@@ -714,9 +784,10 @@ export default function Home() {
                   ["Editor's Pick", "isEditorsPick"],
                 ] as Array<[string, keyof typeof articleForm]>
               ).map(([label, key]) => (
-                <label key={key} className="flex items-center gap-2 text-sm">
+                <label key={key} className="flex items-center gap-2 text-sm text-foreground">
                   <input
                     type="checkbox"
+                    className="h-4 w-4 rounded border-border accent-accent"
                     checked={Boolean(articleForm[key])}
                     onChange={(event) =>
                       setArticleForm((current) => ({
@@ -729,46 +800,46 @@ export default function Home() {
                 </label>
               ))}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3 pt-1">
               <button
                 type="submit"
                 disabled={busy}
-                className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+                className="rounded-lg bg-accent px-5 py-2.5 text-sm font-bold text-background shadow-md shadow-accent/20 transition hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/30 disabled:opacity-50"
               >
                 {articleEditId ? "Update" : "Create"}
               </button>
               <button
                 type="button"
                 onClick={resetArticleForm}
-                className="rounded border border-gray-300 px-4 py-2"
+                className="rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-muted transition hover:border-muted hover:text-foreground"
               >
                 Reset
               </button>
             </div>
           </form>
 
-          <div className="rounded border border-gray-200 p-4">
-            <h2 className="mb-3 text-lg font-semibold">Articles ({articles.length})</h2>
-            <div className="max-h-[65vh] space-y-2 overflow-auto">
+          <div className="rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border">
+            <h2 className="mb-4 text-lg font-bold text-foreground">Articles <span className="ml-1 text-sm font-normal text-muted">({articles.length})</span></h2>
+            <div className="max-h-[65vh] space-y-2.5 overflow-auto pr-1">
               {articles.map((article) => (
                 <div
                   key={article._id}
-                  className="rounded border border-gray-200 p-3 text-sm"
+                  className="rounded-lg border border-border bg-background p-3.5 text-sm transition hover:border-accent/30 hover:shadow-md hover:shadow-accent/5"
                 >
-                  <p className="font-medium">{article.title}</p>
-                  <p className="text-gray-600">
+                  <p className="font-bold text-foreground">{article.title}</p>
+                  <p className="mt-0.5 text-xs text-muted">
                     {article.category} • {article.reporter}
                   </p>
-                  <div className="mt-2 flex gap-2">
+                  <div className="mt-2.5 flex gap-2">
                     <button
                       onClick={() => editArticle(article)}
-                      className="rounded border border-gray-300 px-3 py-1"
+                      className="rounded-md bg-accent/10 px-3 py-1.5 text-xs font-bold text-accent transition hover:bg-accent hover:text-background"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => removeArticle(article._id)}
-                      className="rounded border border-red-300 px-3 py-1 text-red-600"
+                      className="rounded-md bg-danger/10 px-3 py-1.5 text-xs font-bold text-danger transition hover:bg-danger hover:text-white"
                     >
                       Delete
                     </button>
@@ -784,13 +855,13 @@ export default function Home() {
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <form
             onSubmit={submitVideo}
-            className="space-y-3 rounded border border-gray-200 p-4"
+            className="space-y-4 rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border"
           >
-            <h2 className="text-lg font-semibold">
+            <h2 className="text-lg font-bold text-foreground">
               {videoEditId ? "Update Video" : "Create Video"}
             </h2>
             <input
-              className="w-full rounded border border-gray-300 px-3 py-2"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Title"
               value={videoForm.title}
               onChange={(event) =>
@@ -799,7 +870,7 @@ export default function Home() {
               required
             />
             <textarea
-              className="h-24 w-full rounded border border-gray-300 px-3 py-2"
+              className="h-24 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Description"
               value={videoForm.description}
               onChange={(event) =>
@@ -812,7 +883,7 @@ export default function Home() {
             />
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               <select
-                className="rounded border border-gray-300 px-3 py-2"
+                className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                 value={videoForm.category}
                 onChange={(event) =>
                   setVideoForm((current) => ({
@@ -828,7 +899,7 @@ export default function Home() {
                 ))}
               </select>
               <input
-                className="rounded border border-gray-300 px-3 py-2"
+                className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                 placeholder="Reporter"
                 value={videoForm.reporter}
                 onChange={(event) =>
@@ -841,7 +912,7 @@ export default function Home() {
               />
             </div>
             <input
-              className="w-full rounded border border-gray-300 px-3 py-2"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Tags (comma separated)"
               value={videoForm.tags}
               onChange={(event) =>
@@ -849,7 +920,7 @@ export default function Home() {
               }
             />
             <input
-              className="w-full rounded border border-gray-300 px-3 py-2"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="YouTube Video URL"
               value={videoForm.youtubeUrl}
               onChange={(event) =>
@@ -860,7 +931,7 @@ export default function Home() {
               }
               required
             />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-background/50 p-3">
               {(
                 [
                   ["Publish", "isPublished"],
@@ -868,9 +939,10 @@ export default function Home() {
                   ["Trending", "isTrending"],
                 ] as Array<[string, keyof typeof videoForm]>
               ).map(([label, key]) => (
-                <label key={key} className="flex items-center gap-2 text-sm">
+                <label key={key} className="flex items-center gap-2 text-sm text-foreground">
                   <input
                     type="checkbox"
+                    className="h-4 w-4 rounded border-border accent-accent"
                     checked={Boolean(videoForm[key])}
                     onChange={(event) =>
                       setVideoForm((current) => ({
@@ -883,46 +955,46 @@ export default function Home() {
                 </label>
               ))}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3 pt-1">
               <button
                 type="submit"
                 disabled={busy}
-                className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+                className="rounded-lg bg-accent px-5 py-2.5 text-sm font-bold text-background shadow-md shadow-accent/20 transition hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/30 disabled:opacity-50"
               >
                 {videoEditId ? "Update" : "Create"}
               </button>
               <button
                 type="button"
                 onClick={resetVideoForm}
-                className="rounded border border-gray-300 px-4 py-2"
+                className="rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-muted transition hover:border-muted hover:text-foreground"
               >
                 Reset
               </button>
             </div>
           </form>
 
-          <div className="rounded border border-gray-200 p-4">
-            <h2 className="mb-3 text-lg font-semibold">Videos ({videos.length})</h2>
-            <div className="max-h-[65vh] space-y-2 overflow-auto">
+          <div className="rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border">
+            <h2 className="mb-4 text-lg font-bold text-foreground">Videos <span className="ml-1 text-sm font-normal text-muted">({videos.length})</span></h2>
+            <div className="max-h-[65vh] space-y-2.5 overflow-auto pr-1">
               {videos.map((video) => (
                 <div
                   key={video._id}
-                  className="rounded border border-gray-200 p-3 text-sm"
+                  className="rounded-lg border border-border bg-background p-3.5 text-sm transition hover:border-accent/30 hover:shadow-md hover:shadow-accent/5"
                 >
-                  <p className="font-medium">{video.title}</p>
-                  <p className="text-gray-600">
+                  <p className="font-bold text-foreground">{video.title}</p>
+                  <p className="mt-0.5 text-xs text-muted">
                     {video.category} • {video.reporter}
                   </p>
-                  <div className="mt-2 flex gap-2">
+                  <div className="mt-2.5 flex gap-2">
                     <button
                       onClick={() => editVideo(video)}
-                      className="rounded border border-gray-300 px-3 py-1"
+                      className="rounded-md bg-accent/10 px-3 py-1.5 text-xs font-bold text-accent transition hover:bg-accent hover:text-background"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => removeVideo(video._id)}
-                      className="rounded border border-red-300 px-3 py-1 text-red-600"
+                      className="rounded-md bg-danger/10 px-3 py-1.5 text-xs font-bold text-danger transition hover:bg-danger hover:text-white"
                     >
                       Delete
                     </button>
@@ -938,13 +1010,13 @@ export default function Home() {
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <form
             onSubmit={submitReporter}
-            className="space-y-3 rounded border border-gray-200 p-4"
+            className="space-y-4 rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border"
           >
-            <h2 className="text-lg font-semibold">
+            <h2 className="text-lg font-bold text-foreground">
               {reporterEditId ? "Update Reporter" : "Create Reporter"}
             </h2>
             <input
-              className="w-full rounded border border-gray-300 px-3 py-2"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Name"
               value={reporterForm.name}
               onChange={(event) =>
@@ -956,7 +1028,7 @@ export default function Home() {
               required
             />
             <input
-              className="w-full rounded border border-gray-300 px-3 py-2"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Designation"
               value={reporterForm.designation}
               onChange={(event) =>
@@ -968,7 +1040,7 @@ export default function Home() {
               required
             />
             <textarea
-              className="h-24 w-full rounded border border-gray-300 px-3 py-2"
+              className="h-24 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Message"
               value={reporterForm.message}
               onChange={(event) =>
@@ -978,52 +1050,55 @@ export default function Home() {
                 }))
               }
             />
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full rounded border border-gray-300 px-3 py-2"
-              onChange={(event) => setReporterPhoto(event.target.files?.[0] || null)}
-            />
-            <div className="flex gap-2">
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted">Photo</label>
+              <input
+                type="file"
+                accept="image/*"
+                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground file:mr-3 file:rounded-md file:border-0 file:bg-accent/15 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-accent"
+                onChange={(event) => setReporterPhoto(event.target.files?.[0] || null)}
+              />
+            </div>
+            <div className="flex gap-3 pt-1">
               <button
                 type="submit"
                 disabled={busy}
-                className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+                className="rounded-lg bg-accent px-5 py-2.5 text-sm font-bold text-background shadow-md shadow-accent/20 transition hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/30 disabled:opacity-50"
               >
                 {reporterEditId ? "Update" : "Create"}
               </button>
               <button
                 type="button"
                 onClick={resetReporterForm}
-                className="rounded border border-gray-300 px-4 py-2"
+                className="rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-muted transition hover:border-muted hover:text-foreground"
               >
                 Reset
               </button>
             </div>
           </form>
 
-          <div className="rounded border border-gray-200 p-4">
-            <h2 className="mb-3 text-lg font-semibold">
-              Reporters ({reporters.length})
+          <div className="rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border">
+            <h2 className="mb-4 text-lg font-bold text-foreground">
+              Reporters <span className="ml-1 text-sm font-normal text-muted">({reporters.length})</span>
             </h2>
-            <div className="max-h-[65vh] space-y-2 overflow-auto">
+            <div className="max-h-[65vh] space-y-2.5 overflow-auto pr-1">
               {reporters.map((reporter) => (
                 <div
                   key={reporter._id}
-                  className="rounded border border-gray-200 p-3 text-sm"
+                  className="rounded-lg border border-border bg-background p-3.5 text-sm transition hover:border-accent/30 hover:shadow-md hover:shadow-accent/5"
                 >
-                  <p className="font-medium">{reporter.name}</p>
-                  <p className="text-gray-600">{reporter.designation}</p>
-                  <div className="mt-2 flex gap-2">
+                  <p className="font-bold text-foreground">{reporter.name}</p>
+                  <p className="mt-0.5 text-xs text-muted">{reporter.designation}</p>
+                  <div className="mt-2.5 flex gap-2">
                     <button
                       onClick={() => editReporter(reporter)}
-                      className="rounded border border-gray-300 px-3 py-1"
+                      className="rounded-md bg-accent/10 px-3 py-1.5 text-xs font-bold text-accent transition hover:bg-accent hover:text-background"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => removeReporter(reporter._id)}
-                      className="rounded border border-red-300 px-3 py-1 text-red-600"
+                      className="rounded-md bg-danger/10 px-3 py-1.5 text-xs font-bold text-danger transition hover:bg-danger hover:text-white"
                     >
                       Delete
                     </button>
@@ -1039,13 +1114,13 @@ export default function Home() {
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <form
             onSubmit={submitAdvertisement}
-            className="space-y-3 rounded border border-gray-200 p-4"
+            className="space-y-4 rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border"
           >
-            <h2 className="text-lg font-semibold">
+            <h2 className="text-lg font-bold text-foreground">
               {adEditId ? "Update Advertisement" : "Create Advertisement"}
             </h2>
             <input
-              className="w-full rounded border border-gray-300 px-3 py-2"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Title"
               value={adForm.title}
               onChange={(event) =>
@@ -1057,7 +1132,7 @@ export default function Home() {
               required
             />
             <textarea
-              className="h-24 w-full rounded border border-gray-300 px-3 py-2"
+              className="h-24 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Description"
               value={adForm.description}
               onChange={(event) =>
@@ -1068,7 +1143,7 @@ export default function Home() {
               }
             />
             <input
-              className="w-full rounded border border-gray-300 px-3 py-2"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Link URL (e.g. https://example.com)"
               value={adForm.link}
               onChange={(event) =>
@@ -1080,9 +1155,9 @@ export default function Home() {
             />
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               <div>
-                <label className="mb-1 block text-xs text-gray-600">Placement</label>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted">Placement</label>
                 <select
-                  className="w-full rounded border border-gray-300 px-3 py-2"
+                  className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                   value={adForm.placement}
                   onChange={(event) =>
                     setAdForm((current) => ({
@@ -1098,26 +1173,29 @@ export default function Home() {
                   ))}
                 </select>
               </div>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={adForm.isActive}
-                  onChange={(event) =>
-                    setAdForm((current) => ({
-                      ...current,
-                      isActive: event.target.checked,
-                    }))
-                  }
-                />
-                Active
-              </label>
+              <div className="flex items-end">
+                <label className="flex items-center gap-2 rounded-lg border border-border bg-background/50 px-3 py-2.5 text-sm font-semibold text-foreground">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-border accent-accent"
+                    checked={adForm.isActive}
+                    onChange={(event) =>
+                      setAdForm((current) => ({
+                        ...current,
+                        isActive: event.target.checked,
+                      }))
+                    }
+                  />
+                  Active
+                </label>
+              </div>
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               <div>
-                <label className="mb-1 block text-xs text-gray-600">Start Date</label>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted">Start Date</label>
                 <input
                   type="date"
-                  className="w-full rounded border border-gray-300 px-3 py-2"
+                  className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                   value={adForm.startDate}
                   onChange={(event) =>
                     setAdForm((current) => ({
@@ -1128,10 +1206,10 @@ export default function Home() {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs text-gray-600">End Date</label>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted">End Date</label>
                 <input
                   type="date"
-                  className="w-full rounded border border-gray-300 px-3 py-2"
+                  className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                   value={adForm.endDate}
                   onChange={(event) =>
                     setAdForm((current) => ({
@@ -1143,79 +1221,79 @@ export default function Home() {
               </div>
             </div>
             <div>
-              <label className="mb-1 block text-xs text-gray-600">Images (max 5)</label>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted">Images (max 5)</label>
               <input
                 type="file"
                 multiple
                 accept="image/*"
-                className="w-full rounded border border-gray-300 px-3 py-2"
+                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground file:mr-3 file:rounded-md file:border-0 file:bg-accent/15 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-accent"
                 onChange={(event) => setAdImages(event.target.files)}
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-gray-600">Videos (max 3)</label>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted">Videos (max 3)</label>
               <input
                 type="file"
                 multiple
                 accept="video/*"
-                className="w-full rounded border border-gray-300 px-3 py-2"
+                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground file:mr-3 file:rounded-md file:border-0 file:bg-accent/15 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-accent"
                 onChange={(event) => setAdVideos(event.target.files)}
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3 pt-1">
               <button
                 type="submit"
                 disabled={busy}
-                className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+                className="rounded-lg bg-accent px-5 py-2.5 text-sm font-bold text-background shadow-md shadow-accent/20 transition hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/30 disabled:opacity-50"
               >
                 {adEditId ? "Update" : "Create"}
               </button>
               <button
                 type="button"
                 onClick={resetAdForm}
-                className="rounded border border-gray-300 px-4 py-2"
+                className="rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-muted transition hover:border-muted hover:text-foreground"
               >
                 Reset
               </button>
             </div>
           </form>
 
-          <div className="rounded border border-gray-200 p-4">
-            <h2 className="mb-3 text-lg font-semibold">
-              Advertisements ({advertisements.length})
+          <div className="rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border">
+            <h2 className="mb-4 text-lg font-bold text-foreground">
+              Advertisements <span className="ml-1 text-sm font-normal text-muted">({advertisements.length})</span>
             </h2>
-            <div className="max-h-[65vh] space-y-2 overflow-auto">
+            <div className="max-h-[65vh] space-y-2.5 overflow-auto pr-1">
               {advertisements.map((ad) => (
                 <div
                   key={ad._id}
-                  className="rounded border border-gray-200 p-3 text-sm"
+                  className="rounded-lg border border-border bg-background p-3.5 text-sm transition hover:border-accent/30 hover:shadow-md hover:shadow-accent/5"
                 >
-                  <p className="font-medium">{ad.title}</p>
-                  <p className="text-gray-600">
-                    {ad.placement} •{" "}
+                  <p className="font-bold text-foreground">{ad.title}</p>
+                  <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs">
+                    <span className="rounded-full bg-accent/15 px-2 py-0.5 font-bold text-accent">{ad.placement}</span>
                     {ad.isActive ? (
-                      <span className="text-green-600">Active</span>
+                      <span className="rounded-full bg-success/15 px-2 py-0.5 font-bold text-success">Active</span>
                     ) : (
-                      <span className="text-red-600">Inactive</span>
+                      <span className="rounded-full bg-danger/15 px-2 py-0.5 font-bold text-danger">Inactive</span>
                     )}
-                    {" "}• {ad.images.length} image(s) • {ad.videos.length} video(s)
-                  </p>
-                  <p className="text-gray-500">
+                    <span className="text-muted">{ad.images.length} img • {ad.videos.length} vid</span>
+                  </div>
+                  <p className="mt-1 text-xs text-muted">
                     Views: {ad.views} • Clicks: {ad.clicks}
                   </p>
                   {ad.link && (
-                    <p className="truncate text-blue-600">{ad.link}</p>
+                    <p className="mt-0.5 truncate text-xs text-accent">{ad.link}</p>
                   )}
-                  <div className="mt-2 flex gap-2">
+                  <div className="mt-2.5 flex gap-2">
                     <button
                       onClick={() => editAdvertisement(ad)}
-                      className="rounded border border-gray-300 px-3 py-1"
+                      className="rounded-md bg-accent/10 px-3 py-1.5 text-xs font-bold text-accent transition hover:bg-accent hover:text-background"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => removeAdvertisement(ad._id)}
-                      className="rounded border border-red-300 px-3 py-1 text-red-600"
+                      className="rounded-md bg-danger/10 px-3 py-1.5 text-xs font-bold text-danger transition hover:bg-danger hover:text-white"
                     >
                       Delete
                     </button>
@@ -1226,6 +1304,7 @@ export default function Home() {
           </div>
         </section>
       )}
+      </div>
     </main>
   );
 }

@@ -92,9 +92,9 @@ export default function Header() {
             <Image
               src="/banner/LOGO.png"
               alt="Srishti News"
-              width={600}
-              height={120}
-              className="h-14 sm:h-20 md:h-32 w-auto object-contain"
+              width={800}
+              height={160}
+              className="h-20 sm:h-28 md:h-44 lg:h-52 w-auto object-contain"
               priority
             />
           </Link>
