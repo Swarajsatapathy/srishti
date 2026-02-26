@@ -16,7 +16,7 @@ export async function generateMetadata({
   if (!video) return { title: "Video Not Found" };
   return {
     title: `${video.title} - Srishti News`,
-    description: video.description,
+    description: video.content,
   };
 }
 
@@ -39,11 +39,11 @@ export default async function VideoPage({ params }: PageProps) {
   return (
     <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
-        <Link href="/" className="hover:text-primary transition">
+      <nav className="flex items-baseline gap-1.5 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
+        <Link href="/" className="hover:text-primary transition whitespace-nowrap">
           Home
         </Link>
-        <span>/</span>
+        <span className="text-gray-400">/</span>
         <Link href="/videos" className="hover:text-primary transition">
           ଭିଡ଼ିଓ
         </Link>
@@ -56,9 +56,16 @@ export default async function VideoPage({ params }: PageProps) {
 
       {/* Meta */}
       <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-200">
-        <span className="bg-primary text-white text-xs font-semibold px-2.5 py-1 rounded">
-          {video.category}
-        </span>
+        {video.category && (
+          <span className="bg-primary text-white text-xs font-semibold px-2.5 py-1 rounded">
+            {video.category}
+          </span>
+        )}
+        {video.district && (
+          <span className="bg-gray-200 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded">
+            {video.district}
+          </span>
+        )}
         <span>{video.reporter}</span>
         <span>{date}</span>
         <span>{video.views} views</span>
@@ -75,10 +82,12 @@ export default async function VideoPage({ params }: PageProps) {
         />
       </div>
 
-      {/* Description */}
-      <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
-        {video.description}
-      </p>
+      {/* Content */}
+      {video.content && (
+        <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
+          {video.content}
+        </p>
+      )}
 
       {/* Tags */}
       {video.tags && video.tags.length > 0 && (
@@ -87,7 +96,7 @@ export default async function VideoPage({ params }: PageProps) {
             <Link
               key={tag}
               href={`/search?q=${encodeURIComponent(tag)}`}
-              className="text-sm bg-gray-100 text-gray-600 px-3 py-1 rounded-full hover:bg-primary hover:text-white transition"
+              className="text-sm bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full hover:bg-primary hover:text-white transition"
             >
               #{tag}
             </Link>

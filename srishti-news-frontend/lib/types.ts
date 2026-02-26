@@ -7,10 +7,11 @@ export interface ArticleImage {
 export interface Article {
   _id: string;
   title: string;
-  description: string;
+  description?: string;
   content: string;
   images: ArticleImage[];
-  category: string;
+  category?: string;
+  district?: string;
   reporter: string;
   tags: string[];
   isPublished: boolean;
@@ -27,14 +28,18 @@ export interface Article {
 export interface Video {
   _id: string;
   title: string;
-  description: string;
+  description?: string;
+  content: string;
   youtubeUrl: string;
-  category: string;
+  category?: string;
+  district?: string;
   reporter: string;
   tags: string[];
   isPublished: boolean;
   isFeatured: boolean;
   isTrending: boolean;
+  isFlash: boolean;
+  isEditorsPick: boolean;
   views: number;
   publishedAt: string;
   createdAt: string;
@@ -46,6 +51,7 @@ export interface Reporter {
   name: string;
   designation: string;
   message: string;
+  district?: string;
   photo: { url: string; key: string };
   createdAt: string;
   updatedAt: string;

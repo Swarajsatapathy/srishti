@@ -18,21 +18,21 @@ export default function VideoCard({ video }: VideoCardProps) {
   });
 
   return (
-    <Link href={`/videos/${video._id}`} className="group block">
-      <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition border border-gray-100">
-        <div className="relative aspect-video">
+    <Link href={`/videos/${video._id}`} className="group block h-full">
+      <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
+        <div className="relative aspect-video overflow-hidden">
           {thumbnail ? (
             <Image
               src={thumbnail}
               alt={video.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+            <div className="w-full h-full bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">
               <svg
-                className="w-12 h-12 text-gray-300"
+                className="w-10 h-10 sm:w-12 sm:h-12 text-gray-300"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -42,9 +42,9 @@ export default function VideoCard({ video }: VideoCardProps) {
           )}
           {/* Play button overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-14 h-14 bg-black/60 rounded-full flex items-center justify-center group-hover:bg-red-600/80 transition">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-black/50 rounded-full flex items-center justify-center group-hover:bg-red-600/80 transition-colors duration-200">
               <svg
-                className="w-6 h-6 text-white ml-1"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-white ml-0.5"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -53,14 +53,16 @@ export default function VideoCard({ video }: VideoCardProps) {
             </div>
           </div>
         </div>
-        <div className="p-4">
-          <span className="text-primary text-xs font-semibold uppercase">
-            {video.category}
-          </span>
-          <h3 className="font-bold text-base leading-snug line-clamp-2 mt-1 group-hover:text-primary transition">
+        <div className="p-3.5 sm:p-4 flex-1 flex flex-col">
+          {video.category && (
+            <span className="text-primary text-[11px] sm:text-xs font-semibold uppercase">
+              {video.category}
+            </span>
+          )}
+          <h3 className="font-bold text-[15px] sm:text-base leading-snug line-clamp-2 mt-1 group-hover:text-primary transition">
             {video.title}
           </h3>
-          <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+          <div className="flex items-center gap-2 mt-auto pt-2 text-[11px] sm:text-xs text-gray-500">
             <span>{date}</span>
             <span>&bull;</span>
             <span>{video.views} views</span>

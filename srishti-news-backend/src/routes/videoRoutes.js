@@ -7,6 +7,8 @@ import {
   deleteVideo,
   getFeaturedVideos,
   getTrendingVideos,
+  getFlashVideos,
+  getEditorsPickVideos,
 } from '../controllers/videoController.js';
 
 const router = Router();
@@ -14,6 +16,8 @@ const router = Router();
 // Curated endpoints
 router.get('/featured', getFeaturedVideos);
 router.get('/trending', getTrendingVideos);
+router.get('/flash', getFlashVideos);
+router.get('/editors-picks', getEditorsPickVideos);
 
 // CRUD
 router.post('/', createVideo);

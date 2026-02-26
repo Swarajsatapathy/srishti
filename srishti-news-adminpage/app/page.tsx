@@ -5,9 +5,8 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 type Article = {
   _id: string;
   title: string;
-  description: string;
-  content?: string;
-  category: string;
+  content: string;
+  category?: string;
   reporter: string;
   tags: string[];
   isPublished: boolean;
@@ -15,6 +14,7 @@ type Article = {
   isFlash: boolean;
   isTrending: boolean;
   isEditorsPick: boolean;
+  district?: string;
   images: Array<{ url: string; key?: string }>;
   publishedAt?: string;
 };
@@ -22,14 +22,17 @@ type Article = {
 type Video = {
   _id: string;
   title: string;
-  description: string;
-  category: string;
+  content: string;
+  category?: string;
   reporter: string;
   tags: string[];
   youtubeUrl: string;
   isPublished: boolean;
   isFeatured: boolean;
   isTrending: boolean;
+  isFlash: boolean;
+  isEditorsPick: boolean;
+  district?: string;
   publishedAt?: string;
 };
 
@@ -38,6 +41,7 @@ type Reporter = {
   name: string;
   designation: string;
   message?: string;
+  district?: string;
   photo?: { url?: string; key?: string };
 };
 
@@ -73,28 +77,38 @@ const placements = [
   "other",
 ];
 
-const categories = [
-  "other",
-  "state",
-  "national",
-  "international",
-  "business",
-  "editorial",
-  "crime",
-  "sports",
-  "entertainment",
-  "lifestyle",
-  "religion",
-  "ରାଜ୍ୟ",
-  "ଜାତୀୟ",
-  "ଆନ୍ତର୍ଜାତୀୟ",
-  "ବାଣିଜ୍ୟ",
-  "ସମ୍ପାଦକୀୟ",
-  "ଅପରାଧ",
-  "ଖେଳ",
-  "ମନୋରଞ୍ଜନ",
-  "ଜୀବନଶୈଳୀ",
-  "ଧର୍ମ",
+const odishaDistricts = [
+  "",
+  "Angul (ଅନୁଗୋଳ)",
+  "Balangir (ବଲାଙ୍ଗୀର)",
+  "Balasore (ବାଲେଶ୍ୱର)",
+  "Bargarh (ବରଗଡ଼)",
+  "Bhadrak (ଭଦ୍ରକ)",
+  "Boudh (ବୌଦ୍ଧ)",
+  "Cuttack (କଟକ)",
+  "Deogarh (ଦେଓଗଡ଼)",
+  "Dhenkanal (ଢେଙ୍କାନାଳ)",
+  "Gajapati (ଗଜପତି)",
+  "Ganjam (ଗଞ୍ଜାମ)",
+  "Jagatsinghpur (ଜଗତସିଂହପୁର)",
+  "Jajpur (ଯାଜପୁର)",
+  "Jharsuguda (ଝାରସୁଗୁଡ଼ା)",
+  "Kalahandi (କଳାହାଣ୍ଡି)",
+  "Kandhamal (କନ୍ଧମାଳ)",
+  "Kendrapara (କେନ୍ଦ୍ରାପଡ଼ା)",
+  "Kendujhar (କେନ୍ଦୁଝର)",
+  "Khordha (ଖୋର୍ଦ୍ଧା)",
+  "Koraput (କୋରାପୁଟ)",
+  "Malkangiri (ମାଲକାନଗିରି)",
+  "Mayurbhanj (ମୟୂରଭଞ୍ଜ)",
+  "Nabarangpur (ନବରଙ୍ଗପୁର)",
+  "Nayagarh (ନୟାଗଡ଼)",
+  "Nuapada (ନୂଆପଡ଼ା)",
+  "Puri (ପୁରୀ)",
+  "Rayagada (ରାୟଗଡ଼ା)",
+  "Sambalpur (ସମ୍ବଲପୁର)",
+  "Subarnapur (ସୁବର୍ଣ୍ଣପୁର)",
+  "Sundargarh (ସୁନ୍ଦରଗଡ଼)",
 ];
 
 const API_BASE = process.env.NEXT_PUBLIC_BASE_URL;
@@ -146,9 +160,8 @@ export default function Home() {
 
   const [articleForm, setArticleForm] = useState({
     title: "",
-    description: "",
     content: "",
-    category: "other",
+    district: "",
     reporter: "",
     tags: "",
     isPublished: false,
@@ -161,20 +174,23 @@ export default function Home() {
 
   const [videoForm, setVideoForm] = useState({
     title: "",
-    description: "",
-    category: "other",
+    content: "",
+    district: "",
     reporter: "",
     tags: "",
     youtubeUrl: "",
     isPublished: false,
     isFeatured: false,
     isTrending: false,
+    isFlash: false,
+    isEditorsPick: false,
   });
 
   const [reporterForm, setReporterForm] = useState({
     name: "",
     designation: "",
     message: "",
+    district: "",
   });
   const [reporterPhoto, setReporterPhoto] = useState<File | null>(null);
 
@@ -272,9 +288,8 @@ export default function Home() {
     setArticleEditId(null);
     setArticleForm({
       title: "",
-      description: "",
       content: "",
-      category: "other",
+      district: "",
       reporter: "",
       tags: "",
       isPublished: false,
@@ -290,20 +305,22 @@ export default function Home() {
     setVideoEditId(null);
     setVideoForm({
       title: "",
-      description: "",
-      category: "other",
+      content: "",
+      district: "",
       reporter: "",
       tags: "",
       youtubeUrl: "",
       isPublished: false,
       isFeatured: false,
       isTrending: false,
+      isFlash: false,
+      isEditorsPick: false,
     });
   };
 
   const resetReporterForm = () => {
     setReporterEditId(null);
-    setReporterForm({ name: "", designation: "", message: "" });
+    setReporterForm({ name: "", designation: "", message: "", district: "" });
     setReporterPhoto(null);
   };
 
@@ -327,9 +344,8 @@ export default function Home() {
     void withBusy(async () => {
       const formData = new FormData();
       formData.append("title", articleForm.title);
-      formData.append("description", articleForm.description);
       formData.append("content", articleForm.content);
-      formData.append("category", articleForm.category);
+      formData.append("district", articleForm.district);
       formData.append("reporter", articleForm.reporter);
       formData.append("tags", JSON.stringify(parseTags(articleForm.tags)));
       formData.append("isPublished", String(articleForm.isPublished));
@@ -359,9 +375,8 @@ export default function Home() {
     setArticleEditId(article._id);
     setArticleForm({
       title: article.title,
-      description: article.description,
       content: article.content || "",
-      category: article.category,
+      district: article.district || "",
       reporter: article.reporter,
       tags: article.tags?.join(", ") || "",
       isPublished: article.isPublished,
@@ -389,14 +404,16 @@ export default function Home() {
     void withBusy(async () => {
       const body = {
         title: videoForm.title,
-        description: videoForm.description,
-        category: videoForm.category,
+        content: videoForm.content,
+        district: videoForm.district,
         reporter: videoForm.reporter,
         tags: JSON.stringify(parseTags(videoForm.tags)),
         youtubeUrl: videoForm.youtubeUrl,
         isPublished: String(videoForm.isPublished),
         isFeatured: String(videoForm.isFeatured),
         isTrending: String(videoForm.isTrending),
+        isFlash: String(videoForm.isFlash),
+        isEditorsPick: String(videoForm.isEditorsPick),
       };
 
       const path = videoEditId ? `/api/videos/${videoEditId}` : "/api/videos";
@@ -416,14 +433,16 @@ export default function Home() {
     setVideoEditId(video._id);
     setVideoForm({
       title: video.title,
-      description: video.description,
-      category: video.category,
+      content: video.content || "",
+      district: video.district || "",
       reporter: video.reporter,
       tags: video.tags?.join(", ") || "",
       youtubeUrl: video.youtubeUrl || "",
       isPublished: video.isPublished,
       isFeatured: video.isFeatured,
       isTrending: video.isTrending,
+      isFlash: video.isFlash,
+      isEditorsPick: video.isEditorsPick,
     });
     setActiveTab("videos");
   };
@@ -446,6 +465,7 @@ export default function Home() {
       formData.append("name", reporterForm.name);
       formData.append("designation", reporterForm.designation);
       formData.append("message", reporterForm.message);
+      formData.append("district", reporterForm.district);
       if (reporterPhoto) {
         formData.append("photo", reporterPhoto);
       }
@@ -467,6 +487,7 @@ export default function Home() {
       name: reporter.name,
       designation: reporter.designation,
       message: reporter.message || "",
+      district: reporter.district || "",
     });
     setActiveTab("reporters");
   };
@@ -701,18 +722,6 @@ export default function Home() {
               required
             />
             <textarea
-              className="h-24 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-              placeholder="Description"
-              value={articleForm.description}
-              onChange={(event) =>
-                setArticleForm((current) => ({
-                  ...current,
-                  description: event.target.value,
-                }))
-              }
-              required
-            />
-            <textarea
               className="h-32 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Content"
               value={articleForm.content}
@@ -723,36 +732,33 @@ export default function Home() {
                 }))
               }
             />
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <select
-                className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-                value={articleForm.category}
-                onChange={(event) =>
-                  setArticleForm((current) => ({
-                    ...current,
-                    category: event.target.value,
-                  }))
-                }
-              >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-              <input
-                className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-                placeholder="Reporter"
-                value={articleForm.reporter}
-                onChange={(event) =>
-                  setArticleForm((current) => ({
-                    ...current,
-                    reporter: event.target.value,
-                  }))
-                }
-                required
-              />
-            </div>
+            <input
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+              placeholder="Reporter"
+              value={articleForm.reporter}
+              onChange={(event) =>
+                setArticleForm((current) => ({
+                  ...current,
+                  reporter: event.target.value,
+                }))
+              }
+              required
+            />
+            <select
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+              value={articleForm.district}
+              onChange={(event) =>
+                setArticleForm((current) => ({
+                  ...current,
+                  district: event.target.value,
+                }))
+              }
+            >
+              <option value="">Select District (optional)</option>
+              {odishaDistricts.filter(Boolean).map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
             <input
               className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Tags (comma separated)"
@@ -828,7 +834,7 @@ export default function Home() {
                 >
                   <p className="font-bold text-foreground">{article.title}</p>
                   <p className="mt-0.5 text-xs text-muted">
-                    {article.category} • {article.reporter}
+                    {article.district ? `${article.district} • ` : ""}{article.reporter}
                   </p>
                   <div className="mt-2.5 flex gap-2">
                     <button
@@ -871,46 +877,42 @@ export default function Home() {
             />
             <textarea
               className="h-24 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-              placeholder="Description"
-              value={videoForm.description}
+              placeholder="Content"
+              value={videoForm.content}
               onChange={(event) =>
                 setVideoForm((current) => ({
                   ...current,
-                  description: event.target.value,
+                  content: event.target.value,
+                }))
+              }
+            />
+            <input
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+              placeholder="Reporter"
+              value={videoForm.reporter}
+              onChange={(event) =>
+                setVideoForm((current) => ({
+                  ...current,
+                  reporter: event.target.value,
                 }))
               }
               required
             />
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <select
-                className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-                value={videoForm.category}
-                onChange={(event) =>
-                  setVideoForm((current) => ({
-                    ...current,
-                    category: event.target.value,
-                  }))
-                }
-              >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-              <input
-                className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-                placeholder="Reporter"
-                value={videoForm.reporter}
-                onChange={(event) =>
-                  setVideoForm((current) => ({
-                    ...current,
-                    reporter: event.target.value,
-                  }))
-                }
-                required
-              />
-            </div>
+            <select
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+              value={videoForm.district}
+              onChange={(event) =>
+                setVideoForm((current) => ({
+                  ...current,
+                  district: event.target.value,
+                }))
+              }
+            >
+              <option value="">Select District (optional)</option>
+              {odishaDistricts.filter(Boolean).map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
             <input
               className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Tags (comma separated)"
@@ -937,6 +939,8 @@ export default function Home() {
                   ["Publish", "isPublished"],
                   ["Featured", "isFeatured"],
                   ["Trending", "isTrending"],
+                  ["Flash", "isFlash"],
+                  ["Editor's Pick", "isEditorsPick"],
                 ] as Array<[string, keyof typeof videoForm]>
               ).map(([label, key]) => (
                 <label key={key} className="flex items-center gap-2 text-sm text-foreground">
@@ -983,7 +987,7 @@ export default function Home() {
                 >
                   <p className="font-bold text-foreground">{video.title}</p>
                   <p className="mt-0.5 text-xs text-muted">
-                    {video.category} • {video.reporter}
+                    {video.district ? `${video.district} • ` : ""}{video.reporter}
                   </p>
                   <div className="mt-2.5 flex gap-2">
                     <button
@@ -1050,6 +1054,21 @@ export default function Home() {
                 }))
               }
             />
+            <select
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+              value={reporterForm.district}
+              onChange={(event) =>
+                setReporterForm((current) => ({
+                  ...current,
+                  district: event.target.value,
+                }))
+              }
+            >
+              <option value="">Select District (optional)</option>
+              {odishaDistricts.filter(Boolean).map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted">Photo</label>
               <input
@@ -1088,7 +1107,7 @@ export default function Home() {
                   className="rounded-lg border border-border bg-background p-3.5 text-sm transition hover:border-accent/30 hover:shadow-md hover:shadow-accent/5"
                 >
                   <p className="font-bold text-foreground">{reporter.name}</p>
-                  <p className="mt-0.5 text-xs text-muted">{reporter.designation}</p>
+                  <p className="mt-0.5 text-xs text-muted">{reporter.designation}{reporter.district ? ` • ${reporter.district}` : ""}</p>
                   <div className="mt-2.5 flex gap-2">
                     <button
                       onClick={() => editReporter(reporter)}

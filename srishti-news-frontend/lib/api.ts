@@ -75,7 +75,13 @@ export async function getFeaturedVideos() {
 export async function getTrendingVideos() {
   return fetchApi<Video[]>("/api/videos/trending");
 }
+export async function getFlashVideos() {
+  return fetchApi<Video[]>("/api/videos/flash");
+}
 
+export async function getEditorsPickVideos() {
+  return fetchApi<Video[]>("/api/videos/editors-picks");
+}
 // ─── Reporters ──────────────────────────────────────────────────
 
 export async function getReporters(params?: Record<string, string>) {

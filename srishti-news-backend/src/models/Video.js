@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const videoSchema = new mongoose.Schema(
   {
@@ -10,7 +10,11 @@ const videoSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: [true, 'Video description is required'],
+      default: '',
+    },
+    content: {
+      type: String,
+      default: '',
     },
     youtubeUrl: {
       type: String,
@@ -18,36 +22,18 @@ const videoSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      required: [true, 'Category is required'],
-      enum: [
-        'রାଜ୍ୟ',
-        'ଜାତୀୟ',
-        'ଆନ୍ତର୍ଜାତୀୟ',
-        'ବାଣିଜ୍ୟ',
-        'ସମ୍ପାଦକୀୟ',
-        'ଅପରାଧ',
-        'ଖେଳ',
-        'ମନୋରଞ୍ଜନ',
-        'ଜୀବନଶୈଳୀ',
-        'ଧର୍ମ',
-        'editorial',
-        'state',
-        'national',
-        'international',
-        'business',
-        'crime',
-        'sports',
-        'entertainment',
-        'lifestyle',
-        'religion',
-        'other',
-      ],
-      default: 'other',
+      trim: true,
+      default: '',
     },
     reporter: {
       type: String,
       required: [true, 'Reporter name is required'],
       trim: true,
+    },
+    district: {
+      type: String,
+      trim: true,
+      default: '',
     },
     tags: [{ type: String, trim: true }],
     isPublished: {
@@ -59,6 +45,14 @@ const videoSchema = new mongoose.Schema(
       default: false,
     },
     isTrending: {
+      type: Boolean,
+      default: false,
+    },
+    isFlash: {
+      type: Boolean,
+      default: false,
+    },
+    isEditorsPick: {
       type: Boolean,
       default: false,
     },
@@ -79,6 +73,8 @@ videoSchema.index({ category: 1, publishedAt: -1 });
 videoSchema.index({ isPublished: 1, publishedAt: -1 });
 videoSchema.index({ isFeatured: 1 });
 videoSchema.index({ isTrending: 1 });
+videoSchema.index({ isFlash: 1 });
+videoSchema.index({ isEditorsPick: 1 });
 
 const Video = mongoose.model('Video', videoSchema);
 

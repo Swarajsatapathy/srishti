@@ -5,7 +5,7 @@ import asyncHandler from '../utils/asyncHandler.js';
 
 // ─── CREATE VIDEO ───────────────────────────────────────────────
 export const createVideo = asyncHandler(async (req, res) => {
-  const { title, description, youtubeUrl, category, reporter, tags, isPublished, isFeatured, isTrending } = req.body;
+  const { title, content, youtubeUrl, reporter, tags, isPublished, isFeatured, isTrending, isFlash, isEditorsPick } = req.body;
 
   if (!youtubeUrl) {
     throw new ApiError(400, 'YouTube URL is required');
@@ -13,14 +13,15 @@ export const createVideo = asyncHandler(async (req, res) => {
 
   const video = await Video.create({
     title,
-    description,
+    content: content || '',
     youtubeUrl,
-    category,
     reporter,
     tags: tags ? (typeof tags === 'string' ? JSON.parse(tags) : tags) : [],
     isPublished: isPublished === 'true' || isPublished === true,
     isFeatured: isFeatured === 'true' || isFeatured === true,
     isTrending: isTrending === 'true' || isTrending === true,
+    isFlash: isFlash === 'true' || isFlash === true,
+    isEditorsPick: isEditorsPick === 'true' || isEditorsPick === true,
     publishedAt: isPublished ? new Date() : undefined,
   });
 
@@ -49,11 +50,13 @@ export const getVideos = asyncHandler(async (req, res) => {
   if (tag) filter.tags = tag;
   if (featured === 'true') filter.isFeatured = true;
   if (trending === 'true') filter.isTrending = true;
+  if (req.query.flash === 'true') filter.isFlash = true;
+  if (req.query.editorsPick === 'true') filter.isEditorsPick = true;
   if (published !== undefined) filter.isPublished = published === 'true';
   if (search) {
     filter.$or = [
       { title: { $regex: search, $options: 'i' } },
-      { description: { $regex: search, $options: 'i' } },
+      { content: { $regex: search, $options: 'i' } },
     ];
   }
 
@@ -99,12 +102,11 @@ export const updateVideo = asyncHandler(async (req, res) => {
   const video = await Video.findById(req.params.id);
   if (!video) throw new ApiError(404, 'Video not found');
 
-  const { title, description, youtubeUrl, category, reporter, tags, isPublished, isFeatured, isTrending } = req.body;
+  const { title, content, youtubeUrl, reporter, tags, isPublished, isFeatured, isTrending, isFlash, isEditorsPick } = req.body;
 
   if (title !== undefined) video.title = title;
-  if (description !== undefined) video.description = description;
+  if (content !== undefined) video.content = content;
   if (youtubeUrl !== undefined) video.youtubeUrl = youtubeUrl;
-  if (category !== undefined) video.category = category;
   if (reporter !== undefined) video.reporter = reporter;
   if (tags !== undefined) video.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
   if (isPublished !== undefined) {
@@ -113,6 +115,8 @@ export const updateVideo = asyncHandler(async (req, res) => {
   }
   if (isFeatured !== undefined) video.isFeatured = isFeatured === 'true' || isFeatured === true;
   if (isTrending !== undefined) video.isTrending = isTrending === 'true' || isTrending === true;
+  if (isFlash !== undefined) video.isFlash = isFlash === 'true' || isFlash === true;
+  if (isEditorsPick !== undefined) video.isEditorsPick = isEditorsPick === 'true' || isEditorsPick === true;
 
   await video.save();
 
@@ -143,6 +147,26 @@ export const getFeaturedVideos = asyncHandler(async (_req, res) => {
 export const getTrendingVideos = asyncHandler(async (_req, res) => {
   const videos = await Video.find({ isTrending: true, isPublished: true })
     .sort({ views: -1 })
+    .limit(10)
+    .lean();
+
+  return res.status(200).json(new ApiResponse(200, videos));
+});
+
+// ─── GET FLASH VIDEOS ──────────────────────────────────────────
+export const getFlashVideos = asyncHandler(async (_req, res) => {
+  const videos = await Video.find({ isFlash: true, isPublished: true })
+    .sort({ publishedAt: -1 })
+    .limit(10)
+    .lean();
+
+  return res.status(200).json(new ApiResponse(200, videos));
+});
+
+// ─── GET EDITORS PICK VIDEOS ────────────────────────────────────
+export const getEditorsPickVideos = asyncHandler(async (_req, res) => {
+  const videos = await Video.find({ isEditorsPick: true, isPublished: true })
+    .sort({ publishedAt: -1 })
     .limit(10)
     .lean();
 

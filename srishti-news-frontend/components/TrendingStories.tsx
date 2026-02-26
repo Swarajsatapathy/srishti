@@ -37,10 +37,10 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
           <button
             onClick={() => setStartIndex((i) => Math.max(0, i - 1))}
             disabled={!canScrollUp}
-            className="w-6 h-5 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-t disabled:opacity-30 transition"
+            className="w-7 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-t disabled:opacity-30 transition"
           >
             <svg
-              className="w-3 h-3"
+              className="w-3.5 h-3.5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -60,10 +60,10 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
               )
             }
             disabled={!canScrollDown}
-            className="w-6 h-5 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-b disabled:opacity-30 transition"
+            className="w-7 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-b disabled:opacity-30 transition"
           >
             <svg
-              className="w-3 h-3"
+              className="w-3.5 h-3.5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -89,7 +89,7 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
               href={`/article/${article._id}`}
               className="group flex gap-3"
             >
-              <div className="relative w-24 aspect-video shrink-0 rounded overflow-hidden">
+              <div className="relative w-20 sm:w-24 aspect-video shrink-0 rounded-md overflow-hidden">
                 {imageUrl ? (
                   <Image
                     src={imageUrl}
@@ -99,16 +99,18 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
                     sizes="96px"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
+                  <div className="w-full h-full bg-linear-to-br from-gray-200 to-gray-300" />
                 )}
-                <div className="absolute bottom-0 left-0 bg-primary text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-tr">
+                <div className="absolute bottom-0 left-0 bg-primary text-white text-[11px] font-bold w-5 h-5 flex items-center justify-center rounded-tr">
                   {rank}
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                <span className="text-primary text-[10px] font-semibold uppercase">
-                  {article.category}
-                </span>
+                {article.category && (
+                  <span className="text-primary text-[11px] font-semibold uppercase">
+                    {article.category}
+                  </span>
+                )}
                 <h4 className="text-sm font-semibold leading-snug line-clamp-2 group-hover:text-primary transition">
                   {article.title}
                 </h4>

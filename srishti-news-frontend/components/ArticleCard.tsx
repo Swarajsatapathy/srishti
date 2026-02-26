@@ -30,14 +30,14 @@ export default function ArticleCard({
         href={`/article/${article._id}`}
         className="group flex gap-3 py-3 border-b border-gray-100 last:border-0"
       >
-        <div className="relative w-20 h-14 shrink-0 rounded overflow-hidden">
+        <div className="relative w-20 h-14 sm:w-24 sm:h-16 shrink-0 rounded-md overflow-hidden bg-gray-100">
           {imageUrl ? (
             <Image
               src={imageUrl}
               alt={article.title}
               fill
               className="object-cover"
-              sizes="80px"
+              sizes="96px"
             />
           ) : (
             <div className="w-full h-full bg-gray-200" />
@@ -55,21 +55,21 @@ export default function ArticleCard({
 
   return (
     <div className="group block h-full">
-      <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition border border-gray-100 h-full flex flex-col">
+      <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
         <Link href={`/article/${article._id}`}>
-          <div className="relative aspect-video">
+          <div className="relative aspect-video overflow-hidden">
             {imageUrl ? (
               <Image
                 src={imageUrl}
                 alt={article.title}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+              <div className="w-full h-full bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                 <svg
-                  className="w-12 h-12 text-gray-300"
+                  className="w-10 h-10 sm:w-12 sm:h-12 text-gray-300"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -85,26 +85,30 @@ export default function ArticleCard({
             )}
           </div>
         </Link>
-        <div className="p-4 flex-1 flex flex-col">
-          <div className="flex items-center gap-2 mb-2">
-            <Link
-              href={`/category/${getSlugFromOdia(article.category)}`}
-              className="text-primary text-xs font-semibold uppercase hover:underline"
-            >
-              {article.category}
-            </Link>
-            <span className="text-gray-300">|</span>
-            <span className="text-xs text-gray-500">{date}</span>
+        <div className="p-3.5 sm:p-4 flex-1 flex flex-col">
+          <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+            {article.category && (
+              <>
+                <Link
+                  href={`/category/${getSlugFromOdia(article.category)}`}
+                  className="text-primary text-[11px] sm:text-xs font-semibold uppercase hover:underline"
+                >
+                  {article.category}
+                </Link>
+                <span className="text-gray-300">|</span>
+              </>
+            )}
+            <span className="text-[11px] sm:text-xs text-gray-500">{date}</span>
           </div>
           <Link href={`/article/${article._id}`}>
-            <h3 className="font-bold text-base leading-snug line-clamp-2 group-hover:text-primary transition">
+            <h3 className="font-bold text-[15px] sm:text-base leading-snug line-clamp-2 group-hover:text-primary transition">
               {article.title}
             </h3>
           </Link>
-          <p className="text-sm text-gray-500 mt-2 line-clamp-2 flex-1">
-            {article.description}
+          <p className="text-sm text-gray-500 mt-1.5 sm:mt-2 line-clamp-2 flex-1">
+            {article.content}
           </p>
-          <p className="text-xs text-gray-500 mt-2">{article.reporter}</p>
+          <p className="text-xs text-gray-400 mt-2">{article.reporter}</p>
         </div>
       </div>
     </div>

@@ -38,10 +38,10 @@ export default function EditorsPicks({ articles }: EditorsPicksProps) {
                     alt={article.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    sizes="(max-width: 768px) 100vw, 25vw"
+                    sizes="(max-width: 768px) 50vw, 25vw"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                  <div className="w-full h-full bg-linear-to-br from-gray-200 to-gray-300 flex items-center justify-center">
                     <svg
                       className="w-10 h-10 text-gray-400"
                       fill="none"
@@ -57,11 +57,13 @@ export default function EditorsPicks({ articles }: EditorsPicksProps) {
                     </svg>
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-3">
-                  <span className="inline-block bg-primary text-white text-[10px] font-semibold px-2 py-0.5 rounded mb-1">
-                    {article.category}
-                  </span>
+                  {article.category && (
+                    <span className="inline-block bg-primary text-white text-[11px] font-semibold px-2 py-0.5 rounded mb-1">
+                      {article.category}
+                    </span>
+                  )}
                   <h3 className="text-white text-sm font-bold leading-snug line-clamp-2">
                     {article.title}
                   </h3>

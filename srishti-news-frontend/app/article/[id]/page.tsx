@@ -18,7 +18,7 @@ export async function generateMetadata({
   if (!article) return { title: "Article Not Found" };
   return {
     title: `${article.title} - Srishti News`,
-    description: article.description,
+    description: article.content,
   };
 }
 
@@ -39,17 +39,21 @@ export default async function ArticlePage({ params }: PageProps) {
   return (
     <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
-        <Link href="/" className="hover:text-primary transition">
+      <nav className="flex items-baseline gap-1.5 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
+        <Link href="/" className="hover:text-primary transition whitespace-nowrap">
           Home
         </Link>
-        <span>/</span>
-        <Link
-          href={`/category/${getSlugFromOdia(article.category)}`}
-          className="hover:text-primary transition"
-        >
-          {article.category}
-        </Link>
+        {article.category && (
+          <>
+            <span className="text-gray-400">/</span>
+            <Link
+              href={`/category/${getSlugFromOdia(article.category)}`}
+              className="hover:text-primary transition truncate"
+            >
+              {article.category}
+            </Link>
+          </>
+        )}
       </nav>
 
       {/* Title */}
@@ -59,9 +63,16 @@ export default async function ArticlePage({ params }: PageProps) {
 
       {/* Meta */}
       <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-200">
-        <span className="bg-primary text-white text-xs font-semibold px-2.5 py-1 rounded">
-          {article.category}
-        </span>
+        {article.category && (
+          <span className="bg-primary text-white text-xs font-semibold px-2.5 py-1 rounded">
+            {article.category}
+          </span>
+        )}
+        {article.district && (
+          <span className="bg-gray-200 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded">
+            {article.district}
+          </span>
+        )}
         <span>{article.reporter}</span>
         <span>{date}</span>
         <span>{article.views} views</span>
@@ -69,7 +80,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
       {/* Featured Image */}
       {article.images && article.images.length > 0 && (
-        <div className="relative aspect-[16/9] rounded-lg overflow-hidden mb-4 sm:mb-6">
+        <div className="relative aspect-video rounded-lg overflow-hidden mb-4 sm:mb-6">
           <Image
             src={getImageUrl(article.images[0].url)}
             alt={article.images[0].caption || article.title}
@@ -86,11 +97,6 @@ export default async function ArticlePage({ params }: PageProps) {
         </div>
       )}
 
-      {/* Description */}
-      <p className="text-base sm:text-lg text-gray-700 leading-relaxed mb-4 sm:mb-6 font-medium">
-        {article.description}
-      </p>
-
       {/* Content */}
       {article.content && (
         <div className="prose prose-lg max-w-none text-gray-800 leading-relaxed whitespace-pre-wrap">
@@ -104,7 +110,7 @@ export default async function ArticlePage({ params }: PageProps) {
           {article.images.slice(1).map((img, i) => (
             <div
               key={i}
-              className="relative aspect-[16/10] rounded-lg overflow-hidden"
+              className="relative aspect-16/10 rounded-lg overflow-hidden"
             >
               <Image
                 src={getImageUrl(img.url)}
@@ -130,7 +136,7 @@ export default async function ArticlePage({ params }: PageProps) {
             <Link
               key={tag}
               href={`/search?q=${encodeURIComponent(tag)}`}
-              className="text-sm bg-gray-100 text-gray-600 px-3 py-1 rounded-full hover:bg-primary hover:text-white transition"
+              className="text-sm bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full hover:bg-primary hover:text-white transition"
             >
               #{tag}
             </Link>

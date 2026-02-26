@@ -10,7 +10,7 @@ const articleSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: [true, 'Article description is required'],
+      default: '',
     },
     content: {
       type: String,
@@ -25,36 +25,18 @@ const articleSchema = new mongoose.Schema(
     ],
     category: {
       type: String,
-      required: [true, 'Category is required'],
-      enum: [
-        'রାଜ୍ୟ',        // State
-        'ଜାତୀୟ',       // National
-        'ଆନ୍ତର୍ଜାତୀୟ', // International
-        'ବାଣିଜ୍ୟ',     // Business
-        'ସମ୍ପାଦକୀୟ',   // Editorial
-        'ଅପରାଧ',       // Crime
-        'ଖେଳ',         // Sports
-        'ମନୋରଞ୍ଜନ',    // Entertainment
-        'ଜୀବନଶୈଳୀ',    // Lifestyle
-        'ଧର୍ମ',        // Religion
-        'editorial',
-        'state',
-        'national',
-        'international',
-        'business',
-        'crime',
-        'sports',
-        'entertainment',
-        'lifestyle',
-        'religion',
-        'other',
-      ],
-      default: 'other',
+      trim: true,
+      default: '',
     },
     reporter: {
       type: String,
       required: [true, 'Reporter name is required'],
       trim: true,
+    },
+    district: {
+      type: String,
+      trim: true,
+      default: '',
     },
     tags: [{ type: String, trim: true }],
     isPublished: {

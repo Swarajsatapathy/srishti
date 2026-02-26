@@ -19,6 +19,11 @@ const reporterSchema = new mongoose.Schema(
       default: '',
       maxlength: [2000, 'Message cannot exceed 2000 characters'],
     },
+    district: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     photo: {
       url: { type: String, default: '' },
       key: { type: String, default: '' }, // S3 object key

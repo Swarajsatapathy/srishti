@@ -15,7 +15,7 @@ import ArticleCard from "@/components/ArticleCard";
 import Image from "next/image";
 
 export default async function Home() {
-  const [flash, featured, editorsPicks, trending, latestData, videosData, homepageAds] =
+  const [flash, featured, editorsPicks, trending, latestData, webNewsData, videosData, homepageAds] =
     await Promise.all([
       getFlashStories(),
       getFeaturedStories(),
@@ -27,11 +27,18 @@ export default async function Home() {
         sortBy: "publishedAt",
         order: "desc",
       }),
+      getArticles({
+        published: "true",
+        limit: "10",
+        sortBy: "publishedAt",
+        order: "desc",
+      }),
       getVideos({ published: "true", limit: "10", sortBy: "publishedAt", order: "desc" }),
       getActiveAds("homepage"),
     ]);
 
   const latestArticles = latestData?.articles || [];
+  const webNewsArticles = webNewsData?.articles || [];
   const latestVideos = videosData?.videos || [];
   const ads = homepageAds || [];
 
@@ -43,7 +50,7 @@ export default async function Home() {
         {/* Main 3-column layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 sm:gap-6">
           <div className="md:col-span-2 lg:col-span-6">
-            <MainStory articles={featured || []} videos={latestVideos} />
+            <MainStory articles={webNewsArticles.length > 0 ? webNewsArticles : (featured || [])} videos={latestVideos} />
           </div>
           <div className="md:col-span-1 lg:col-span-3">
             <EditorsPicks articles={editorsPicks || []} />
@@ -67,14 +74,14 @@ export default async function Home() {
                         {hasVideo ? (
                           <video
                             src={ad.videos[0].url}
-                            className="w-full aspect-[3/2] object-cover"
+                            className="w-full aspect-3/2 object-cover"
                             autoPlay
                             muted
                             loop
                             playsInline
                           />
                         ) : hasImage ? (
-                          <div className="relative w-full aspect-[3/2]">
+                          <div className="relative w-full aspect-3/2">
                             <Image
                               src={ad.images[0].url}
                               alt={ad.title}
@@ -84,7 +91,7 @@ export default async function Home() {
                             />
                           </div>
                         ) : (
-                          <div className="w-full aspect-[3/2] bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                          <div className="w-full aspect-3/2 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                             <span className="text-sm font-semibold text-gray-500">{ad.title}</span>
                           </div>
                         )}
@@ -96,7 +103,7 @@ export default async function Home() {
                   })}
                 </div>
               ) : (
-                <div className="relative rounded-lg overflow-hidden aspect-[3/2] bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-center">
+                <div className="relative rounded-lg overflow-hidden aspect-3/2 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center text-center">
                   <span className="text-sm font-semibold text-gray-500">Advertise Here</span>
                 </div>
               )}

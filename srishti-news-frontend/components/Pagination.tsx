@@ -36,11 +36,11 @@ export default function Pagination({
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-1 mt-6 sm:mt-8">
+    <div className="flex flex-wrap items-center justify-center gap-1.5 mt-6 sm:mt-8">
       {currentPage > 1 && (
         <Link
           href={buildHref(currentPage - 1)}
-          className="px-3 py-2 text-sm bg-white border border-gray-200 rounded hover:bg-gray-50 transition"
+          className="px-3 py-2 min-h-[40px] flex items-center text-sm bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition"
         >
           &larr; Prev
         </Link>
@@ -54,7 +54,7 @@ export default function Pagination({
           <Link
             key={page}
             href={buildHref(page)}
-            className={`px-3 py-2 text-sm rounded transition ${
+            className={`px-3 py-2 min-h-[40px] flex items-center text-sm rounded-md transition ${
               page === currentPage
                 ? "bg-primary text-white"
                 : "bg-white border border-gray-200 hover:bg-gray-50"
@@ -67,7 +67,7 @@ export default function Pagination({
       {currentPage < totalPages && (
         <Link
           href={buildHref(currentPage + 1)}
-          className="px-3 py-2 text-sm bg-white border border-gray-200 rounded hover:bg-gray-50 transition"
+          className="px-3 py-2 min-h-[40px] flex items-center text-sm bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition"
         >
           Next &rarr;
         </Link>
