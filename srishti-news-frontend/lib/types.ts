@@ -57,3 +57,20 @@ export interface Pagination {
   limit: number;
   totalPages: number;
 }
+
+export interface Advertisement {
+  _id: string;
+  title: string;
+  description: string;
+  images: { url: string; key?: string }[];
+  videos: { url: string; key?: string }[];
+  link: string;
+  placement: string;
+  isActive: boolean;
+  startDate?: string;
+  endDate?: string;
+  views: number;
+  clicks: number;
+  createdAt: string;
+  updatedAt: string;
+}

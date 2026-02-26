@@ -9,10 +9,44 @@
   --font-sans: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Global responsive foundations */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
 body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure images never overflow their containers */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Better touch targets on mobile */
+@media (max-width: 768px) {
+  a, button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent input zoom on iOS */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
 }
 
 /* Flash ticker animation */

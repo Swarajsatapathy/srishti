@@ -37,9 +37,9 @@ export default async function ArticlePage({ params }: PageProps) {
   });
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+      <nav className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
         <Link href="/" className="hover:text-primary transition">
           Home
         </Link>
@@ -53,12 +53,12 @@ export default async function ArticlePage({ params }: PageProps) {
       </nav>
 
       {/* Title */}
-      <h1 className="text-2xl md:text-3xl font-bold leading-tight mb-4">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight mb-3 sm:mb-4">
         {article.title}
       </h1>
 
       {/* Meta */}
-      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6 pb-4 border-b border-gray-200">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-200">
         <span className="bg-primary text-white text-xs font-semibold px-2.5 py-1 rounded">
           {article.category}
         </span>
@@ -69,17 +69,17 @@ export default async function ArticlePage({ params }: PageProps) {
 
       {/* Featured Image */}
       {article.images && article.images.length > 0 && (
-        <div className="relative aspect-[16/9] rounded-lg overflow-hidden mb-6">
+        <div className="relative aspect-[16/9] rounded-lg overflow-hidden mb-4 sm:mb-6">
           <Image
             src={getImageUrl(article.images[0].url)}
             alt={article.images[0].caption || article.title}
             fill
             className="object-cover"
-            sizes="(max-width: 896px) 100vw, 896px"
+            sizes="(max-width: 640px) 100vw, (max-width: 896px) 100vw, 896px"
             priority
           />
           {article.images[0].caption && (
-            <p className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-sm px-4 py-2">
+            <p className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2">
               {article.images[0].caption}
             </p>
           )}
@@ -87,7 +87,7 @@ export default async function ArticlePage({ params }: PageProps) {
       )}
 
       {/* Description */}
-      <p className="text-lg text-gray-700 leading-relaxed mb-6 font-medium">
+      <p className="text-base sm:text-lg text-gray-700 leading-relaxed mb-4 sm:mb-6 font-medium">
         {article.description}
       </p>
 

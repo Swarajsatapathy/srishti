@@ -60,20 +60,20 @@ function SearchContent() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
       {/* Search Form */}
-      <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
+      <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-6 sm:mb-8">
         <div className="flex gap-2">
           <input
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="ସମ୍ବାଦ ସନ୍ଧାନ କରନ୍ତୁ..."
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-lg outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
+            className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg text-base sm:text-lg outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
           />
           <button
             type="submit"
-            className="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition"
+            className="px-4 sm:px-6 py-2.5 sm:py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition text-sm sm:text-base shrink-0"
           >
             ସନ୍ଧାନ
           </button>
@@ -98,12 +98,12 @@ function SearchContent() {
           <p className="text-gray-500 mt-4">ସନ୍ଧାନ ଚାଲୁଅଛି...</p>
         </div>
       ) : articles.length === 0 && query ? (
-        <div className="text-center py-16 text-gray-500">
-          <p className="text-lg">କୌଣସି ଫଳାଫଳ ମିଳିଲା ନାହିଁ।</p>
+        <div className="text-center py-12 sm:py-16 text-gray-500">
+          <p className="text-base sm:text-lg">କୌଣସି ଫଳାଫଳ ମିଳିଲା ନାହିଁ।</p>
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {articles.map((article) => (
               <ArticleCard key={article._id} article={article} />
             ))}
@@ -111,7 +111,7 @@ function SearchContent() {
 
           {/* Pagination */}
           {pagination && pagination.totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-8">
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-6 sm:mt-8">
               {page > 1 && (
                 <button
                   onClick={() => fetchResults(query, page - 1)}

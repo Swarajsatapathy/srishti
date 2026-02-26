@@ -36,7 +36,7 @@ export default function Pagination({
   }
 
   return (
-    <div className="flex items-center justify-center gap-1 mt-8">
+    <div className="flex flex-wrap items-center justify-center gap-1 mt-6 sm:mt-8">
       {currentPage > 1 && (
         <Link
           href={buildHref(currentPage - 1)}

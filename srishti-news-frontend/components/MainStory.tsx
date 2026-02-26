@@ -30,11 +30,11 @@ export default function MainStory({ articles, videos }: MainStoryProps) {
     setCurrentVideo((c) => (c === videos.length - 1 ? 0 : c + 1));
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 sm:gap-6">
       {/* Web News */}
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold">Web News</h2>
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <h2 className="text-lg sm:text-xl font-bold">Web News</h2>
           {articles && articles.length > 1 && (
             <div className="flex gap-1">
               <button
@@ -95,8 +95,8 @@ export default function MainStory({ articles, videos }: MainStoryProps) {
 
       {/* Video News */}
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold">Video News</h2>
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <h2 className="text-lg sm:text-xl font-bold">Video News</h2>
           {videos && videos.length > 1 && (
             <div className="flex gap-1">
               <button

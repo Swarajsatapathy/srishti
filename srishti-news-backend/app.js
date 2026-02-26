@@ -7,6 +7,7 @@ import videoRoutes from './src/routes/videoRoutes.js';
 import uploadRoutes from './src/routes/uploadRoutes.js';
 import { imageRouter } from './src/routes/uploadRoutes.js';
 import reporterRoutes from './src/routes/reporterRoutes.js';
+import advertisementRoutes from './src/routes/advertisementRoutes.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 
 dotenv.config();
@@ -31,6 +32,7 @@ app.get('/health', (_req, res) => {
       videos: '/api/videos',
       upload: '/api/upload',
       reporters: '/api/reporters',
+      advertisements: '/api/advertisements',
       images: '/api/images',
     },
   });
@@ -42,6 +44,7 @@ app.use('/api/videos', videoRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/images', imageRouter);
 app.use('/api/reporters', reporterRoutes);
+app.use('/api/advertisements', advertisementRoutes);
 
 // ─── 404 handler ────────────────────────────────────────────────
 app.use((_req, res) => {

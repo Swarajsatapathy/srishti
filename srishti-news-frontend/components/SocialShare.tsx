@@ -12,7 +12,7 @@ export default function SocialShare() {
   if (!shareUrl) return null;
 
   return (
-    <div className="fixed left-0 top-1/3 z-40 hidden md:flex flex-col">
+    <div className="fixed left-0 top-1/3 z-40 hidden lg:flex flex-col">
       <a
         href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
         target="_blank"

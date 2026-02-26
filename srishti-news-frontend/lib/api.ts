@@ -1,4 +1,4 @@
-import type { Article, Video, Reporter, Pagination } from "./types";
+import type { Article, Video, Reporter, Advertisement, Pagination } from "./types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
@@ -87,4 +87,11 @@ export async function getReporters(params?: Record<string, string>) {
 
 export async function getReporterById(id: string) {
   return fetchApi<Reporter>(`/api/reporters/${id}`);
+}
+
+// ─── Advertisements ─────────────────────────────────────────────
+
+export async function getActiveAds(placement?: string) {
+  const query = placement ? `?placement=${placement}` : "";
+  return fetchApi<Advertisement[]>(`/api/advertisements/active${query}`, 30);
 }

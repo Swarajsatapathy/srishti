@@ -41,13 +41,37 @@ type Reporter = {
   photo?: { url?: string; key?: string };
 };
 
+type Advertisement = {
+  _id: string;
+  title: string;
+  description: string;
+  images: Array<{ url: string; key?: string }>;
+  videos: Array<{ url: string; key?: string }>;
+  link: string;
+  placement: string;
+  isActive: boolean;
+  startDate?: string;
+  endDate?: string;
+  views: number;
+  clicks: number;
+};
+
 type ApiResponse<T> = {
   success: boolean;
   message?: string;
   data: T;
 };
 
-type TabType = "articles" | "videos" | "reporters";
+type TabType = "articles" | "videos" | "reporters" | "advertisements";
+
+const placements = [
+  "homepage",
+  "sidebar",
+  "banner",
+  "footer",
+  "article",
+  "other",
+];
 
 const categories = [
   "other",
@@ -113,10 +137,12 @@ export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
   const [reporters, setReporters] = useState<Reporter[]>([]);
+  const [advertisements, setAdvertisements] = useState<Advertisement[]>([]);
 
   const [articleEditId, setArticleEditId] = useState<string | null>(null);
   const [videoEditId, setVideoEditId] = useState<string | null>(null);
   const [reporterEditId, setReporterEditId] = useState<string | null>(null);
+  const [adEditId, setAdEditId] = useState<string | null>(null);
 
   const [articleForm, setArticleForm] = useState({
     title: "",
@@ -152,6 +178,18 @@ export default function Home() {
   });
   const [reporterPhoto, setReporterPhoto] = useState<File | null>(null);
 
+  const [adForm, setAdForm] = useState({
+    title: "",
+    description: "",
+    link: "",
+    placement: "homepage",
+    isActive: true,
+    startDate: "",
+    endDate: "",
+  });
+  const [adImages, setAdImages] = useState<FileList | null>(null);
+  const [adVideos, setAdVideos] = useState<FileList | null>(null);
+
   const adminCode = useMemo(
     () => process.env.NEXT_PUBLIC_ADMIN_ACCESS_CODE || "admin123",
     []
@@ -168,7 +206,7 @@ export default function Home() {
       return;
     }
 
-    void Promise.all([loadArticles(), loadVideos(), loadReporters()]);
+    void Promise.all([loadArticles(), loadVideos(), loadReporters(), loadAdvertisements()]);
   }, [isAuthed]);
 
   const loadArticles = async () => {
@@ -190,6 +228,13 @@ export default function Home() {
       "/api/reporters?limit=50&sortBy=createdAt&order=desc"
     );
     setReporters(response.data.reporters || []);
+  };
+
+  const loadAdvertisements = async () => {
+    const response = await apiRequest<{ advertisements: Advertisement[] }>(
+      "/api/advertisements?limit=50&sortBy=createdAt&order=desc"
+    );
+    setAdvertisements(response.data.advertisements || []);
   };
 
   const withBusy = async (work: () => Promise<void>, message: string) => {
@@ -260,6 +305,21 @@ export default function Home() {
     setReporterEditId(null);
     setReporterForm({ name: "", designation: "", message: "" });
     setReporterPhoto(null);
+  };
+
+  const resetAdForm = () => {
+    setAdEditId(null);
+    setAdForm({
+      title: "",
+      description: "",
+      link: "",
+      placement: "homepage",
+      isActive: true,
+      startDate: "",
+      endDate: "",
+    });
+    setAdImages(null);
+    setAdVideos(null);
   };
 
   const submitArticle = (event: FormEvent<HTMLFormElement>) => {
@@ -421,6 +481,64 @@ export default function Home() {
     }, "Reporter deleted");
   };
 
+  const submitAdvertisement = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void withBusy(async () => {
+      const formData = new FormData();
+      formData.append("title", adForm.title);
+      formData.append("description", adForm.description);
+      formData.append("link", adForm.link);
+      formData.append("placement", adForm.placement);
+      formData.append("isActive", String(adForm.isActive));
+      if (adForm.startDate) formData.append("startDate", adForm.startDate);
+      if (adForm.endDate) formData.append("endDate", adForm.endDate);
+
+      if (adImages) {
+        Array.from(adImages).forEach((file) => {
+          formData.append("images", file);
+        });
+      }
+      if (adVideos) {
+        Array.from(adVideos).forEach((file) => {
+          formData.append("videos", file);
+        });
+      }
+
+      const path = adEditId
+        ? `/api/advertisements/${adEditId}`
+        : "/api/advertisements";
+      const method = adEditId ? "PUT" : "POST";
+
+      await apiRequest(path, { method, body: formData });
+      await loadAdvertisements();
+      resetAdForm();
+    }, adEditId ? "Advertisement updated" : "Advertisement created");
+  };
+
+  const editAdvertisement = (ad: Advertisement) => {
+    setAdEditId(ad._id);
+    setAdForm({
+      title: ad.title,
+      description: ad.description || "",
+      link: ad.link || "",
+      placement: ad.placement || "homepage",
+      isActive: ad.isActive,
+      startDate: ad.startDate ? ad.startDate.split("T")[0] : "",
+      endDate: ad.endDate ? ad.endDate.split("T")[0] : "",
+    });
+    setActiveTab("advertisements");
+  };
+
+  const removeAdvertisement = (id: string) => {
+    void withBusy(async () => {
+      await apiRequest(`/api/advertisements/${id}`, { method: "DELETE" });
+      await loadAdvertisements();
+      if (adEditId === id) {
+        resetAdForm();
+      }
+    }, "Advertisement deleted");
+  };
+
   if (!authReady) {
     return <div className="p-10">Loading admin...</div>;
   }
@@ -472,8 +590,8 @@ export default function Home() {
         </button>
       </header>
 
-      <div className="mb-6 flex gap-2">
-        {(["articles", "videos", "reporters"] as TabType[]).map((tab) => (
+      <div className="mb-6 flex flex-wrap gap-2">
+        {(["articles", "videos", "reporters", "advertisements"] as TabType[]).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -905,6 +1023,198 @@ export default function Home() {
                     </button>
                     <button
                       onClick={() => removeReporter(reporter._id)}
+                      className="rounded border border-red-300 px-3 py-1 text-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activeTab === "advertisements" && (
+        <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <form
+            onSubmit={submitAdvertisement}
+            className="space-y-3 rounded border border-gray-200 p-4"
+          >
+            <h2 className="text-lg font-semibold">
+              {adEditId ? "Update Advertisement" : "Create Advertisement"}
+            </h2>
+            <input
+              className="w-full rounded border border-gray-300 px-3 py-2"
+              placeholder="Title"
+              value={adForm.title}
+              onChange={(event) =>
+                setAdForm((current) => ({
+                  ...current,
+                  title: event.target.value,
+                }))
+              }
+              required
+            />
+            <textarea
+              className="h-24 w-full rounded border border-gray-300 px-3 py-2"
+              placeholder="Description"
+              value={adForm.description}
+              onChange={(event) =>
+                setAdForm((current) => ({
+                  ...current,
+                  description: event.target.value,
+                }))
+              }
+            />
+            <input
+              className="w-full rounded border border-gray-300 px-3 py-2"
+              placeholder="Link URL (e.g. https://example.com)"
+              value={adForm.link}
+              onChange={(event) =>
+                setAdForm((current) => ({
+                  ...current,
+                  link: event.target.value,
+                }))
+              }
+            />
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-xs text-gray-600">Placement</label>
+                <select
+                  className="w-full rounded border border-gray-300 px-3 py-2"
+                  value={adForm.placement}
+                  onChange={(event) =>
+                    setAdForm((current) => ({
+                      ...current,
+                      placement: event.target.value,
+                    }))
+                  }
+                >
+                  {placements.map((p) => (
+                    <option key={p} value={p}>
+                      {p[0].toUpperCase() + p.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={adForm.isActive}
+                  onChange={(event) =>
+                    setAdForm((current) => ({
+                      ...current,
+                      isActive: event.target.checked,
+                    }))
+                  }
+                />
+                Active
+              </label>
+            </div>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-xs text-gray-600">Start Date</label>
+                <input
+                  type="date"
+                  className="w-full rounded border border-gray-300 px-3 py-2"
+                  value={adForm.startDate}
+                  onChange={(event) =>
+                    setAdForm((current) => ({
+                      ...current,
+                      startDate: event.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs text-gray-600">End Date</label>
+                <input
+                  type="date"
+                  className="w-full rounded border border-gray-300 px-3 py-2"
+                  value={adForm.endDate}
+                  onChange={(event) =>
+                    setAdForm((current) => ({
+                      ...current,
+                      endDate: event.target.value,
+                    }))
+                  }
+                />
+              </div>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs text-gray-600">Images (max 5)</label>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                className="w-full rounded border border-gray-300 px-3 py-2"
+                onChange={(event) => setAdImages(event.target.files)}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs text-gray-600">Videos (max 3)</label>
+              <input
+                type="file"
+                multiple
+                accept="video/*"
+                className="w-full rounded border border-gray-300 px-3 py-2"
+                onChange={(event) => setAdVideos(event.target.files)}
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                disabled={busy}
+                className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+              >
+                {adEditId ? "Update" : "Create"}
+              </button>
+              <button
+                type="button"
+                onClick={resetAdForm}
+                className="rounded border border-gray-300 px-4 py-2"
+              >
+                Reset
+              </button>
+            </div>
+          </form>
+
+          <div className="rounded border border-gray-200 p-4">
+            <h2 className="mb-3 text-lg font-semibold">
+              Advertisements ({advertisements.length})
+            </h2>
+            <div className="max-h-[65vh] space-y-2 overflow-auto">
+              {advertisements.map((ad) => (
+                <div
+                  key={ad._id}
+                  className="rounded border border-gray-200 p-3 text-sm"
+                >
+                  <p className="font-medium">{ad.title}</p>
+                  <p className="text-gray-600">
+                    {ad.placement} •{" "}
+                    {ad.isActive ? (
+                      <span className="text-green-600">Active</span>
+                    ) : (
+                      <span className="text-red-600">Inactive</span>
+                    )}
+                    {" "}• {ad.images.length} image(s) • {ad.videos.length} video(s)
+                  </p>
+                  <p className="text-gray-500">
+                    Views: {ad.views} • Clicks: {ad.clicks}
+                  </p>
+                  {ad.link && (
+                    <p className="truncate text-blue-600">{ad.link}</p>
+                  )}
+                  <div className="mt-2 flex gap-2">
+                    <button
+                      onClick={() => editAdvertisement(ad)}
+                      className="rounded border border-gray-300 px-3 py-1"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => removeAdvertisement(ad._id)}
                       className="rounded border border-red-300 px-3 py-1 text-red-600"
                     >
                       Delete

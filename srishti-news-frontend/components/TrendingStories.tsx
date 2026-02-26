@@ -18,7 +18,7 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
     return (
       <div>
         <h2 className="text-xl font-bold mb-4">Trending Story</h2>
-        <div className="bg-gray-100 rounded-lg h-48 flex items-center justify-center text-gray-500">
+        <div className="bg-gray-100 rounded-lg h-36 sm:h-48 flex items-center justify-center text-gray-500 text-sm">
           No trending stories available
         </div>
       </div>

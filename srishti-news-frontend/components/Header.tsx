@@ -7,12 +7,12 @@ export default function Header() {
     <header>
       {/* Top Bar */}
       <div className="bg-[#1a1a2e] text-white text-sm">
-        <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 flex justify-between items-center">
           {/* Left: Clock + Date */}
           <LiveClock />
 
-          {/* Center: Social Icons */}
-          <div className="flex items-center gap-2">
+          {/* Center: Social Icons - hidden on mobile */}
+          <div className="hidden md:flex items-center gap-2">
             <a
               href="https://facebook.com"
               target="_blank"
@@ -75,10 +75,10 @@ export default function Header() {
             </a>
           </div>
 
-          {/* Right: Join as Reporter */}
+          {/* Right: Join as Reporter - responsive */}
           <Link
             href="/reporters"
-            className="bg-primary hover:bg-primary-dark text-white font-semibold px-5 py-1.5 rounded-full transition text-sm tracking-wide"
+            className="hidden sm:inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-3 sm:px-5 py-1.5 rounded-full transition text-xs sm:text-sm tracking-wide"
           >
             JOIN AS REPORTER
           </Link>
@@ -87,14 +87,14 @@ export default function Header() {
 
       {/* Logo Banner */}
       <div className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-center">
           <Link href="/">
             <Image
               src="/banner/LOGO.png"
               alt="Srishti News"
               width={600}
               height={120}
-              className="h-20 md:h-32 w-auto object-contain"
+              className="h-14 sm:h-20 md:h-32 w-auto object-contain"
               priority
             />
           </Link>

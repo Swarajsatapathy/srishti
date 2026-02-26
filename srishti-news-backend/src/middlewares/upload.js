@@ -40,3 +40,13 @@ export const uploadReporterPhoto = multer({
   fileFilter,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB per photo
 }).single('photo');
+
+// For advertisements — multiple images + multiple videos
+export const uploadAdMedia = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB per file
+}).fields([
+  { name: 'images', maxCount: 5 },
+  { name: 'videos', maxCount: 3 },
+]);

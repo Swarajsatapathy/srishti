@@ -21,8 +21,8 @@ export default function EditorsPicks({ articles }: EditorsPicksProps) {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">Editor&apos;s Picks</h2>
-      <div className="flex flex-col gap-4">
+      <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Editor&apos;s Picks</h2>
+      <div className="grid grid-cols-2 md:grid-cols-1 gap-3 sm:gap-4">
         {articles.slice(0, 4).map((article) => {
           const imageUrl = getImageUrl(article.images?.[0]?.url);
           return (

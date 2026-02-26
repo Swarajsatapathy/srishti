@@ -28,18 +28,18 @@ export default async function VideosPage({ searchParams }: PageProps) {
   const pagination = data?.pagination;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 pb-2 border-b-2 border-primary">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
+      <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 pb-2 border-b-2 border-primary">
         ଭିଡ଼ିଓ
       </h1>
 
       {videos.length === 0 ? (
-        <div className="text-center py-16 text-gray-500">
-          <p className="text-lg">କୌଣସି ଭିଡ଼ିଓ ଉପಲବ୍ଧ ନାହିଁ।</p>
+        <div className="text-center py-12 sm:py-16 text-gray-500">
+          <p className="text-base sm:text-lg">କୌଣସି ଭିଡ଼ିଓ ଉପಢ୍ଧ ନାହିଁ।</p>
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {videos.map((video) => (
               <VideoCard key={video._id} video={video} />
             ))}

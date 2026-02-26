@@ -2,10 +2,10 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-secondary text-white mt-12 border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-4 py-10 md:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10">
-          <div className="md:col-span-5">
+    <footer className="bg-secondary text-white mt-8 sm:mt-12 border-t border-white/10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-8 sm:py-10 md:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-6 sm:gap-8 md:gap-10">
+          <div className="sm:col-span-2 md:col-span-5">
             <p className="text-xs uppercase tracking-[0.2em] text-white/60 mb-3">
               Srishti News Network
             </p>

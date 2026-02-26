@@ -37,9 +37,9 @@ export default async function VideoPage({ params }: PageProps) {
   const embedUrl = getYouTubeEmbedUrl(video.youtubeUrl);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+      <nav className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
         <Link href="/" className="hover:text-primary transition">
           Home
         </Link>
@@ -50,12 +50,12 @@ export default async function VideoPage({ params }: PageProps) {
       </nav>
 
       {/* Title */}
-      <h1 className="text-2xl md:text-3xl font-bold leading-tight mb-4">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight mb-3 sm:mb-4">
         {video.title}
       </h1>
 
       {/* Meta */}
-      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6 pb-4 border-b border-gray-200">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-200">
         <span className="bg-primary text-white text-xs font-semibold px-2.5 py-1 rounded">
           {video.category}
         </span>
@@ -65,7 +65,7 @@ export default async function VideoPage({ params }: PageProps) {
       </div>
 
       {/* Video Player - YouTube iframe */}
-      <div className="relative aspect-video rounded-lg overflow-hidden mb-6 bg-black">
+      <div className="relative aspect-video rounded-lg overflow-hidden mb-4 sm:mb-6 bg-black">
         <iframe
           src={embedUrl}
           title={video.title}
@@ -76,7 +76,7 @@ export default async function VideoPage({ params }: PageProps) {
       </div>
 
       {/* Description */}
-      <p className="text-lg text-gray-700 leading-relaxed">
+      <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
         {video.description}
       </p>
 
