@@ -43,6 +43,9 @@ export default async function Home() {
           </div>
           <div className="lg:col-span-3">
             <EditorsPicks articles={editorsPicks || []} />
+            <div className="mt-6 rounded-lg border border-dashed border-gray-300 aspect-video flex items-center justify-center text-center text-sm font-semibold text-gray-600">
+              Advertise Here
+            </div>
           </div>
           <div className="lg:col-span-3">
             <TrendingStories articles={trending || []} />

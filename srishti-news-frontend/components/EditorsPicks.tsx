@@ -31,7 +31,7 @@ export default function EditorsPicks({ articles }: EditorsPicksProps) {
               href={`/article/${article._id}`}
               className="group block"
             >
-              <div className="relative rounded-lg overflow-hidden aspect-[16/10]">
+              <div className="relative rounded-lg overflow-hidden aspect-video">
                 {imageUrl ? (
                   <Image
                     src={imageUrl}

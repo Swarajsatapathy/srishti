@@ -89,7 +89,7 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
               href={`/article/${article._id}`}
               className="group flex gap-3"
             >
-              <div className="relative w-24 h-16 shrink-0 rounded overflow-hidden">
+              <div className="relative w-24 aspect-video shrink-0 rounded overflow-hidden">
                 {imageUrl ? (
                   <Image
                     src={imageUrl}

@@ -59,7 +59,7 @@ export default function MainStory({ articles, videos }: MainStoryProps) {
 
         {article ? (
           <Link href={`/article/${article._id}`} className="block group">
-            <div className="relative rounded-lg overflow-hidden aspect-[16/9]">
+            <div className="relative rounded-lg overflow-hidden aspect-video">
               {article.images?.[0]?.url ? (
                 <Image
                   src={getImageUrl(article.images[0].url)}
@@ -121,7 +121,7 @@ export default function MainStory({ articles, videos }: MainStoryProps) {
 
         {video ? (
           <Link href={`/videos/${video._id}`} className="block group">
-            <div className="relative rounded-lg overflow-hidden aspect-[16/9]">
+            <div className="relative rounded-lg overflow-hidden aspect-video">
               {getYouTubeThumbnail(video.youtubeUrl) ? (
                 <Image
                   src={getYouTubeThumbnail(video.youtubeUrl)}

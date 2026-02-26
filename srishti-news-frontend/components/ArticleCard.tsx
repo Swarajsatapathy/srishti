@@ -54,10 +54,10 @@ export default function ArticleCard({
   }
 
   return (
-    <div className="group block">
-      <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition border border-gray-100">
+    <div className="group block h-full">
+      <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition border border-gray-100 h-full flex flex-col">
         <Link href={`/article/${article._id}`}>
-          <div className="relative aspect-[16/10]">
+          <div className="relative aspect-video">
             {imageUrl ? (
               <Image
                 src={imageUrl}
@@ -85,7 +85,7 @@ export default function ArticleCard({
             )}
           </div>
         </Link>
-        <div className="p-4">
+        <div className="p-4 flex-1 flex flex-col">
           <div className="flex items-center gap-2 mb-2">
             <Link
               href={`/category/${getSlugFromOdia(article.category)}`}
@@ -101,7 +101,7 @@ export default function ArticleCard({
               {article.title}
             </h3>
           </Link>
-          <p className="text-sm text-gray-500 mt-2 line-clamp-2">
+          <p className="text-sm text-gray-500 mt-2 line-clamp-2 flex-1">
             {article.description}
           </p>
           <p className="text-xs text-gray-500 mt-2">{article.reporter}</p>
