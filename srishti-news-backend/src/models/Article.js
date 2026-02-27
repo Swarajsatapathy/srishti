@@ -23,11 +23,6 @@ const articleSchema = new mongoose.Schema(
         caption: { type: String, default: '' },
       },
     ],
-    category: {
-      type: String,
-      trim: true,
-      default: '',
-    },
     reporter: {
       type: String,
       required: [true, 'Reporter name is required'],
@@ -73,7 +68,6 @@ const articleSchema = new mongoose.Schema(
 );
 
 // Indexes for common queries
-articleSchema.index({ category: 1, publishedAt: -1 });
 articleSchema.index({ isPublished: 1, publishedAt: -1 });
 articleSchema.index({ isFeatured: 1 });
 articleSchema.index({ isTrending: 1 });

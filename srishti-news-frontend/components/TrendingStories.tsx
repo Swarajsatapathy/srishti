@@ -26,21 +26,22 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
   }
 
   const visible = articles.slice(startIndex, startIndex + visibleCount);
-  const canScrollUp = startIndex > 0;
-  const canScrollDown = startIndex + visibleCount < articles.length;
+  const canScrollPrev = startIndex > 0;
+  const canScrollNext = startIndex + visibleCount < articles.length;
 
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold">Trending Story</h2>
-        <div className="flex flex-col gap-0.5">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setStartIndex((i) => Math.max(0, i - 1))}
-            disabled={!canScrollUp}
-            className="w-7 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-t disabled:opacity-30 transition"
+            disabled={!canScrollPrev}
+            aria-label="Previous"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 disabled:opacity-30 transition"
           >
             <svg
-              className="w-3.5 h-3.5"
+              className="w-4 h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -48,8 +49,8 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={3}
-                d="M5 15l7-7 7 7"
+                strokeWidth={2.5}
+                d="M15 19l-7-7 7-7"
               />
             </svg>
           </button>
@@ -59,11 +60,12 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
                 Math.min(articles.length - visibleCount, i + 1)
               )
             }
-            disabled={!canScrollDown}
-            className="w-7 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-b disabled:opacity-30 transition"
+            disabled={!canScrollNext}
+            aria-label="Next"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 disabled:opacity-30 transition"
           >
             <svg
-              className="w-3.5 h-3.5"
+              className="w-4 h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -71,8 +73,8 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={3}
-                d="M19 9l-7 7-7-7"
+                strokeWidth={2.5}
+                d="M9 5l7 7-7 7"
               />
             </svg>
           </button>
@@ -106,11 +108,6 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                {article.category && (
-                  <span className="text-primary text-[11px] font-semibold uppercase">
-                    {article.category}
-                  </span>
-                )}
                 <h4 className="text-sm font-semibold leading-snug line-clamp-2 group-hover:text-primary transition">
                   {article.title}
                 </h4>

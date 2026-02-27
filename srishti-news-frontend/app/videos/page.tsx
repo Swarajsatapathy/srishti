@@ -4,7 +4,7 @@ import Pagination from "@/components/Pagination";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "ଭିଡ଼ିଓ - Srishti News",
+  title: "Video News - Srishti News",
   description: "Srishti News ର ସମସ୍ତ ଭିଡ଼ିଓ",
 };
 
@@ -30,12 +30,12 @@ export default async function VideosPage({ searchParams }: PageProps) {
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
       <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 pb-2 border-b-2 border-primary">
-        ଭିଡ଼ିଓ
+        Video News
       </h1>
 
       {videos.length === 0 ? (
         <div className="text-center py-12 sm:py-16 text-gray-500">
-          <p className="text-base sm:text-lg">କୌଣସି ଭିଡ଼ିଓ ଉପಢ୍ଧ ନାହିଁ।</p>
+          <p className="text-base sm:text-lg">କୌଣସି ଭିଡ଼ିଓ ଉପଲବ୍ଧ ନାହିଁ।</p>
         </div>
       ) : (
         <>

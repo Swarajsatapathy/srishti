@@ -10,7 +10,6 @@ export interface Article {
   description?: string;
   content: string;
   images: ArticleImage[];
-  category?: string;
   district?: string;
   reporter: string;
   tags: string[];
@@ -31,7 +30,6 @@ export interface Video {
   description?: string;
   content: string;
   youtubeUrl: string;
-  category?: string;
   district?: string;
   reporter: string;
   tags: string[];

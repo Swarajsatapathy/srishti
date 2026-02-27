@@ -20,11 +20,6 @@ const videoSchema = new mongoose.Schema(
       type: String,
       required: [true, 'YouTube URL is required'],
     },
-    category: {
-      type: String,
-      trim: true,
-      default: '',
-    },
     reporter: {
       type: String,
       required: [true, 'Reporter name is required'],
@@ -69,7 +64,6 @@ const videoSchema = new mongoose.Schema(
   }
 );
 
-videoSchema.index({ category: 1, publishedAt: -1 });
 videoSchema.index({ isPublished: 1, publishedAt: -1 });
 videoSchema.index({ isFeatured: 1 });
 videoSchema.index({ isTrending: 1 });

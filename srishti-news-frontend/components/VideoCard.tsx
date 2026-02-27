@@ -54,15 +54,14 @@ export default function VideoCard({ video }: VideoCardProps) {
           </div>
         </div>
         <div className="p-3.5 sm:p-4 flex-1 flex flex-col">
-          {video.category && (
-            <span className="text-primary text-[11px] sm:text-xs font-semibold uppercase">
-              {video.category}
-            </span>
-          )}
           <h3 className="font-bold text-[15px] sm:text-base leading-snug line-clamp-2 mt-1 group-hover:text-primary transition">
             {video.title}
           </h3>
-          <div className="flex items-center gap-2 mt-auto pt-2 text-[11px] sm:text-xs text-gray-500">
+          <p className="text-xs text-gray-600 mt-1.5 truncate">
+            {video.district && <span>{video.district} • </span>}
+            {video.reporter}
+          </p>
+          <div className="flex items-center gap-2 mt-auto pt-2 text-[11px] sm:text-xs text-gray-600">
             <span>{date}</span>
             <span>&bull;</span>
             <span>{video.views} views</span>

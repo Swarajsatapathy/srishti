@@ -14,7 +14,7 @@ export default function Header() {
           {/* Center: Social Icons - hidden on mobile */}
           <div className="hidden md:flex items-center gap-2">
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/share/18D4N2eNGq/"
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 bg-[#1877F2] rounded-md flex items-center justify-center hover:opacity-80 transition"
@@ -24,7 +24,7 @@ export default function Header() {
               </svg>
             </a>
             <a
-              href="https://twitter.com"
+              href="https://x.com/SRISHTINEWS1?t=Ic1WBlvJFkmVQsC-9OoeTw&s=09"
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 bg-black rounded-md flex items-center justify-center hover:opacity-80 transition"
@@ -54,7 +54,7 @@ export default function Header() {
               </svg>
             </a>
             <a
-              href="https://wa.me"
+              href="https://api.whatsapp.com/send?phone=919668421545&text=Hello%20Srishti%20News"
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 bg-[#25D366] rounded-md flex items-center justify-center hover:opacity-80 transition"

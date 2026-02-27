@@ -4,12 +4,12 @@ type SocialPlatform = {
 };
 
 const socialPlatforms: SocialPlatform[] = [
-  { name: "Facebook", href: "https://www.facebook.com" },
+  { name: "Facebook", href: "https://www.facebook.com/share/18D4N2eNGq/" },
   { name: "YouTube", href: "https://youtube.com/@politicalkhati?si=6dITFjJEIIJKlfKS" },
   { name: "Instagram", href: "https://www.instagram.com" },
-  { name: "WhatsApp", href: "https://wa.me/919668421545" },
+  { name: "WhatsApp", href: "https://api.whatsapp.com/send?phone=919668421545&text=Hello%20Srishti%20News" },
   { name: "Telegram", href: "https://t.me" },
-  { name: "X", href: "https://x.com" },
+  { name: "X", href: "https://x.com/SRISHTINEWS1?t=Ic1WBlvJFkmVQsC-9OoeTw&s=09" },
 ];
 
 function SocialLogo({ name }: { name: string }) {

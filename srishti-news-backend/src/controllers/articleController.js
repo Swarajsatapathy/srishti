@@ -6,7 +6,7 @@ import { uploadToS3, deleteFromS3 } from '../utils/s3Upload.js';
 
 // ─── CREATE ARTICLE ─────────────────────────────────────────────
 export const createArticle = asyncHandler(async (req, res) => {
-  const { title, content, reporter, tags, isPublished, isFeatured, isFlash, isTrending, isEditorsPick } = req.body;
+  const { title, content, reporter, tags, district, isPublished, isFeatured, isFlash, isTrending, isEditorsPick } = req.body;
 
   // Upload images to S3 if present
   const images = [];
@@ -21,6 +21,7 @@ export const createArticle = asyncHandler(async (req, res) => {
     title,
     content: content || '',
     images,
+    district: district || '',
     reporter,
     tags: tags ? (typeof tags === 'string' ? JSON.parse(tags) : tags) : [],
     isPublished: isPublished === 'true' || isPublished === true,
@@ -39,7 +40,6 @@ export const getArticles = asyncHandler(async (req, res) => {
   const {
     page = 1,
     limit = 10,
-    category,
     reporter,
     tag,
     featured,
@@ -53,7 +53,7 @@ export const getArticles = asyncHandler(async (req, res) => {
   } = req.query;
 
   const filter = {};
-  if (category) filter.category = category;
+  if (req.query.district) filter.district = req.query.district;
   if (reporter) filter.reporter = { $regex: reporter, $options: 'i' };
   if (tag) filter.tags = tag;
   if (featured === 'true') filter.isFeatured = true;
@@ -111,7 +111,7 @@ export const updateArticle = asyncHandler(async (req, res) => {
   const article = await Article.findById(req.params.id);
   if (!article) throw new ApiError(404, 'Article not found');
 
-  const { title, content, reporter, tags, isPublished, isFeatured, isFlash, isTrending, isEditorsPick, removeImages } = req.body;
+  const { title, content, reporter, tags, district, isPublished, isFeatured, isFlash, isTrending, isEditorsPick, removeImages } = req.body;
 
   // Remove specific images
   if (removeImages) {
@@ -132,6 +132,7 @@ export const updateArticle = asyncHandler(async (req, res) => {
 
   if (title !== undefined) article.title = title;
   if (content !== undefined) article.content = content;
+  if (district !== undefined) article.district = district;
   if (reporter !== undefined) article.reporter = reporter;
   if (tags !== undefined) article.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
   if (isPublished !== undefined) {

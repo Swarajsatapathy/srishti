@@ -1,5 +1,4 @@
 import { getArticleById } from "@/lib/api";
-import { getSlugFromOdia } from "@/lib/categories";
 import { getImageUrl } from "@/lib/imageUrl";
 import Image from "next/image";
 import Link from "next/link";
@@ -43,17 +42,6 @@ export default async function ArticlePage({ params }: PageProps) {
         <Link href="/" className="hover:text-primary transition whitespace-nowrap">
           Home
         </Link>
-        {article.category && (
-          <>
-            <span className="text-gray-400">/</span>
-            <Link
-              href={`/category/${getSlugFromOdia(article.category)}`}
-              className="hover:text-primary transition truncate"
-            >
-              {article.category}
-            </Link>
-          </>
-        )}
       </nav>
 
       {/* Title */}
@@ -63,11 +51,6 @@ export default async function ArticlePage({ params }: PageProps) {
 
       {/* Meta */}
       <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-200">
-        {article.category && (
-          <span className="bg-primary text-white text-xs font-semibold px-2.5 py-1 rounded">
-            {article.category}
-          </span>
-        )}
         {article.district && (
           <span className="bg-gray-200 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded">
             {article.district}

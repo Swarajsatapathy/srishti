@@ -6,7 +6,6 @@ type Article = {
   _id: string;
   title: string;
   content: string;
-  category?: string;
   reporter: string;
   tags: string[];
   isPublished: boolean;
@@ -23,7 +22,6 @@ type Video = {
   _id: string;
   title: string;
   content: string;
-  category?: string;
   reporter: string;
   tags: string[];
   youtubeUrl: string;

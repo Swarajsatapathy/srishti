@@ -44,7 +44,7 @@ export default function Footer() {
               <p>E-Mail: srishtinews@gmail.com</p>
               <div className="flex flex-wrap gap-x-4 gap-y-2 pt-2">
                 <a
-                  href="https://www.facebook.com"
+                  href="https://www.facebook.com/share/18D4N2eNGq/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition"
@@ -68,7 +68,7 @@ export default function Footer() {
                   YouTube
                 </a>
                 <a
-                  href="https://wa.me/919668421545"
+                  href="https://api.whatsapp.com/send?phone=919668421545&text=Hello%20Srishti%20News"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition"
@@ -84,7 +84,7 @@ export default function Footer() {
                   Telegram
                 </a>
                 <a
-                  href="https://x.com"
+                  href="https://x.com/SRISHTINEWS1?t=Ic1WBlvJFkmVQsC-9OoeTw&s=09"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition"

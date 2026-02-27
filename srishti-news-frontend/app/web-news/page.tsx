@@ -9,11 +9,11 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  searchParams: Promise<{ page?: string; category?: string }>;
+  searchParams: Promise<{ page?: string }>;
 }
 
 export default async function WebNewsPage({ searchParams }: PageProps) {
-  const { page: pageStr, category } = await searchParams;
+  const { page: pageStr } = await searchParams;
   const page = parseInt(pageStr || "1", 10);
 
   const params: Record<string, string> = {
@@ -23,10 +23,6 @@ export default async function WebNewsPage({ searchParams }: PageProps) {
     sortBy: "publishedAt",
     order: "desc",
   };
-
-  if (category) {
-    params.category = category;
-  }
 
   const data = await getArticles(params);
   const articles = data?.articles || [];
@@ -60,7 +56,7 @@ export default async function WebNewsPage({ searchParams }: PageProps) {
               d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
             />
           </svg>
-          <p className="text-base sm:text-lg">କୌଣସି ସମ୍ବାଦ ଉପಲబ୍ଧ ନାହିଁ।</p>
+          <p className="text-base sm:text-lg">କୌଣସି ସମ୍ବାଦ ଉପଲବ୍ଧ ନାହିଁ।</p>
         </div>
       ) : (
         <>

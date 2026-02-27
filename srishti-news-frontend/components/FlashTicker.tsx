@@ -1,14 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import type { Article } from "@/lib/types";
-
-interface FlashTickerProps {
-  articles: Article[];
+interface FlashTickerItem {
+  id: string;
+  title: string;
+  href: string;
+  type: "article" | "video";
 }
 
-export default function FlashTicker({ articles }: FlashTickerProps) {
-  if (!articles || articles.length === 0) return null;
+interface FlashTickerProps {
+  items: FlashTickerItem[];
+}
+
+export default function FlashTicker({ items }: FlashTickerProps) {
+  if (!items || items.length === 0) return null;
+
+  const uniqueItems = items.filter(
+    (item, index, list) => index === list.findIndex((existing) => `${existing.type}-${existing.id}` === `${item.type}-${item.id}`)
+  );
 
   return (
     <div className="bg-gray-100 border-b border-gray-200">
@@ -24,14 +33,14 @@ export default function FlashTicker({ articles }: FlashTickerProps) {
         </div>
         <div className="overflow-hidden flex-1 min-w-0">
           <div className="flex gap-8 sm:gap-12 animate-ticker whitespace-nowrap">
-            {[...articles, ...articles].map((article, i) => (
+            {uniqueItems.map((item) => (
               <Link
-                key={`${article._id}-${i}`}
-                href={`/article/${article._id}`}
+                key={`${item.type}-${item.id}`}
+                href={item.href}
                 className="text-xs sm:text-sm text-gray-700 hover:text-primary transition inline-flex items-center gap-2"
               >
                 <span className="w-1 h-1 rounded-full bg-gray-400 shrink-0" />
-                {article.title}
+                {item.title}
               </Link>
             ))}
           </div>

@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { Article, Video } from "@/lib/types";
-import { getSlugFromOdia } from "@/lib/categories";
 import { getImageUrl } from "@/lib/imageUrl";
 import { getYouTubeThumbnail } from "@/lib/youtube";
 
@@ -77,11 +76,6 @@ export default function MainStory({ articles, videos }: MainStoryProps) {
               )}
               <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4">
-                {article.category && (
-                  <span className="inline-block bg-primary text-white text-xs font-semibold px-2.5 py-1 rounded mb-2">
-                    {article.category}
-                  </span>
-                )}
                 <h3 className="text-white text-base sm:text-lg md:text-xl font-bold leading-tight line-clamp-2">
                   {article.title}
                 </h3>

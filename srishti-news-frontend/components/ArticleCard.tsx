@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Article } from "@/lib/types";
-import { getSlugFromOdia } from "@/lib/categories";
 import { getImageUrl } from "@/lib/imageUrl";
 
 interface ArticleCardProps {
@@ -87,28 +86,20 @@ export default function ArticleCard({
         </Link>
         <div className="p-3.5 sm:p-4 flex-1 flex flex-col">
           <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
-            {article.category && (
-              <>
-                <Link
-                  href={`/category/${getSlugFromOdia(article.category)}`}
-                  className="text-primary text-[11px] sm:text-xs font-semibold uppercase hover:underline"
-                >
-                  {article.category}
-                </Link>
-                <span className="text-gray-300">|</span>
-              </>
-            )}
-            <span className="text-[11px] sm:text-xs text-gray-500">{date}</span>
+            <span className="text-[11px] sm:text-xs text-gray-600">{date}</span>
           </div>
           <Link href={`/article/${article._id}`}>
             <h3 className="font-bold text-[15px] sm:text-base leading-snug line-clamp-2 group-hover:text-primary transition">
               {article.title}
             </h3>
           </Link>
-          <p className="text-sm text-gray-500 mt-1.5 sm:mt-2 line-clamp-2 flex-1">
+          <p className="text-sm text-gray-600 mt-1.5 sm:mt-2 line-clamp-2 flex-1">
             {article.content}
           </p>
-          <p className="text-xs text-gray-400 mt-2">{article.reporter}</p>
+          <p className="text-xs text-gray-600 mt-2">
+            {article.district && <span>{article.district} • </span>}
+            {article.reporter}
+          </p>
         </div>
       </div>
     </div>

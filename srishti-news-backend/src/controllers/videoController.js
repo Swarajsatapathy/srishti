@@ -5,7 +5,7 @@ import asyncHandler from '../utils/asyncHandler.js';
 
 // ─── CREATE VIDEO ───────────────────────────────────────────────
 export const createVideo = asyncHandler(async (req, res) => {
-  const { title, content, youtubeUrl, reporter, tags, isPublished, isFeatured, isTrending, isFlash, isEditorsPick } = req.body;
+  const { title, content, youtubeUrl, reporter, tags, district, isPublished, isFeatured, isTrending, isFlash, isEditorsPick } = req.body;
 
   if (!youtubeUrl) {
     throw new ApiError(400, 'YouTube URL is required');
@@ -15,6 +15,7 @@ export const createVideo = asyncHandler(async (req, res) => {
     title,
     content: content || '',
     youtubeUrl,
+    district: district || '',
     reporter,
     tags: tags ? (typeof tags === 'string' ? JSON.parse(tags) : tags) : [],
     isPublished: isPublished === 'true' || isPublished === true,
@@ -33,7 +34,6 @@ export const getVideos = asyncHandler(async (req, res) => {
   const {
     page = 1,
     limit = 10,
-    category,
     reporter,
     tag,
     featured,
@@ -45,7 +45,7 @@ export const getVideos = asyncHandler(async (req, res) => {
   } = req.query;
 
   const filter = {};
-  if (category) filter.category = category;
+  if (req.query.district) filter.district = req.query.district;
   if (reporter) filter.reporter = { $regex: reporter, $options: 'i' };
   if (tag) filter.tags = tag;
   if (featured === 'true') filter.isFeatured = true;
@@ -102,11 +102,12 @@ export const updateVideo = asyncHandler(async (req, res) => {
   const video = await Video.findById(req.params.id);
   if (!video) throw new ApiError(404, 'Video not found');
 
-  const { title, content, youtubeUrl, reporter, tags, isPublished, isFeatured, isTrending, isFlash, isEditorsPick } = req.body;
+  const { title, content, youtubeUrl, reporter, tags, district, isPublished, isFeatured, isTrending, isFlash, isEditorsPick } = req.body;
 
   if (title !== undefined) video.title = title;
   if (content !== undefined) video.content = content;
   if (youtubeUrl !== undefined) video.youtubeUrl = youtubeUrl;
+  if (district !== undefined) video.district = district;
   if (reporter !== undefined) video.reporter = reporter;
   if (tags !== undefined) video.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
   if (isPublished !== undefined) {

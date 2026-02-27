@@ -56,11 +56,6 @@ export default async function VideoPage({ params }: PageProps) {
 
       {/* Meta */}
       <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-200">
-        {video.category && (
-          <span className="bg-primary text-white text-xs font-semibold px-2.5 py-1 rounded">
-            {video.category}
-          </span>
-        )}
         {video.district && (
           <span className="bg-gray-200 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded">
             {video.district}
@@ -72,11 +67,11 @@ export default async function VideoPage({ params }: PageProps) {
       </div>
 
       {/* Video Player - YouTube iframe */}
-      <div className="relative aspect-video rounded-lg overflow-hidden mb-4 sm:mb-6 bg-black">
+      <div className="relative w-full aspect-square sm:aspect-[4/3] md:aspect-video rounded-lg overflow-hidden mb-4 sm:mb-6 bg-black">
         <iframe
-          src={embedUrl}
+          src={`${embedUrl}?rel=0&modestbranding=1`}
           title={video.title}
-          className="absolute inset-0 w-full h-full"
+          className="absolute inset-0 w-full h-full border-0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />

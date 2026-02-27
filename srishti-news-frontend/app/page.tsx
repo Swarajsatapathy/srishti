@@ -1,7 +1,9 @@
 import {
   getFlashStories,
+  getFlashVideos,
   getFeaturedStories,
   getEditorsPicks,
+  getEditorsPickVideos,
   getTrendingStories,
   getArticles,
   getVideos,
@@ -11,15 +13,17 @@ import FlashTicker from "@/components/FlashTicker";
 import MainStory from "@/components/MainStory";
 import EditorsPicks from "@/components/EditorsPicks";
 import TrendingStories from "@/components/TrendingStories";
-import ArticleCard from "@/components/ArticleCard";
-import Image from "next/image";
+import LatestNewsCarousel from "@/components/LatestNewsCarousel";
+import AdvertisementCarousel from "@/components/AdvertisementCarousel";
 
 export default async function Home() {
-  const [flash, featured, editorsPicks, trending, latestData, webNewsData, videosData, homepageAds] =
+  const [flashArticles, flashVideos, featured, editorsPicks, editorsPickVids, trending, latestData, webNewsData, videosData, homepageAds] =
     await Promise.all([
       getFlashStories(),
+      getFlashVideos(),
       getFeaturedStories(),
       getEditorsPicks(),
+      getEditorsPickVideos(),
       getTrendingStories(),
       getArticles({
         published: "true",
@@ -41,10 +45,26 @@ export default async function Home() {
   const webNewsArticles = webNewsData?.articles || [];
   const latestVideos = videosData?.videos || [];
   const ads = homepageAds || [];
+  const flashItems = [
+    ...(flashArticles || []).map((article) => ({
+      id: article._id,
+      title: article.title,
+      href: `/article/${article._id}`,
+      publishedAt: article.publishedAt || article.createdAt,
+      type: "article" as const,
+    })),
+    ...(flashVideos || []).map((video) => ({
+      id: video._id,
+      title: video.title,
+      href: `/videos/${video._id}`,
+      publishedAt: video.publishedAt || video.createdAt,
+      type: "video" as const,
+    })),
+  ].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
   return (
     <>
-      <FlashTicker articles={flash || []} />
+      <FlashTicker items={flashItems} />
 
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
         {/* Main 3-column layout */}
@@ -53,60 +73,10 @@ export default async function Home() {
             <MainStory articles={webNewsArticles.length > 0 ? webNewsArticles : (featured || [])} videos={latestVideos} />
           </div>
           <div className="md:col-span-1 lg:col-span-3">
-            <EditorsPicks articles={editorsPicks || []} />
+            <EditorsPicks articles={editorsPicks || []} videos={editorsPickVids || []} />
             <div className="mt-4 sm:mt-6">
               <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Advertisement</h2>
-              {ads.length > 0 ? (
-                <div className="space-y-3">
-                  {ads.slice(0, 3).map((ad) => {
-                    const hasImage = ad.images && ad.images.length > 0;
-                    const hasVideo = ad.videos && ad.videos.length > 0;
-                    const Wrapper = ad.link ? "a" : "div";
-                    const wrapperProps = ad.link
-                      ? { href: ad.link, target: "_blank" as const, rel: "noopener noreferrer" }
-                      : {};
-                    return (
-                      <Wrapper
-                        key={ad._id}
-                        {...wrapperProps}
-                        className="block rounded-lg overflow-hidden border border-gray-200 hover:shadow-md transition-shadow"
-                      >
-                        {hasVideo ? (
-                          <video
-                            src={ad.videos[0].url}
-                            className="w-full aspect-3/2 object-cover"
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                          />
-                        ) : hasImage ? (
-                          <div className="relative w-full aspect-3/2">
-                            <Image
-                              src={ad.images[0].url}
-                              alt={ad.title}
-                              fill
-                              className="object-cover"
-                              sizes="(max-width: 768px) 100vw, 25vw"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-full aspect-3/2 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                            <span className="text-sm font-semibold text-gray-500">{ad.title}</span>
-                          </div>
-                        )}
-                        {ad.description && (
-                          <p className="px-2 py-1.5 text-xs text-gray-600 line-clamp-2">{ad.description}</p>
-                        )}
-                      </Wrapper>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="relative rounded-lg overflow-hidden aspect-3/2 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center text-center">
-                  <span className="text-sm font-semibold text-gray-500">Advertise Here</span>
-                </div>
-              )}
+              <AdvertisementCarousel ads={ads} />
             </div>
           </div>
           <div className="md:col-span-1 lg:col-span-3">
@@ -115,18 +85,7 @@ export default async function Home() {
         </div>
 
         {/* Latest News Section */}
-        {latestArticles.length > 0 && (
-          <section className="mt-8 sm:mt-10">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 pb-2 border-b-2 border-primary">
-              ତାଜା ଖବର
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {latestArticles.map((article) => (
-                <ArticleCard key={article._id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
+        {latestArticles.length > 0 && <LatestNewsCarousel articles={latestArticles} />}
       </div>
     </>
   );
