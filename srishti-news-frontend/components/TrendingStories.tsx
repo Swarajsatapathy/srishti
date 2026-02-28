@@ -21,8 +21,7 @@ interface TrendingStoriesProps {
 }
 
 export default function TrendingStories({ articles, videos = [] }: TrendingStoriesProps) {
-  const [startIndex, setStartIndex] = useState(0);
-  const visibleCount = 5;
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // Merge articles and videos into a unified list
   const items: TrendingItem[] = [
@@ -56,9 +55,12 @@ export default function TrendingStories({ articles, videos = [] }: TrendingStori
     );
   }
 
-  const visible = items.slice(startIndex, startIndex + visibleCount);
-  const canScrollPrev = startIndex > 0;
-  const canScrollNext = startIndex + visibleCount < items.length;
+  const currentItem = items[currentIndex];
+  const canPrev = currentIndex > 0;
+  const canNext = currentIndex < items.length - 1;
+
+  const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
+  const goNext = () => setCurrentIndex((i) => Math.min(items.length - 1, i + 1));
 
   return (
     <div>
@@ -66,85 +68,76 @@ export default function TrendingStories({ articles, videos = [] }: TrendingStori
         <h2 className="text-xl font-bold">Trending Story</h2>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setStartIndex((i) => Math.max(0, i - 1))}
-            disabled={!canScrollPrev}
+            onClick={goPrev}
+            disabled={!canPrev}
             aria-label="Previous"
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 disabled:opacity-30 transition"
+            className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 border border-gray-200 disabled:opacity-30 transition"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M15 19l-7-7 7-7"
-              />
+            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
           <button
-            onClick={() =>
-              setStartIndex((i) =>
-                Math.min(items.length - visibleCount, i + 1)
-              )
-            }
-            disabled={!canScrollNext}
+            onClick={goNext}
+            disabled={!canNext}
             aria-label="Next"
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 disabled:opacity-30 transition"
+            className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 border border-gray-200 disabled:opacity-30 transition"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M9 5l7 7-7 7"
-              />
+            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
-        {visible.map((item, i) => {
-          const rank = i + 1;
-          return (
-            <Link
-              key={item._id}
-              href={item.href}
-              className="group flex gap-3"
-            >
-              <div className="relative w-20 sm:w-24 aspect-video shrink-0 rounded-md overflow-hidden">
-                {item.imageUrl ? (
-                  <Image
-                    src={item.imageUrl}
-                    alt={item.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    sizes="96px"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-linear-to-br from-gray-200 to-gray-300" />
-                )}
-                <div className="absolute bottom-0 left-0 bg-primary text-white text-[11px] font-bold w-5 h-5 flex items-center justify-center rounded-tr">
-                  {rank}
-                </div>
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-semibold leading-snug line-clamp-2 group-hover:text-primary transition">
-                  {item.title}
-                </h4>
-              </div>
-            </Link>
-          );
-        })}
+      <div className="relative">
+        {/* Card */}
+        <Link
+          href={currentItem.href}
+          className="group block rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+        >
+          <div className="relative w-full aspect-video">
+            {currentItem.imageUrl ? (
+              <Image
+                src={currentItem.imageUrl}
+                alt={currentItem.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                sizes="(max-width: 768px) 100vw, 400px"
+              />
+            ) : (
+              <div className="w-full h-full bg-linear-to-br from-gray-200 to-gray-300" />
+            )}
+            {/* Rank badge */}
+            <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full shadow">
+              {currentIndex + 1}
+            </div>
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
+            {/* Title on image */}
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <h4 className="text-white text-base sm:text-lg font-semibold leading-snug line-clamp-2 drop-shadow-lg">
+                {currentItem.title}
+              </h4>
+            </div>
+          </div>
+        </Link>
+      </div>
+
+      {/* Dot indicators */}
+      <div className="flex justify-center gap-1.5 mt-3">
+        {items.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentIndex(i)}
+            aria-label={`Go to story ${i + 1}`}
+            className={`w-2 h-2 rounded-full transition-all duration-200 ${
+              i === currentIndex
+                ? "bg-red-600 w-4"
+                : "bg-gray-300 hover:bg-gray-400"
+            }`}
+          />
+        ))}
       </div>
     </div>
   );
