@@ -27,10 +27,13 @@ export default function ReportersSection({ reporters }: ReportersSectionProps) {
   const photoUrl = reporter.photo?.url ? getImageUrl(reporter.photo.url) : "";
 
   return (
-    <div className="mt-6 sm:mt-8">
+    <div className="h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold">Our Reporters</h2>
+        <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
+          <span className="w-1 h-5 bg-primary rounded-full inline-block"></span>
+          Our Reporters
+        </h2>
         <div className="flex items-center gap-2">
           <button
             onClick={goPrev}

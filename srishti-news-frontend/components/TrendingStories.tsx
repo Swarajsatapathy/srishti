@@ -46,10 +46,16 @@ export default function TrendingStories({ articles, videos = [] }: TrendingStori
 
   if (items.length === 0) {
     return (
-      <div>
-        <h2 className="text-xl font-bold mb-4">Trending Story</h2>
-        <div className="bg-gray-100 rounded-lg h-36 sm:h-48 flex items-center justify-center text-gray-500 text-sm">
-          No trending stories available
+      <div className="h-full flex flex-col">
+        <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
+          <span className="w-1 h-5 bg-primary rounded-full inline-block"></span>
+          Trending Story
+        </h2>
+        <div className="bg-gray-50 border border-gray-200 rounded-xl flex-1 min-h-50 flex flex-col items-center justify-center text-gray-400">
+          <svg className="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          </svg>
+          <span className="text-sm">No trending stories available</span>
         </div>
       </div>
     );
@@ -63,9 +69,12 @@ export default function TrendingStories({ articles, videos = [] }: TrendingStori
   const goNext = () => setCurrentIndex((i) => Math.min(items.length - 1, i + 1));
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold">Trending Story</h2>
+        <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
+          <span className="w-1 h-5 bg-primary rounded-full inline-block"></span>
+          Trending Story
+        </h2>
         <div className="flex items-center gap-2">
           <button
             onClick={goPrev}

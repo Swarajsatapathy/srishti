@@ -6,10 +6,17 @@ const connectDB = async () => {
   if (isConnected) return;
 
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+    const uri = process.env.MONGODB_URI;
+    if (!uri) {
+      console.error('MongoDB connection error: MONGODB_URI is not set');
+      return;
+    }
+    console.log('Connecting to MongoDB...');
+    const conn = await mongoose.connect(uri, {
       dbName: 'srishti-news',
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 15000,
       socketTimeoutMS: 45000,
+      connectTimeoutMS: 15000,
     });
     isConnected = conn.connections[0].readyState === 1;
     console.log(`MongoDB connected: ${conn.connection.host}`);

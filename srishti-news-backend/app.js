@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './src/config/db.js';
 import articleRoutes from './src/routes/articleRoutes.js';
@@ -15,7 +14,7 @@ dotenv.config();
 const app = express();
 
 // ─── Global middleware ──────────────────────────────────────────
-app.use(cors());
+// CORS is handled at the Lambda handler level to avoid duplicate headers
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 

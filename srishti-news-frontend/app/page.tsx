@@ -13,6 +13,7 @@ import {
 } from "@/lib/api";
 import FlashTicker from "@/components/FlashTicker";
 import MainStory from "@/components/MainStory";
+import VideoNewsSection from "@/components/VideoNewsSection";
 import EditorsPicks from "@/components/EditorsPicks";
 import TrendingStories from "@/components/TrendingStories";
 import LatestNewsCarousel from "@/components/LatestNewsCarousel";
@@ -72,21 +73,31 @@ export default async function Home() {
     <>
       <FlashTicker items={flashItems} />
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-        {/* Main 3-column layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 sm:gap-6">
-          <div className="md:col-span-2 lg:col-span-6">
-            <MainStory articles={webNewsArticles.length > 0 ? webNewsArticles : (featured || [])} videos={latestVideos} />
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8">
+        {/* Row 1: Web News + Video News */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-stretch">
+          <div>
+            <MainStory articles={webNewsArticles.length > 0 ? webNewsArticles : (featured || [])} />
           </div>
-          <div className="md:col-span-1 lg:col-span-3">
+          <div>
+            <VideoNewsSection videos={latestVideos} />
+          </div>
+        </div>
+
+        {/* Advertisement Banner — Full Width */}
+        <section>
+          <AdvertisementCarousel ads={ads} fullWidth />
+        </section>
+
+        {/* Row 2: Editor's Picks + Trending Story + Reporters */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 items-stretch">
+          <div>
             <EditorsPicks articles={editorsPicks || []} videos={editorsPickVids || []} />
-            <div className="mt-4 sm:mt-6">
-              <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Advertisement</h2>
-              <AdvertisementCarousel ads={ads} />
-            </div>
           </div>
-          <div className="md:col-span-1 lg:col-span-3">
+          <div>
             <TrendingStories articles={trending || []} videos={trendingVids || []} />
+          </div>
+          <div>
             <ReportersSection reporters={reporters} />
           </div>
         </div>

@@ -35,10 +35,16 @@ export default function EditorsPicks({ articles, videos = [] }: EditorsPicksProp
 
   if (items.length === 0) {
     return (
-      <div>
-        <h2 className="text-xl font-bold mb-4">Editor&apos;s Picks</h2>
-        <div className="bg-gray-100 rounded-lg h-48 flex items-center justify-center text-gray-500">
-          No editor&apos;s picks available
+      <div className="h-full flex flex-col">
+        <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
+          <span className="w-1 h-5 bg-primary rounded-full inline-block"></span>
+          Editor&apos;s Picks
+        </h2>
+        <div className="bg-gray-50 border border-gray-200 rounded-xl flex-1 min-h-50 flex flex-col items-center justify-center text-gray-400">
+          <svg className="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+          </svg>
+          <span className="text-sm">No editor&apos;s picks available</span>
         </div>
       </div>
     );
@@ -47,9 +53,12 @@ export default function EditorsPicks({ articles, videos = [] }: EditorsPicksProp
   const item = items[current];
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <h2 className="text-lg sm:text-xl font-bold">Editor&apos;s Picks</h2>
+        <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
+          <span className="w-1 h-5 bg-primary rounded-full inline-block"></span>
+          Editor&apos;s Picks
+        </h2>
         {items.length > 1 && (
           <div className="flex items-center gap-2">
             <button
@@ -74,7 +83,7 @@ export default function EditorsPicks({ articles, videos = [] }: EditorsPicksProp
         )}
       </div>
 
-      <div className="relative rounded-lg overflow-hidden aspect-video">
+      <div className="relative rounded-xl overflow-hidden aspect-video shadow-md flex-1 min-h-50">
         {item.type === "article" ? (
           <ArticleSlide article={item.data} />
         ) : (
