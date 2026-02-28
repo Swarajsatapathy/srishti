@@ -9,6 +9,7 @@ import {
   getArticles,
   getVideos,
   getActiveAds,
+  getReporters,
 } from "@/lib/api";
 import FlashTicker from "@/components/FlashTicker";
 import MainStory from "@/components/MainStory";
@@ -16,9 +17,10 @@ import EditorsPicks from "@/components/EditorsPicks";
 import TrendingStories from "@/components/TrendingStories";
 import LatestNewsCarousel from "@/components/LatestNewsCarousel";
 import AdvertisementCarousel from "@/components/AdvertisementCarousel";
+import ReportersSection from "@/components/ReportersSection";
 
 export default async function Home() {
-  const [flashArticles, flashVideos, featured, editorsPicks, editorsPickVids, trending, trendingVids, latestData, webNewsData, videosData, homepageAds] =
+  const [flashArticles, flashVideos, featured, editorsPicks, editorsPickVids, trending, trendingVids, latestData, webNewsData, videosData, homepageAds, reportersData] =
     await Promise.all([
       getFlashStories(),
       getFlashVideos(),
@@ -41,12 +43,14 @@ export default async function Home() {
       }),
       getVideos({ published: "true", limit: "10", sortBy: "publishedAt", order: "desc" }),
       getActiveAds("homepage"),
+      getReporters({ limit: "20" }),
     ]);
 
   const latestArticles = latestData?.articles || [];
   const webNewsArticles = webNewsData?.articles || [];
   const latestVideos = videosData?.videos || [];
   const ads = homepageAds || [];
+  const reporters = reportersData?.reporters || [];
   const flashItems = [
     ...(flashArticles || []).map((article) => ({
       id: article._id,
@@ -83,6 +87,7 @@ export default async function Home() {
           </div>
           <div className="md:col-span-1 lg:col-span-3">
             <TrendingStories articles={trending || []} videos={trendingVids || []} />
+            <ReportersSection reporters={reporters} />
           </div>
         </div>
 

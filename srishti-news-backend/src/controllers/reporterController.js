@@ -6,7 +6,7 @@ import { uploadToS3, deleteFromS3 } from '../utils/s3Upload.js';
 
 // ─── CREATE REPORTER ────────────────────────────────────────────
 export const createReporter = asyncHandler(async (req, res) => {
-  const { name, designation, message } = req.body;
+  const { name, designation, message, district } = req.body;
 
   // Upload photo to S3 if present
   let photo = { url: '', key: '' };
@@ -19,6 +19,7 @@ export const createReporter = asyncHandler(async (req, res) => {
     name,
     designation,
     message: message || '',
+    district: district || '',
     photo,
   });
 
@@ -82,11 +83,12 @@ export const updateReporter = asyncHandler(async (req, res) => {
   const reporter = await Reporter.findById(req.params.id);
   if (!reporter) throw new ApiError(404, 'Reporter not found');
 
-  const { name, designation, message } = req.body;
+  const { name, designation, message, district } = req.body;
 
   if (name !== undefined) reporter.name = name;
   if (designation !== undefined) reporter.designation = designation;
   if (message !== undefined) reporter.message = message;
+  if (district !== undefined) reporter.district = district;
 
   // Replace photo if a new one is uploaded
   if (req.file) {
