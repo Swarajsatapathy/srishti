@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   title: "Srishti News",
   description:
     "Srishti News - ଓଡ଼ିଶାର ଏକ ଅଗ୍ରଣୀ ସମ୍ବାଦ ପତ୍ରିକା",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
