@@ -34,9 +34,13 @@ body {
 }
 
 /* Ensure images never overflow their containers */
-img, video, iframe {
+img, video {
   max-width: 100%;
   height: auto;
+}
+
+iframe {
+  max-width: 100%;
 }
 
 /* Prevent input zoom on iOS */

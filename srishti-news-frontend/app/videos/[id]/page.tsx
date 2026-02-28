@@ -73,12 +73,12 @@ export default async function VideoPage({ params }: PageProps) {
       </div>
 
       {/* Video Player - YouTube iframe */}
-      <div className="relative w-full aspect-square sm:aspect-[4/3] md:aspect-video rounded-lg overflow-hidden mb-4 sm:mb-6 bg-black">
+      <div className="relative w-[calc(100%+1.5rem)] -mx-3 sm:w-[calc(100%+2rem)] sm:-mx-4 md:w-full md:mx-0 aspect-video overflow-hidden md:rounded-lg mb-4 sm:mb-6 bg-black">
         <iframe
-          src={`${embedUrl}?rel=0&modestbranding=1`}
+          src={`${embedUrl}?rel=0&modestbranding=1&playsinline=1`}
           title={video.title}
           className="absolute inset-0 w-full h-full border-0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
         />
       </div>
