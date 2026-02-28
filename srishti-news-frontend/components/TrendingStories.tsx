@@ -3,18 +3,49 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import type { Article } from "@/lib/types";
+import type { Article, Video } from "@/lib/types";
 import { getImageUrl } from "@/lib/imageUrl";
+import { getYouTubeThumbnail } from "@/lib/youtube";
+
+interface TrendingItem {
+  _id: string;
+  title: string;
+  imageUrl: string;
+  href: string;
+  publishedAt: string;
+}
 
 interface TrendingStoriesProps {
   articles: Article[];
+  videos?: Video[];
 }
 
-export default function TrendingStories({ articles }: TrendingStoriesProps) {
+export default function TrendingStories({ articles, videos = [] }: TrendingStoriesProps) {
   const [startIndex, setStartIndex] = useState(0);
   const visibleCount = 5;
 
-  if (!articles || articles.length === 0) {
+  // Merge articles and videos into a unified list
+  const items: TrendingItem[] = [
+    ...articles.map((a) => ({
+      _id: a._id,
+      title: a.title,
+      imageUrl: getImageUrl(a.images?.[0]?.url),
+      href: `/article/${a._id}`,
+      publishedAt: a.publishedAt || a.createdAt,
+    })),
+    ...videos.map((v) => ({
+      _id: v._id,
+      title: v.title,
+      imageUrl: getYouTubeThumbnail(v.youtubeUrl),
+      href: `/videos/${v._id}`,
+      publishedAt: v.publishedAt || v.createdAt,
+    })),
+  ].sort(
+    (a, b) =>
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+  );
+
+  if (items.length === 0) {
     return (
       <div>
         <h2 className="text-xl font-bold mb-4">Trending Story</h2>
@@ -25,9 +56,9 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
     );
   }
 
-  const visible = articles.slice(startIndex, startIndex + visibleCount);
+  const visible = items.slice(startIndex, startIndex + visibleCount);
   const canScrollPrev = startIndex > 0;
-  const canScrollNext = startIndex + visibleCount < articles.length;
+  const canScrollNext = startIndex + visibleCount < items.length;
 
   return (
     <div>
@@ -57,7 +88,7 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
           <button
             onClick={() =>
               setStartIndex((i) =>
-                Math.min(articles.length - visibleCount, i + 1)
+                Math.min(items.length - visibleCount, i + 1)
               )
             }
             disabled={!canScrollNext}
@@ -82,20 +113,19 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
       </div>
 
       <div className="flex flex-col gap-3">
-        {visible.map((article, i) => {
-          const imageUrl = getImageUrl(article.images?.[0]?.url);
-          const rank = startIndex + i + 1;
+        {visible.map((item, i) => {
+          const rank = i + 1;
           return (
             <Link
-              key={article._id}
-              href={`/article/${article._id}`}
+              key={item._id}
+              href={item.href}
               className="group flex gap-3"
             >
               <div className="relative w-20 sm:w-24 aspect-video shrink-0 rounded-md overflow-hidden">
-                {imageUrl ? (
+                {item.imageUrl ? (
                   <Image
-                    src={imageUrl}
-                    alt={article.title}
+                    src={item.imageUrl}
+                    alt={item.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                     sizes="96px"
@@ -109,7 +139,7 @@ export default function TrendingStories({ articles }: TrendingStoriesProps) {
               </div>
               <div className="flex-1 min-w-0">
                 <h4 className="text-sm font-semibold leading-snug line-clamp-2 group-hover:text-primary transition">
-                  {article.title}
+                  {item.title}
                 </h4>
               </div>
             </Link>

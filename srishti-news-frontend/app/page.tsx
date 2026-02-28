@@ -5,6 +5,7 @@ import {
   getEditorsPicks,
   getEditorsPickVideos,
   getTrendingStories,
+  getTrendingVideos,
   getArticles,
   getVideos,
   getActiveAds,
@@ -17,7 +18,7 @@ import LatestNewsCarousel from "@/components/LatestNewsCarousel";
 import AdvertisementCarousel from "@/components/AdvertisementCarousel";
 
 export default async function Home() {
-  const [flashArticles, flashVideos, featured, editorsPicks, editorsPickVids, trending, latestData, webNewsData, videosData, homepageAds] =
+  const [flashArticles, flashVideos, featured, editorsPicks, editorsPickVids, trending, trendingVids, latestData, webNewsData, videosData, homepageAds] =
     await Promise.all([
       getFlashStories(),
       getFlashVideos(),
@@ -25,6 +26,7 @@ export default async function Home() {
       getEditorsPicks(),
       getEditorsPickVideos(),
       getTrendingStories(),
+      getTrendingVideos(),
       getArticles({
         published: "true",
         limit: "6",
@@ -80,7 +82,7 @@ export default async function Home() {
             </div>
           </div>
           <div className="md:col-span-1 lg:col-span-3">
-            <TrendingStories articles={trending || []} />
+            <TrendingStories articles={trending || []} videos={trendingVids || []} />
           </div>
         </div>
 
