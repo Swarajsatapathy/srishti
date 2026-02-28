@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
+import ShareButtons from "@/components/ShareButtons";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -64,6 +65,11 @@ export default async function VideoPage({ params }: PageProps) {
         <span>{video.reporter}</span>
         <span>{date}</span>
         <span>{video.views} views</span>
+      </div>
+
+      {/* Share Buttons */}
+      <div className="mb-4 sm:mb-6">
+        <ShareButtons url={`/videos/${id}`} title={video.title} />
       </div>
 
       {/* Video Player - YouTube iframe */}

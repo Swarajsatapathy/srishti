@@ -32,16 +32,21 @@ export default function FlashTicker({ items }: FlashTickerProps) {
           </span>
         </div>
         <div className="overflow-hidden flex-1 min-w-0">
-          <div className="flex gap-8 sm:gap-12 animate-ticker whitespace-nowrap">
-            {uniqueItems.map((item) => (
-              <Link
-                key={`${item.type}-${item.id}`}
-                href={item.href}
-                className="text-xs sm:text-sm text-gray-700 hover:text-primary transition inline-flex items-center gap-2"
-              >
-                <span className="w-1 h-1 rounded-full bg-gray-400 shrink-0" />
-                {item.title}
-              </Link>
+          <div className="animate-ticker whitespace-nowrap inline-flex w-max">
+            {[0, 1].map((copy) => (
+              <div key={copy} className="flex gap-8 sm:gap-12 px-4 sm:px-6" aria-hidden={copy === 1 || undefined}>
+                {uniqueItems.map((item) => (
+                  <Link
+                    key={`${item.type}-${item.id}`}
+                    href={item.href}
+                    className="text-xs sm:text-sm text-gray-700 hover:text-primary transition inline-flex items-center gap-2"
+                    tabIndex={copy === 1 ? -1 : undefined}
+                  >
+                    <span className="w-1 h-1 rounded-full bg-gray-400 shrink-0" />
+                    {item.title}
+                  </Link>
+                ))}
+              </div>
             ))}
           </div>
         </div>

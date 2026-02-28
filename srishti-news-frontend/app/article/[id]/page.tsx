@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import ShareButtons from "@/components/ShareButtons";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -59,6 +60,11 @@ export default async function ArticlePage({ params }: PageProps) {
         <span>{article.reporter}</span>
         <span>{date}</span>
         <span>{article.views} views</span>
+      </div>
+
+      {/* Share Buttons */}
+      <div className="mb-4 sm:mb-6">
+        <ShareButtons url={`/article/${id}`} title={article.title} />
       </div>
 
       {/* Featured Image */}

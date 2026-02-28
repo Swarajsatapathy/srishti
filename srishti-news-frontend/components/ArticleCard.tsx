@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Article } from "@/lib/types";
 import { getImageUrl } from "@/lib/imageUrl";
+import ShareButtons from "@/components/ShareButtons";
 
 interface ArticleCardProps {
   article: Article;
@@ -96,10 +97,17 @@ export default function ArticleCard({
           <p className="text-sm text-gray-600 mt-1.5 sm:mt-2 line-clamp-2 flex-1">
             {article.content}
           </p>
-          <p className="text-xs text-gray-600 mt-2">
-            {article.district && <span>{article.district} • </span>}
-            {article.reporter}
-          </p>
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-xs text-gray-600">
+              {article.district && <span>{article.district} • </span>}
+              {article.reporter}
+            </p>
+            <ShareButtons
+              url={`/article/${article._id}`}
+              title={article.title}
+              variant="icon"
+            />
+          </div>
         </div>
       </div>
     </div>
