@@ -33,22 +33,28 @@ export default function AdvertisementCarousel({ ads, fullWidth = false }: Advert
 
   if (!ads || ads.length === 0) {
     return (
-      <div
-        className={`relative overflow-hidden bg-linear-to-br from-gray-50 via-gray-100 to-gray-50 border border-gray-200 flex flex-col items-center justify-center text-center text-gray-400 ${
-          fullWidth
-            ? "rounded-xl sm:rounded-2xl aspect-video sm:aspect-21/9 lg:aspect-21/6"
-            : "rounded-xl aspect-3/2"
-        }`}
-      >
-        <svg className={fullWidth ? "w-14 h-14 mb-3" : "w-10 h-10 mb-2"} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-        </svg>
-        <span className={fullWidth ? "text-base font-semibold" : "text-sm font-medium"}>
-          Advertise Here
-        </span>
-        {fullWidth && (
-          <span className="text-xs text-gray-400 mt-1">Contact us for banner ad placement</span>
-        )}
+      <div>
+        <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
+          <span className="w-1 h-5 bg-primary rounded-full inline-block"></span>
+          Advertisement
+        </h2>
+        <div
+          className={`relative overflow-hidden bg-linear-to-br from-gray-50 via-gray-100 to-gray-50 border border-gray-200 flex flex-col items-center justify-center text-center text-gray-400 ${
+            fullWidth
+              ? "rounded-xl sm:rounded-2xl aspect-video sm:aspect-21/9 lg:aspect-21/6"
+              : "rounded-xl aspect-3/2"
+          }`}
+        >
+          <svg className={fullWidth ? "w-14 h-14 mb-3" : "w-10 h-10 mb-2"} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+          </svg>
+          <span className={fullWidth ? "text-base font-semibold" : "text-sm font-medium"}>
+            Advertise Here
+          </span>
+          {fullWidth && (
+            <span className="text-xs text-gray-400 mt-1">Contact us for banner ad placement</span>
+          )}
+        </div>
       </div>
     );
   }
@@ -157,28 +163,34 @@ export default function AdvertisementCarousel({ ads, fullWidth = false }: Advert
   // Compact version (non-fullWidth)
   return (
     <div>
-      {ads.length > 1 && (
-        <div className="flex justify-end gap-2 mb-2">
-          <button
-            onClick={prev}
-            aria-label="Previous advertisement"
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button
-            onClick={next}
-            aria-label="Next advertisement"
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      )}
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
+          <span className="w-1 h-5 bg-primary rounded-full inline-block"></span>
+          Advertisement
+        </h2>
+        {ads.length > 1 && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={prev}
+              aria-label="Previous advertisement"
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              onClick={next}
+              aria-label="Next advertisement"
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        )}
+      </div>
 
       <Wrapper
         {...wrapperProps}

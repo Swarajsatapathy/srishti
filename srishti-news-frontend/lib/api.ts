@@ -99,5 +99,13 @@ export async function getReporterById(id: string) {
 
 export async function getActiveAds(placement?: string) {
   const query = placement ? `?placement=${placement}` : "";
-  return fetchApi<Advertisement[]>(`/api/advertisements/active${query}`, 30);
+  // Try the /active endpoint first
+  const active = await fetchApi<Advertisement[]>(`/api/advertisements/active${query}`, 30);
+  if (active && active.length > 0) return active;
+
+  // Fallback: fetch all ads and filter client-side
+  // (workaround for backend date-filtering issue on /active)
+  const all = await fetchApi<{ advertisements: Advertisement[] }>(`/api/advertisements${query}`, 30);
+  if (!all?.advertisements) return [];
+  return all.advertisements.filter((ad) => ad.isActive);
 }
