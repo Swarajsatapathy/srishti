@@ -16,9 +16,39 @@ export async function generateMetadata({
   const { id } = await params;
   const article = await getArticleById(id);
   if (!article) return { title: "Article Not Found" };
+
+  const ogImage =
+    article.images && article.images.length > 0
+      ? getImageUrl(article.images[0].url)
+      : undefined;
+
+  const description = article.content?.slice(0, 200) || article.title;
+
   return {
     title: `${article.title} - Srishti News`,
-    description: article.content,
+    description,
+    openGraph: {
+      type: "article",
+      title: article.title,
+      description,
+      siteName: "Srishti News",
+      ...(ogImage && {
+        images: [
+          {
+            url: ogImage,
+            width: 1200,
+            height: 630,
+            alt: article.title,
+          },
+        ],
+      }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description,
+      ...(ogImage && { images: [ogImage] }),
+    },
   };
 }
 

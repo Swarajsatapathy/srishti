@@ -15,9 +15,42 @@ export async function generateMetadata({
   const { id } = await params;
   const video = await getVideoById(id);
   if (!video) return { title: "Video Not Found" };
+
+  // Extract YouTube video ID for thumbnail
+  const ytMatch = video.youtubeUrl?.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/
+  );
+  const ogImage = ytMatch
+    ? `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`
+    : undefined;
+
+  const description = video.content?.slice(0, 200) || video.title;
+
   return {
     title: `${video.title} - Srishti News`,
-    description: video.content,
+    description,
+    openGraph: {
+      type: "video.other",
+      title: video.title,
+      description,
+      siteName: "Srishti News",
+      ...(ogImage && {
+        images: [
+          {
+            url: ogImage,
+            width: 480,
+            height: 360,
+            alt: video.title,
+          },
+        ],
+      }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: video.title,
+      description,
+      ...(ogImage && { images: [ogImage] }),
+    },
   };
 }
 
