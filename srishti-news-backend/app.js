@@ -7,6 +7,7 @@ import uploadRoutes from './src/routes/uploadRoutes.js';
 import { imageRouter } from './src/routes/uploadRoutes.js';
 import reporterRoutes from './src/routes/reporterRoutes.js';
 import advertisementRoutes from './src/routes/advertisementRoutes.js';
+import authRoutes from './src/routes/authRoutes.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 
 dotenv.config();
@@ -38,6 +39,7 @@ app.get('/health', (_req, res) => {
 });
 
 // ─── API Routes ─────────────────────────────────────────────────
+app.use('/api/auth', authRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/upload', uploadRoutes);

@@ -5,10 +5,11 @@ import {
   getSignedImageUrl,
   listImages,
 } from '../controllers/uploadController.js';
+import authMiddleware from '../middlewares/auth.js';
 
 const router = Router();
 
-router.post('/presigned-url', generatePresignedUrl);
+router.post('/presigned-url', authMiddleware, generatePresignedUrl);
 
 export default router;
 

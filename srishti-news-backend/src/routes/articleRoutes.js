@@ -11,6 +11,7 @@ import {
   getFeaturedStories,
 } from '../controllers/articleController.js';
 import { uploadArticleImages } from '../middlewares/upload.js';
+import authMiddleware from '../middlewares/auth.js';
 
 const router = Router();
 
@@ -21,10 +22,10 @@ router.get('/trending', getTrendingStories);
 router.get('/featured', getFeaturedStories);
 
 // CRUD
-router.post('/', uploadArticleImages, createArticle);
+router.post('/', authMiddleware, uploadArticleImages, createArticle);
 router.get('/', getArticles);
 router.get('/:id', getArticleById);
-router.put('/:id', uploadArticleImages, updateArticle);
-router.delete('/:id', deleteArticle);
+router.put('/:id', authMiddleware, uploadArticleImages, updateArticle);
+router.delete('/:id', authMiddleware, deleteArticle);
 
 export default router;

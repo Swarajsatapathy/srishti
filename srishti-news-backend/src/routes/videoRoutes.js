@@ -10,6 +10,7 @@ import {
   getFlashVideos,
   getEditorsPickVideos,
 } from '../controllers/videoController.js';
+import authMiddleware from '../middlewares/auth.js';
 
 const router = Router();
 
@@ -20,10 +21,10 @@ router.get('/flash', getFlashVideos);
 router.get('/editors-picks', getEditorsPickVideos);
 
 // CRUD
-router.post('/', createVideo);
+router.post('/', authMiddleware, createVideo);
 router.get('/', getVideos);
 router.get('/:id', getVideoById);
-router.put('/:id', updateVideo);
-router.delete('/:id', deleteVideo);
+router.put('/:id', authMiddleware, updateVideo);
+router.delete('/:id', authMiddleware, deleteVideo);
 
 export default router;

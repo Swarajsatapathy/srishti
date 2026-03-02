@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 type Article = {
   _id: string;
@@ -125,9 +125,31 @@ async function apiRequest<T>(
     throw new Error("NEXT_PUBLIC_BASE_URL is missing in .env");
   }
 
+  const token = localStorage.getItem("srishti-news-admin-token");
+  const headers: Record<string, string> = {};
+
+  // Preserve any existing headers from options
+  if (options?.headers) {
+    const h = options.headers as Record<string, string>;
+    Object.assign(headers, h);
+  }
+
+  // Attach JWT token if present (don't set Content-Type for FormData)
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE}${path}`, {
     ...options,
+    headers,
   });
+
+  // Auto-logout on 401
+  if (response.status === 401) {
+    localStorage.removeItem("srishti-news-admin-token");
+    window.location.reload();
+    throw new Error("Session expired. Please login again.");
+  }
 
   const json = await response.json();
   if (!response.ok || !json.success) {
@@ -141,7 +163,9 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("articles");
   const [authReady, setAuthReady] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
+  const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [loginBusy, setLoginBusy] = useState(false);
   const [authError, setAuthError] = useState("");
   const [status, setStatus] = useState<string>("");
   const [busy, setBusy] = useState(false);
@@ -204,14 +228,9 @@ export default function Home() {
   const [adImages, setAdImages] = useState<FileList | null>(null);
   const [adVideos, setAdVideos] = useState<FileList | null>(null);
 
-  const adminCode = useMemo(
-    () => process.env.NEXT_PUBLIC_ADMIN_ACCESS_CODE || "admin123",
-    []
-  );
-
   useEffect(() => {
-    const stored = localStorage.getItem("srishti-news-admin-auth") === "true";
-    setIsAuthed(stored);
+    const token = localStorage.getItem("srishti-news-admin-token");
+    setIsAuthed(!!token);
     setAuthReady(true);
   }, []);
 
@@ -264,21 +283,43 @@ export default function Home() {
     }
   };
 
-  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (loginPassword !== adminCode) {
-      setAuthError("Invalid admin password");
-      return;
-    }
-
-    localStorage.setItem("srishti-news-admin-auth", "true");
-    setIsAuthed(true);
+    setLoginBusy(true);
     setAuthError("");
-    setLoginPassword("");
+
+    try {
+      if (!API_BASE) throw new Error("API base URL not configured");
+
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: loginUsername.trim(),
+          password: loginPassword,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || "Login failed");
+      }
+
+      localStorage.setItem("srishti-news-admin-token", json.data.token);
+      setIsAuthed(true);
+      setAuthError("");
+      setLoginUsername("");
+      setLoginPassword("");
+    } catch (err) {
+      setAuthError(err instanceof Error ? err.message : "Login failed");
+    } finally {
+      setLoginBusy(false);
+    }
   };
 
   const logout = () => {
-    localStorage.removeItem("srishti-news-admin-auth");
+    localStorage.removeItem("srishti-news-admin-token");
     setIsAuthed(false);
   };
 
@@ -588,11 +629,20 @@ export default function Home() {
             </div>
             <form onSubmit={handleLogin} className="space-y-4">
               <input
+                type="text"
+                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+                placeholder="Username"
+                value={loginUsername}
+                onChange={(event) => setLoginUsername(event.target.value)}
+                autoComplete="username"
+              />
+              <input
                 type="password"
                 className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-                placeholder="Admin password"
+                placeholder="Password"
                 value={loginPassword}
                 onChange={(event) => setLoginPassword(event.target.value)}
+                autoComplete="current-password"
               />
               {authError && (
                 <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{authError}</p>
@@ -600,14 +650,14 @@ export default function Home() {
               <button
                 type="submit"
                 className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-bold text-background transition hover:bg-accent-dark hover:shadow-lg hover:shadow-accent/20 disabled:opacity-50"
-                disabled={!loginPassword.trim()}
+                disabled={!loginUsername.trim() || !loginPassword.trim() || loginBusy}
               >
-                Sign In
+                {loginBusy ? "Signing in..." : "Sign In"}
               </button>
             </form>
           </div>
           <p className="mt-4 text-center text-xs text-muted">
-            Set NEXT_PUBLIC_ADMIN_ACCESS_CODE in .env for your custom password.
+            Srishti News Admin Panel
           </p>
         </div>
       </main>

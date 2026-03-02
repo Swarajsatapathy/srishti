@@ -21,6 +21,8 @@ provider:
     MONGODB_URI: ${env:MONGODB_URI, ''}
     S3_BUCKET_NAME: ${env:S3_BUCKET_NAME, ''}
     AWS_S3_REGION: ${env:AWS_S3_REGION, 'ap-south-1'}
+    JWT_SECRET: ${env:JWT_SECRET, ''}
+    JWT_EXPIRES_IN: ${env:JWT_EXPIRES_IN, '7d'}
     NODE_ENV: ${self:provider.stage}
   iam:
     role:
