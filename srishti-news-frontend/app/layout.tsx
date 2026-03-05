@@ -12,16 +12,20 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://srishtinews.in"),
+  metadataBase: new URL("https://www.srishtinews.in"),
   title: "Srishti News",
   description:
     "Srishti News - ଓଡ଼ିଶାର ଏକ ଅଗ୍ରଣୀ ସମ୍ବାଦ ପତ୍ରିକା",
+  alternates: {
+    canonical: "https://www.srishtinews.in",
+  },
   icons: {
     icon: "/favicon.png",
     apple: "/favicon.png",
   },
   openGraph: {
     type: "website",
+    url: "https://www.srishtinews.in",
     siteName: "Srishti News",
     title: "Srishti News",
     description: "Srishti News - ଓଡ଼ିଶାର ଏକ ଅଗ୍ରଣୀ ସମ୍ବାଦ ପତ୍ରିକା",
