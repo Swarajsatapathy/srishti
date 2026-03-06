@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "ଯୋଗାଯୋଗ - Srishti News",
+  description: "Srishti News ସହ ଯୋଗାଯୋଗ କରନ୍ତୁ",
+  alternates: {
+    canonical: "https://www.srishtinews.in/contact",
+  },
+};
+
 type SocialPlatform = {
   name: string;
   href: string;

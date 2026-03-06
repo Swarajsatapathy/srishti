@@ -49,6 +49,9 @@ export async function generateMetadata({
       description,
       ...(ogImage && { images: [ogImage] }),
     },
+    alternates: {
+      canonical: `https://www.srishtinews.in/article/${id}`,
+    },
   };
 }
 

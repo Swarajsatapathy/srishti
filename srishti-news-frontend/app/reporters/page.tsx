@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "ସାମ୍ବାଦିକ - Srishti News",
   description:
     "Srishti News ର ସମସ୍ତ ସାମ୍ବାଦିକ ଓ ସାମ୍ବାଦିକ ଦଳ ବିଷୟରେ ଜାଣନ୍ତୁ",
+  alternates: {
+    canonical: "https://www.srishtinews.in/reporters",
+  },
 };
 
 export default async function ReportersPage() {

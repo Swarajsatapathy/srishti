@@ -6,6 +6,9 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Web News - Srishti News",
   description: "Srishti News ର ସମସ୍ତ ତାଜା ଓ୍ୱେବ ସମ୍ବାଦ",
+  alternates: {
+    canonical: "https://www.srishtinews.in/web-news",
+  },
 };
 
 interface PageProps {

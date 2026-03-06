@@ -5,6 +5,9 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "ସନ୍ଧାନ - Srishti News",
   description: "Srishti News ରେ ସମ୍ବାଦ ସନ୍ଧାନ କରନ୍ତୁ",
+  alternates: {
+    canonical: "https://www.srishtinews.in/search",
+  },
 };
 
 export default function SearchPage() {
