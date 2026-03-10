@@ -84,23 +84,23 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Row 2: Advertisement (left) + Editor's Picks (right) */}
+        {/* Row 2: Editor's Picks (left) + Reporters (right) */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          <div>
-            <AdvertisementCarousel ads={ads} fullWidth />
-          </div>
           <div>
             <EditorsPicks articles={editorsPicks || []} videos={editorsPickVids || []} />
           </div>
+          <div>
+            <ReportersSection reporters={reporters} />
+          </div>
         </div>
 
-        {/* Row 3: Trending Story + Reporters */}
+        {/* Row 3: Trending Story + Advertisement */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <div>
             <TrendingStories articles={trending || []} videos={trendingVids || []} />
           </div>
           <div>
-            <ReportersSection reporters={reporters} />
+            <AdvertisementCarousel ads={ads} fullWidth />
           </div>
         </div>
 
