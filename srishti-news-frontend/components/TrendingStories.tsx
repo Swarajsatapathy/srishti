@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { Article, Video } from "@/lib/types";
@@ -46,12 +46,12 @@ export default function TrendingStories({ articles, videos = [] }: TrendingStori
 
   if (items.length === 0) {
     return (
-      <div className="h-full flex flex-col">
+      <div>
         <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
           <span className="w-1 h-5 bg-primary rounded-full inline-block"></span>
           Trending Story
         </h2>
-        <div className="bg-gray-50 border border-gray-200 rounded-xl flex-1 min-h-50 flex flex-col items-center justify-center text-gray-400">
+        <div className="bg-gray-50 border border-gray-200 rounded-xl aspect-[1920/1080] flex flex-col items-center justify-center text-gray-400">
           <svg className="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
           </svg>
@@ -68,8 +68,16 @@ export default function TrendingStories({ articles, videos = [] }: TrendingStori
   const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
   const goNext = () => setCurrentIndex((i) => Math.min(items.length - 1, i + 1));
 
+  useEffect(() => {
+    if (items.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((c) => (c === items.length - 1 ? 0 : c + 1));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [items.length]);
+
   return (
-    <div className="h-full flex flex-col">
+    <div>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
           <span className="w-1 h-5 bg-primary rounded-full inline-block"></span>
@@ -99,38 +107,42 @@ export default function TrendingStories({ articles, videos = [] }: TrendingStori
         </div>
       </div>
 
-      <div className="relative">
-        {/* Card */}
-        <Link
-          href={currentItem.href}
-          className="group block rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+      <div className="relative rounded-xl overflow-hidden shadow-md">
+        <div
+          className="flex transition-transform duration-700 ease-in-out"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          <div className="relative w-full aspect-video">
-            {currentItem.imageUrl ? (
-              <Image
-                src={currentItem.imageUrl}
-                alt={currentItem.title}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                sizes="(max-width: 768px) 100vw, 400px"
-              />
-            ) : (
-              <div className="w-full h-full bg-linear-to-br from-gray-200 to-gray-300" />
-            )}
-            {/* Rank badge */}
-            <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full shadow">
-              {currentIndex + 1}
-            </div>
-            {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
-            {/* Title on image */}
-            <div className="absolute bottom-0 left-0 right-0 p-4">
-              <h4 className="text-white text-base sm:text-lg font-semibold leading-snug line-clamp-2 drop-shadow-lg">
-                {currentItem.title}
-              </h4>
-            </div>
-          </div>
-        </Link>
+          {items.map((item, i) => (
+            <Link
+              key={item._id}
+              href={item.href}
+              className="group block w-full shrink-0"
+            >
+              <div className="relative w-full aspect-[1920/1080]">
+                {item.imageUrl ? (
+                  <Image
+                    src={item.imageUrl}
+                    alt={item.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, 400px"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-linear-to-br from-gray-200 to-gray-300" />
+                )}
+                <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full shadow">
+                  {i + 1}
+                </div>
+                <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h4 className="text-white text-base sm:text-lg font-semibold leading-snug line-clamp-2 drop-shadow-lg">
+                    {item.title}
+                  </h4>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* Dot indicators */}

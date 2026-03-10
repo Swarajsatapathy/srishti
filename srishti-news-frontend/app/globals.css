@@ -68,7 +68,7 @@ iframe {
 }
 
 .animate-ticker {
-  animation: ticker-scroll 30s linear infinite;
+  animation: ticker-scroll 160s linear infinite;
 }
 
 .animate-ticker:hover {

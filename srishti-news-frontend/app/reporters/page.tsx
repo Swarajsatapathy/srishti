@@ -30,12 +30,9 @@ export default async function ReportersPage() {
             Our Team
           </p>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-            ଆମର ସାମ୍ବାଦିକ ଦଳ
+            ଆମ ସାମ୍ବାଦିକ
           </h1>
-          <p className="text-gray-500 mt-3 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
-            ସତ୍ୟ ଓ ତଥ୍ୟ ଆଧାରିତ ଖବରକୁ ଆପଣଙ୍କ ପାଖରେ ପହଞ୍ଚାଉଥିବା ଆମର
-            ନିଷ୍ଠାବାନ ସାମ୍ବାଦିକମାନଙ୍କୁ ଜାଣନ୍ତୁ
-          </p>
+
           <div className="w-20 h-1 bg-primary mx-auto mt-5 rounded-full" />
         </div>
 

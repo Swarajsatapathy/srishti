@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { Article, Video } from "@/lib/types";
@@ -33,14 +33,22 @@ export default function EditorsPicks({ articles, videos = [] }: EditorsPicksProp
     [items.length]
   );
 
+  useEffect(() => {
+    if (items.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrent((c) => (c === items.length - 1 ? 0 : c + 1));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [items.length]);
+
   if (items.length === 0) {
     return (
-      <div className="h-full flex flex-col">
+      <div>
         <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
           <span className="w-1 h-5 bg-primary rounded-full inline-block"></span>
           Editor&apos;s Picks
         </h2>
-        <div className="bg-gray-50 border border-gray-200 rounded-xl flex-1 min-h-50 flex flex-col items-center justify-center text-gray-400">
+        <div className="bg-gray-50 border border-gray-200 rounded-xl aspect-[1920/1080] flex flex-col items-center justify-center text-gray-400">
           <svg className="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
           </svg>
@@ -53,7 +61,7 @@ export default function EditorsPicks({ articles, videos = [] }: EditorsPicksProp
   const item = items[current];
 
   return (
-    <div className="h-full flex flex-col">
+    <div>
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
           <span className="w-1 h-5 bg-primary rounded-full inline-block"></span>
@@ -83,12 +91,21 @@ export default function EditorsPicks({ articles, videos = [] }: EditorsPicksProp
         )}
       </div>
 
-      <div className="relative rounded-xl overflow-hidden aspect-video shadow-md flex-1 min-h-50">
-        {item.type === "article" ? (
-          <ArticleSlide article={item.data} />
-        ) : (
-          <VideoSlide video={item.data} />
-        )}
+      <div className="relative rounded-xl overflow-hidden aspect-[1920/1080] shadow-md">
+        <div
+          className="flex h-full transition-transform duration-700 ease-in-out"
+          style={{ transform: `translateX(-${current * 100}%)` }}
+        >
+          {items.map((item, i) => (
+            <div key={item.data._id} className="w-full h-full shrink-0">
+              {item.type === "article" ? (
+                <ArticleSlide article={item.data} />
+              ) : (
+                <VideoSlide video={item.data} />
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

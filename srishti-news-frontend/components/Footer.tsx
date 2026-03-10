@@ -97,7 +97,8 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-8 pt-5 text-center text-sm text-white/50">
-          <p>&copy; {new Date().getFullYear()} Srishti News। ସମସ୍ତ ଅଧିକାର ସଂରକ୍ଷିତ।</p>
+          <p>&copy; {new Date().getFullYear()} Srishti News. All rights reserved.</p>
+          <p className="mt-1">Designed &amp; Developed by Swaraj Satapathy</p>
         </div>
       </div>
     </footer>

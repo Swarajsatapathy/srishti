@@ -41,7 +41,7 @@ export default function AdvertisementCarousel({ ads, fullWidth = false }: Advert
         <div
           className={`relative overflow-hidden bg-linear-to-br from-gray-50 via-gray-100 to-gray-50 border border-gray-200 flex flex-col items-center justify-center text-center text-gray-400 ${
             fullWidth
-              ? "rounded-xl sm:rounded-2xl aspect-video sm:aspect-21/9 lg:aspect-21/6"
+              ? "rounded-xl sm:rounded-2xl aspect-[1920/1080]"
               : "rounded-xl aspect-3/2"
           }`}
         >
@@ -108,14 +108,14 @@ export default function AdvertisementCarousel({ ads, fullWidth = false }: Advert
           {hasVideo ? (
             <video
               src={ad.videos[0].url}
-              className="w-full aspect-video sm:aspect-21/9 lg:aspect-21/6 object-cover"
+              className="w-full aspect-[1920/1080] object-cover"
               autoPlay
               muted
               loop
               playsInline
             />
           ) : hasImage ? (
-            <div className="relative w-full aspect-video sm:aspect-21/9 lg:aspect-21/6">
+            <div className="relative w-full aspect-[1920/1080]">
               <Image
                 src={ad.images[0].url}
                 alt={ad.title}
@@ -126,7 +126,7 @@ export default function AdvertisementCarousel({ ads, fullWidth = false }: Advert
               />
             </div>
           ) : (
-            <div className="w-full aspect-video sm:aspect-21/9 lg:aspect-21/6 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+            <div className="w-full aspect-[1920/1080] bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">
               <span className="text-lg font-semibold text-gray-500">{ad.title}</span>
             </div>
           )}

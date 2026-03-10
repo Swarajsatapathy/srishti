@@ -57,7 +57,7 @@ export default function ArticleCard({
     <div className="group block h-full">
       <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100 h-full flex flex-col">
         <Link href={`/article/${article._id}`}>
-          <div className="relative aspect-video overflow-hidden">
+          <div className="relative aspect-[1920/1080] overflow-hidden">
             {imageUrl ? (
               <Image
                 src={imageUrl}

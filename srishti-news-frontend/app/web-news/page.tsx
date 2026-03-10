@@ -38,9 +38,6 @@ export default async function WebNewsPage({ searchParams }: PageProps) {
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold pb-2 border-b-2 border-primary">
           Web News
         </h1>
-        <p className="mt-2 text-sm sm:text-base text-gray-500">
-          ସମସ୍ତ ତାଜା ସମ୍ବାଦ ଏକ ଜାଗାରେ
-        </p>
       </div>
 
       {/* Articles grid */}

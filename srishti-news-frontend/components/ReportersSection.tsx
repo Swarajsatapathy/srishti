@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import type { Reporter } from "@/lib/types";
 import { getImageUrl } from "@/lib/imageUrl";
@@ -23,11 +23,19 @@ export default function ReportersSection({ reporters }: ReportersSectionProps) {
   const goNext = () =>
     setCurrentIndex((i) => Math.min(reporters.length - 1, i + 1));
 
+  useEffect(() => {
+    if (reporters.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((c) => (c === reporters.length - 1 ? 0 : c + 1));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [reporters.length]);
+
   const reporter = reporters[currentIndex];
   const photoUrl = reporter.photo?.url ? getImageUrl(reporter.photo.url) : "";
 
   return (
-    <div className="h-full flex flex-col">
+    <div>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
@@ -79,77 +87,64 @@ export default function ReportersSection({ reporters }: ReportersSectionProps) {
       </div>
 
       {/* Reporter Card */}
-      <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden p-5">
-        <div className="flex flex-col items-center text-center">
-          {/* Photo */}
-          <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-red-100 shadow-sm mb-4">
-            {photoUrl ? (
-              <Image
-                src={photoUrl}
-                alt={reporter.name}
-                fill
-                className="object-cover"
-                sizes="112px"
-              />
-            ) : (
-              <div className="w-full h-full bg-linear-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                <svg
-                  className="w-10 h-10 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
+      <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden aspect-[1920/1080]">
+        <div
+          className="flex h-full transition-transform duration-700 ease-in-out"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        >
+          {reporters.map((r) => {
+            const rPhoto = r.photo?.url ? getImageUrl(r.photo.url) : "";
+            return (
+              <div key={r._id} className="w-full h-full shrink-0 p-5">
+                <div className="flex flex-col items-center text-center h-full justify-center">
+                  {/* Photo */}
+                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-red-100 shadow-sm mb-4">
+                    {rPhoto ? (
+                      <Image
+                        src={rPhoto}
+                        alt={r.name}
+                        fill
+                        className="object-cover"
+                        sizes="112px"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-linear-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                        <svg
+                          className="w-10 h-10 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900">{r.name}</h3>
+                  <p className="text-sm text-red-600 font-medium mt-1">{r.designation}</p>
+                  {r.district && (
+                    <div className="flex items-center gap-1 mt-2 text-sm text-gray-500">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span>{r.district}</span>
+                    </div>
+                  )}
+                  {r.message && (
+                    <p className="mt-3 text-sm text-gray-600 leading-relaxed line-clamp-3 italic">
+                      &ldquo;{r.message}&rdquo;
+                    </p>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
-
-          {/* Name */}
-          <h3 className="text-lg font-bold text-gray-900">{reporter.name}</h3>
-
-          {/* Designation */}
-          <p className="text-sm text-red-600 font-medium mt-1">
-            {reporter.designation}
-          </p>
-
-          {/* District */}
-          {reporter.district && (
-            <div className="flex items-center gap-1 mt-2 text-sm text-gray-500">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              <span>{reporter.district}</span>
-            </div>
-          )}
-
-          {/* Message */}
-          {reporter.message && (
-            <p className="mt-3 text-sm text-gray-600 leading-relaxed line-clamp-3 italic">
-              &ldquo;{reporter.message}&rdquo;
-            </p>
-          )}
+            );
+          })}
         </div>
       </div>
 

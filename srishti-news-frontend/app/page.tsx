@@ -84,16 +84,18 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Advertisement Banner — Full Width */}
-        <section>
-          <AdvertisementCarousel ads={ads} fullWidth />
-        </section>
-
-        {/* Row 2: Editor's Picks + Trending Story + Reporters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 items-stretch">
+        {/* Row 2: Advertisement (left) + Editor's Picks (right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <div>
+            <AdvertisementCarousel ads={ads} fullWidth />
+          </div>
           <div>
             <EditorsPicks articles={editorsPicks || []} videos={editorsPickVids || []} />
           </div>
+        </div>
+
+        {/* Row 3: Trending Story + Reporters */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <div>
             <TrendingStories articles={trending || []} videos={trendingVids || []} />
           </div>
