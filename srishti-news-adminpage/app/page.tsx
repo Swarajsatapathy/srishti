@@ -119,6 +119,36 @@ const parseTags = (value: string) =>
     .map((tag) => tag.trim())
     .filter(Boolean);
 
+const MAX_ARTICLE_IMAGE_COUNT = 10;
+const MAX_ARTICLE_IMAGE_SIZE_BYTES = 4 * 1024 * 1024;
+const MAX_ARTICLE_TOTAL_UPLOAD_BYTES = 5 * 1024 * 1024;
+
+const validateArticleImages = (files: FileList | null): string | null => {
+  if (!files || files.length === 0) {
+    return null;
+  }
+
+  if (files.length > MAX_ARTICLE_IMAGE_COUNT) {
+    return `You can upload up to ${MAX_ARTICLE_IMAGE_COUNT} images.`;
+  }
+
+  let totalSize = 0;
+
+  for (const file of Array.from(files)) {
+    totalSize += file.size;
+
+    if (file.size > MAX_ARTICLE_IMAGE_SIZE_BYTES) {
+      return `${file.name} is too large. Keep each image under 4MB.`;
+    }
+  }
+
+  if (totalSize > MAX_ARTICLE_TOTAL_UPLOAD_BYTES) {
+    return "Total image upload size is too large. Keep combined images under 5MB.";
+  }
+
+  return null;
+};
+
 async function apiRequest<T>(
   path: string,
   options?: RequestInit
@@ -141,10 +171,18 @@ async function apiRequest<T>(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers,
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers,
+    });
+  } catch {
+    throw new Error(
+      "Unable to reach the backend. Check API URL/CORS and keep article image uploads under 5MB total."
+    );
+  }
 
   // Auto-logout on 401
   if (response.status === 401) {
@@ -383,6 +421,11 @@ export default function Home() {
   const submitArticle = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     void withBusy(async () => {
+      const imageValidationError = validateArticleImages(articleImages);
+      if (imageValidationError) {
+        throw new Error(imageValidationError);
+      }
+
       const formData = new FormData();
       formData.append("title", articleForm.title);
       formData.append("content", articleForm.content);
@@ -827,7 +870,19 @@ export default function Home() {
                 multiple
                 accept="image/*"
                 className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground file:mr-3 file:rounded-md file:border-0 file:bg-accent/15 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-accent"
-                onChange={(event) => setArticleImages(event.target.files)}
+                onChange={(event) => {
+                  const files = event.target.files;
+                  const imageValidationError = validateArticleImages(files);
+
+                  if (imageValidationError) {
+                    setStatus(imageValidationError);
+                    event.target.value = "";
+                    setArticleImages(null);
+                    return;
+                  }
+
+                  setArticleImages(files);
+                }}
               />
             </div>
             <div className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-background/50 p-3 md:grid-cols-3">
