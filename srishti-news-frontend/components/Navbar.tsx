@@ -25,8 +25,11 @@ export default function Navbar() {
 
   // Close mobile menu on route change
   useEffect(() => {
-    setMobileMenuOpen(false);
-    setSearchOpen(false);
+    const timer = setTimeout(() => {
+      setMobileMenuOpen(false);
+      setSearchOpen(false);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [pathname]);
 
   // Close mobile menu when clicking outside

@@ -13,8 +13,6 @@ interface VideoNewsSectionProps {
 export default function VideoNewsSection({ videos }: VideoNewsSectionProps) {
   const [currentVideo, setCurrentVideo] = useState(0);
 
-  const video = videos?.[currentVideo];
-
   const prevVideo = () =>
     setCurrentVideo((c) => (c === 0 ? videos.length - 1 : c - 1));
   const nextVideo = () =>

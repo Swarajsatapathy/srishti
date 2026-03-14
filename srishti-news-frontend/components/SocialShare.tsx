@@ -1,13 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
 export default function SocialShare() {
-  const [shareUrl, setShareUrl] = useState("");
-
-  useEffect(() => {
-    setShareUrl(window.location.href);
-  }, []);
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
   if (!shareUrl) return null;
 

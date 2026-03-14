@@ -42,8 +42,10 @@ function SearchContent() {
 
   useEffect(() => {
     if (query) {
-      setSearchInput(query);
-      fetchResults(query, 1);
+      const timer = setTimeout(() => {
+        fetchResults(query, 1);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [query, fetchResults]);
 

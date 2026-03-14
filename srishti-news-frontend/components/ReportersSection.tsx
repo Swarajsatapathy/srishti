@@ -12,6 +12,14 @@ interface ReportersSectionProps {
 export default function ReportersSection({ reporters }: ReportersSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  useEffect(() => {
+    if (reporters.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((c) => (c === reporters.length - 1 ? 0 : c + 1));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [reporters.length]);
+
   if (reporters.length === 0) {
     return null;
   }
@@ -22,17 +30,6 @@ export default function ReportersSection({ reporters }: ReportersSectionProps) {
   const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
   const goNext = () =>
     setCurrentIndex((i) => Math.min(reporters.length - 1, i + 1));
-
-  useEffect(() => {
-    if (reporters.length <= 1) return;
-    const timer = setInterval(() => {
-      setCurrentIndex((c) => (c === reporters.length - 1 ? 0 : c + 1));
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [reporters.length]);
-
-  const reporter = reporters[currentIndex];
-  const photoUrl = reporter.photo?.url ? getImageUrl(reporter.photo.url) : "";
 
   return (
     <div>

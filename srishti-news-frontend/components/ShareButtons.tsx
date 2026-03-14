@@ -17,20 +17,18 @@ export default function ShareButtons({
 }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
-  const [resolvedUrl, setResolvedUrl] = useState(url || "");
-  const [canNativeShare, setCanNativeShare] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (url && url.startsWith("http")) {
-      setResolvedUrl(url);
-    } else if (url) {
-      setResolvedUrl(`${window.location.origin}${url}`);
-    } else {
-      setResolvedUrl(window.location.href);
-    }
-    setCanNativeShare(!!navigator?.share);
-  }, [url]);
+  const resolvedUrl =
+    typeof window === "undefined"
+      ? ""
+      : url && url.startsWith("http")
+        ? url
+        : url
+          ? `${window.location.origin}${url}`
+          : window.location.href;
+
+  const canNativeShare = typeof navigator !== "undefined" && !!navigator.share;
 
   const encodedUrl = encodeURIComponent(resolvedUrl);
   const encodedTitle = encodeURIComponent(title);
@@ -136,8 +134,6 @@ export default function ShareButtons({
     }
   };
 
-  if (!resolvedUrl) return null;
-
   // Close popup on outside click
   useEffect(() => {
     if (!open) return;
@@ -149,6 +145,8 @@ export default function ShareButtons({
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
+
+  if (!resolvedUrl) return null;
 
   /* ───── Icon variant: single share icon with popup ───── */
   if (variant === "icon") {

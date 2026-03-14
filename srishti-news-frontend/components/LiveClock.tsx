@@ -3,15 +3,12 @@
 import { useState, useEffect } from "react";
 
 export default function LiveClock() {
-  const [now, setNow] = useState<Date | null>(null);
+  const [now, setNow] = useState<Date>(() => new Date());
 
   useEffect(() => {
-    setNow(new Date());
     const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
-
-  if (!now) return <span className="min-w-[80px] sm:min-w-[200px] md:min-w-[360px]">&nbsp;</span>;
 
   const date = now.toLocaleDateString("en-US", {
     weekday: "long",

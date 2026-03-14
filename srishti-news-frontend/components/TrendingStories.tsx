@@ -44,6 +44,14 @@ export default function TrendingStories({ articles, videos = [] }: TrendingStori
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
   );
 
+  useEffect(() => {
+    if (items.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((c) => (c === items.length - 1 ? 0 : c + 1));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [items.length]);
+
   if (items.length === 0) {
     return (
       <div>
@@ -61,20 +69,11 @@ export default function TrendingStories({ articles, videos = [] }: TrendingStori
     );
   }
 
-  const currentItem = items[currentIndex];
   const canPrev = currentIndex > 0;
   const canNext = currentIndex < items.length - 1;
 
   const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
   const goNext = () => setCurrentIndex((i) => Math.min(items.length - 1, i + 1));
-
-  useEffect(() => {
-    if (items.length <= 1) return;
-    const timer = setInterval(() => {
-      setCurrentIndex((c) => (c === items.length - 1 ? 0 : c + 1));
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [items.length]);
 
   return (
     <div>
