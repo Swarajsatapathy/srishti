@@ -1,9 +1,12 @@
 "use client";
+import { useState, useEffect } from "react";
 
 export default function SocialShare() {
-  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  const [shareUrl, setShareUrl] = useState("");
 
-  if (!shareUrl) return null;
+  useEffect(() => {
+    setShareUrl(window.location.href);
+  }, []);
 
   return (
     <div className="fixed left-0 top-1/3 z-40 hidden lg:flex flex-col">

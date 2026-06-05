@@ -246,7 +246,7 @@ export default function Navbar() {
             {/* JOIN AS REPORTER link for mobile (hidden in header on mobile) */}
             <div className="px-4 pt-3 sm:hidden">
               <Link
-                href="/reporters"
+                href="/#reporters"
                 className="block text-center bg-white text-primary font-semibold px-4 py-2.5 rounded-lg text-sm"
                 onClick={() => setMobileMenuOpen(false)}
               >

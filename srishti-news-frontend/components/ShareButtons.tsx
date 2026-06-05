@@ -17,18 +17,20 @@ export default function ShareButtons({
 }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
+  const [resolvedUrl, setResolvedUrl] = useState("");
+  const [canNativeShare, setCanNativeShare] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const resolvedUrl =
-    typeof window === "undefined"
-      ? ""
-      : url && url.startsWith("http")
-        ? url
-        : url
-          ? `${window.location.origin}${url}`
-          : window.location.href;
-
-  const canNativeShare = typeof navigator !== "undefined" && !!navigator.share;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const currentUrl = url && url.startsWith("http")
+      ? url
+      : url
+        ? `${window.location.origin}${url}`
+        : window.location.href;
+    setResolvedUrl(currentUrl);
+    setCanNativeShare(!!navigator.share);
+  }, [url]);
 
   const encodedUrl = encodeURIComponent(resolvedUrl);
   const encodedTitle = encodeURIComponent(title);

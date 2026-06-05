@@ -77,7 +77,7 @@ export default function Header() {
 
           {/* Right: Join as Reporter - responsive */}
           <Link
-            href="/reporters"
+            href="/#reporters"
             className="hidden sm:inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-3 sm:px-5 py-1.5 rounded-full transition text-xs sm:text-sm tracking-wide"
           >
             JOIN AS REPORTER

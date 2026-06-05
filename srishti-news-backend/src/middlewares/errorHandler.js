@@ -40,6 +40,18 @@ const errorHandler = (err, _req, res, _next) => {
     });
   }
 
+  // DB unavailable / connectivity errors
+  if (
+    err.name === 'MongooseServerSelectionError' ||
+    err.name === 'MongoServerSelectionError' ||
+    /buffering timed out|ECONNREFUSED|ENOTFOUND|timed out/i.test(err.message || '')
+  ) {
+    return res.status(503).json({
+      success: false,
+      message: 'Database unavailable. Please try again shortly.',
+    });
+  }
+
   return res.status(500).json({
     success: false,
     message: 'Internal Server Error',
