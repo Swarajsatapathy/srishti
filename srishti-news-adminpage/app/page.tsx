@@ -212,7 +212,7 @@ export default function Home() {
 
   const [articles, setArticles] = useState<Article[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
-  const [reporters, setReporters] = useState<Reporter[]>([]);
+  const [reporters, setReporters] = useState<Reporter[]>([]); 
   const [advertisements, setAdvertisements] = useState<Advertisement[]>([]);
 
   const [articleEditId, setArticleEditId] = useState<string | null>(null);
@@ -279,7 +279,12 @@ export default function Home() {
       return;
     }
 
-    void Promise.all([loadArticles(), loadVideos(), loadReporters(), loadAdvertisements()]);
+    void Promise.allSettled([
+      loadArticles(),
+      loadVideos(),
+      loadReporters(),
+      loadAdvertisements(),
+    ]);
   }, [isAuthed]);
 
   const loadArticles = async () => {
