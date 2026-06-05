@@ -99,12 +99,12 @@ export default function Footer() {
         <div className="border-t border-white/10 mt-8 pt-5 text-center text-sm text-white/50">
           <p>&copy; {new Date().getFullYear()} Srishti News. All rights reserved.</p>
           <p>
-  Designed & Developed by{" "}
+  Designed & Developed by Swaraj Satapathy | Contact:{" "}
   <a
     href="tel:+918260190379"
     className="hover:text-primary transition-colors"
   >
-    Swaraj Satapathy
+    +91 8260190379
   </a>
 </p>
         </div>
