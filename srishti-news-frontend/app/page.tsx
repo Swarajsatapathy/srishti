@@ -10,7 +10,11 @@ import {
   getVideos,
   getActiveAds,
   getReporters,
-} from "@/lib/api";
+}from "@/lib/api";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import FlashTicker from "@/components/FlashTicker";
 import MainStory from "@/components/MainStory";
 import VideoNewsSection from "@/components/VideoNewsSection";
@@ -44,7 +48,11 @@ export default async function Home() {
       }),
       getVideos({ published: "true", limit: "10", sortBy: "publishedAt", order: "desc" }),
       getActiveAds("homepage"),
-      getReporters({ limit: "20" }),
+      getReporters({
+  limit: "20",
+  sortBy: "serialNumber",
+  order: "asc",
+}),
     ]);
 
   const latestArticles = latestData?.articles || [];

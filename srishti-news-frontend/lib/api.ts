@@ -9,15 +9,21 @@ interface ApiResponse<T> {
   success: boolean;
 }
 
-async function fetchApi<T>(
-  endpoint: string,
-  revalidate = 60
-): Promise<T | null> {
+async function fetchApi<T>(endpoint: string): Promise<T | null> {
   try {
+    if (!BASE_URL) {
+      throw new Error("NEXT_PUBLIC_BASE_URL is missing");
+    }
+
     const res = await fetch(`${BASE_URL}${endpoint}`, {
-      next: { revalidate },
+      cache: "no-store",
     });
-    if (!res.ok) return null;
+
+    if (!res.ok) {
+      console.error(`API error ${res.status} for ${endpoint}`);
+      return null;
+    }
+
     const json: ApiResponse<T> = await res.json();
     return json.data ?? null;
   } catch (error) {
@@ -36,7 +42,7 @@ export async function getArticles(params?: Record<string, string>) {
 }
 
 export async function getArticleById(id: string) {
-  return fetchApi<Article>(`/api/articles/${id}`, 30);
+  return fetchApi<Article>(`/api/articles/${id}`);
 }
 
 export async function getFlashStories() {
@@ -65,7 +71,7 @@ export async function getVideos(params?: Record<string, string>) {
 }
 
 export async function getVideoById(id: string) {
-  return fetchApi<Video>(`/api/videos/${id}`, 30);
+  return fetchApi<Video>(`/api/videos/${id}`);
 }
 
 export async function getFeaturedVideos() {
@@ -100,12 +106,12 @@ export async function getReporterById(id: string) {
 export async function getActiveAds(placement?: string) {
   const query = placement ? `?placement=${placement}` : "";
   // Try the /active endpoint first
-  const active = await fetchApi<Advertisement[]>(`/api/advertisements/active${query}`, 30);
+  const active = await fetchApi<Advertisement[]>(`/api/advertisements/active${query}`);
   if (active && active.length > 0) return active;
 
   // Fallback: fetch all ads and filter client-side
   // (workaround for backend date-filtering issue on /active)
-  const all = await fetchApi<{ advertisements: Advertisement[] }>(`/api/advertisements${query}`, 30);
+  const all = await fetchApi<{ advertisements: Advertisement[] }>(`/api/advertisements${query}`);
   if (!all?.advertisements) return [];
   return all.advertisements.filter((ad) => ad.isActive);
 }

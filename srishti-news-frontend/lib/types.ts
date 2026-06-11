@@ -46,6 +46,7 @@ export interface Video {
 
 export interface Reporter {
   _id: string;
+  serialNumber?: number;
   name: string;
   designation: string;
   message: string;

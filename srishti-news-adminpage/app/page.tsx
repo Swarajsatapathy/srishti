@@ -36,6 +36,7 @@ type Video = {
 
 type Reporter = {
   _id: string;
+  serialNumber?: number;
   name: string;
   designation: string;
   message?: string;
@@ -249,6 +250,7 @@ export default function Home() {
   });
 
   const [reporterForm, setReporterForm] = useState({
+    serialNumber: "",
     name: "",
     designation: "",
     message: "",
@@ -303,8 +305,8 @@ export default function Home() {
 
   const loadReporters = async () => {
     const response = await apiRequest<{ reporters: Reporter[] }>(
-      "/api/reporters?limit=50&sortBy=createdAt&order=desc"
-    );
+  "/api/reporters?limit=50&sortBy=serialNumber&order=asc"
+);
     setReporters(response.data.reporters || []);
   };
 
@@ -404,7 +406,7 @@ export default function Home() {
 
   const resetReporterForm = () => {
     setReporterEditId(null);
-    setReporterForm({ name: "", designation: "", message: "", district: "" });
+    setReporterForm({serialNumber: "", name: "", designation: "", message: "", district: "" });
     setReporterPhoto(null);
   };
 
@@ -551,6 +553,7 @@ export default function Home() {
 
     void withBusy(async () => {
       const formData = new FormData();
+      formData.append("serialNumber", reporterForm.serialNumber);
       formData.append("name", reporterForm.name);
       formData.append("designation", reporterForm.designation);
       formData.append("message", reporterForm.message);
@@ -573,6 +576,7 @@ export default function Home() {
   const editReporter = (reporter: Reporter) => {
     setReporterEditId(reporter._id);
     setReporterForm({
+      serialNumber: reporter.serialNumber ? String(reporter.serialNumber) : "",
       name: reporter.name,
       designation: reporter.designation,
       message: reporter.message || "",
@@ -1129,6 +1133,22 @@ export default function Home() {
             <h2 className="text-lg font-bold text-foreground">
               {reporterEditId ? "Update Reporter" : "Create Reporter"}
             </h2>
+
+<input
+  type="number"
+  min="1"
+  className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+  placeholder="Serial Number"
+  value={reporterForm.serialNumber}
+  onChange={(event) =>
+    setReporterForm((current) => ({
+      ...current,
+      serialNumber: event.target.value,
+    }))
+  }
+  required
+/>
+
             <input
               className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
               placeholder="Name"
@@ -1216,7 +1236,10 @@ export default function Home() {
                   key={reporter._id}
                   className="rounded-lg border border-border bg-background p-3.5 text-sm transition hover:border-accent/30 hover:shadow-md hover:shadow-accent/5"
                 >
-                  <p className="font-bold text-foreground">{reporter.name}</p>
+                  <p className="font-bold text-foreground">
+  {reporter.serialNumber ? `${reporter.serialNumber}. ` : ""}
+  {reporter.name}
+</p>
                   <p className="mt-0.5 text-xs text-muted">{reporter.designation}{reporter.district ? ` • ${reporter.district}` : ""}</p>
                   <div className="mt-2.5 flex gap-2">
                     <button
