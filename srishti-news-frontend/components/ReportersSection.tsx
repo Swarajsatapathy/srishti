@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import type { Reporter } from "@/lib/types";
 import { getImageUrl } from "@/lib/imageUrl";
 
@@ -93,7 +94,11 @@ export default function ReportersSection({ reporters }: ReportersSectionProps) {
       const rPhoto = r.photo?.url ? getImageUrl(r.photo.url) : "";
 
       return (
-        <div key={r._id} className="w-full shrink-0 p-4 sm:p-5">
+        <Link
+  key={r._id}
+  href={`/reporters/${r._id}`}
+  className="block w-full shrink-0 p-4 sm:p-5 cursor-pointer"
+>
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5">
             {/* Left: Square Photo */}
             <div className="relative w-full sm:w-36 md:w-40 aspect-square shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-100">
@@ -166,7 +171,7 @@ export default function ReportersSection({ reporters }: ReportersSectionProps) {
               )}
             </div>
           </div>
-        </div>
+        </Link>
       );
     })}
   </div>
