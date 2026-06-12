@@ -9,33 +9,51 @@ interface ApiResponse<T> {
   success: boolean;
 }
 
-async function fetchApi<T>(endpoint: string): Promise<T | null> {
-  try {
-    if (!BASE_URL) {
-      throw new Error("NEXT_PUBLIC_BASE_URL is missing");
-    }
+async function fetchApi<T>(
+  endpoint: string,
+  revalidate = 60,
+  retries = 3
+): Promise<T | null> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(`${BASE_URL}${endpoint}`, {
+        next: { revalidate },
+      });
 
-    const res = await fetch(`${BASE_URL}${endpoint}`, {
-      cache: "no-store",
-    });
+      if (res.ok) {
+        const json: ApiResponse<T> = await res.json();
+        return json.data ?? null;
+      }
 
-    if (!res.ok) {
-      console.error(`API error ${res.status} for ${endpoint}`);
+      console.error(`API error ${res.status} for ${BASE_URL}${endpoint}`);
+
+      // Retry only for temporary backend/database errors
+      if ((res.status === 503 || res.status === 500) && attempt < retries) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        continue;
+      }
+
+      return null;
+    } catch (error) {
+      console.error(`API fetch error for ${endpoint}:`, error);
+
+      if (attempt < retries) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        continue;
+      }
+
       return null;
     }
-
-    const json: ApiResponse<T> = await res.json();
-    return json.data ?? null;
-  } catch (error) {
-    console.error(`API fetch error for ${endpoint}:`, error);
-    return null;
   }
+
+  return null;
 }
 
 // ─── Articles ───────────────────────────────────────────────────
 
 export async function getArticles(params?: Record<string, string>) {
   const query = params ? `?${new URLSearchParams(params).toString()}` : "";
+
   return fetchApi<{ articles: Article[]; pagination: Pagination }>(
     `/api/articles${query}`
   );
@@ -65,6 +83,7 @@ export async function getFeaturedStories() {
 
 export async function getVideos(params?: Record<string, string>) {
   const query = params ? `?${new URLSearchParams(params).toString()}` : "";
+
   return fetchApi<{ videos: Video[]; pagination: Pagination }>(
     `/api/videos${query}`
   );
@@ -81,6 +100,7 @@ export async function getFeaturedVideos() {
 export async function getTrendingVideos() {
   return fetchApi<Video[]>("/api/videos/trending");
 }
+
 export async function getFlashVideos() {
   return fetchApi<Video[]>("/api/videos/flash");
 }
@@ -88,10 +108,12 @@ export async function getFlashVideos() {
 export async function getEditorsPickVideos() {
   return fetchApi<Video[]>("/api/videos/editors-picks");
 }
+
 // ─── Reporters ──────────────────────────────────────────────────
 
 export async function getReporters(params?: Record<string, string>) {
   const query = params ? `?${new URLSearchParams(params).toString()}` : "";
+
   return fetchApi<{ reporters: Reporter[]; pagination: Pagination }>(
     `/api/reporters${query}`
   );
@@ -105,13 +127,22 @@ export async function getReporterById(id: string) {
 
 export async function getActiveAds(placement?: string) {
   const query = placement ? `?placement=${placement}` : "";
-  // Try the /active endpoint first
-  const active = await fetchApi<Advertisement[]>(`/api/advertisements/active${query}`);
-  if (active && active.length > 0) return active;
 
-  // Fallback: fetch all ads and filter client-side
-  // (workaround for backend date-filtering issue on /active)
-  const all = await fetchApi<{ advertisements: Advertisement[] }>(`/api/advertisements${query}`);
-  if (!all?.advertisements) return [];
+  const active = await fetchApi<Advertisement[]>(
+    `/api/advertisements/active${query}`
+  );
+
+  if (active && active.length > 0) {
+    return active;
+  }
+
+  const all = await fetchApi<{ advertisements: Advertisement[] }>(
+    `/api/advertisements${query}`
+  );
+
+  if (!all?.advertisements) {
+    return [];
+  }
+
   return all.advertisements.filter((ad) => ad.isActive);
 }

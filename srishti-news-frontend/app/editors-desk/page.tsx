@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 const editor = {
   name: "Manoj Satapathy",
-  photo: "/images.png",
+  photo: "/Editor.jpeg",
   message: "Welcome to Srishti News",
 };
 
@@ -52,7 +52,7 @@ export default async function EditorsDeskPage() {
                 {editor.name}
               </h2>
               <p className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
-                Editor, Srishti News
+                Founder Editor, Srishti News
               </p>
               <p className="text-gray-700 text-base leading-7">
                 {editor.message}

@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-6 sm:gap-8 md:gap-10">
           <div className="sm:col-span-2 md:col-span-5">
             <p className="text-xs uppercase tracking-[0.2em] text-white/60 mb-3">
-              Srishti News Network
+              Srishti News 
             </p>
             <h3 className="text-xl sm:text-2xl font-semibold mb-3">SRISHTI NEWS</h3>
             <p className="text-sm text-white/90 leading-relaxed max-w-md font-medium">

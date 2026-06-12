@@ -69,7 +69,7 @@ export const getArticles = asyncHandler(async (req, res) => {
   }
 
   const pageNum = Math.max(1, parseInt(page, 10));
-  const pageSize = Math.min(50, Math.max(1, parseInt(limit, 10)));
+  const pageSize = Math.min(1000, Math.max(1, parseInt(limit, 10)));
   const sortOrder = order === 'asc' ? 1 : -1;
 
   const [articles, total] = await Promise.all([
