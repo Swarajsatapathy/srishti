@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SocialShare from "@/components/SocialShare";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -44,14 +45,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
     <html lang="or">
       <body className="antialiased">
         <Header />
         <Navbar />
         <SocialShare />
+
         <main className="min-h-screen">{children}</main>
+
         <Footer />
+
+        {gaId && <GoogleAnalytics gaId={gaId} />}
       </body>
     </html>
   );
