@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default async function ReportersPage() {
   const data = await getReporters({
-    limit: "50",
+    limit: "1000",
     sortBy: "serialNumber",
     order: "asc",
   });
