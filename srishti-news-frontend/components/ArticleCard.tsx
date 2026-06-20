@@ -16,6 +16,7 @@ export default function ArticleCard({
   size = "medium",
 }: ArticleCardProps) {
   const imageUrl = getImageUrl(article.images?.[0]?.url);
+
   const date = new Date(
     article.publishedAt || article.createdAt
   ).toLocaleDateString("en-US", {
@@ -23,6 +24,8 @@ export default function ArticleCard({
     month: "short",
     day: "numeric",
   });
+
+  const views = article.views || 0;
 
   if (size === "small") {
     return (
@@ -43,11 +46,17 @@ export default function ArticleCard({
             <div className="w-full h-full bg-gray-200" />
           )}
         </div>
+
         <div className="flex-1 min-w-0">
           <h4 className="text-sm font-semibold leading-snug line-clamp-2 group-hover:text-primary transition">
             {article.title}
           </h4>
-          <p className="text-xs text-gray-500 mt-1">{date}</p>
+
+          <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+            <span>{date}</span>
+            <span>•</span>
+            <span>{views} views</span>
+          </div>
         </div>
       </Link>
     );
@@ -85,23 +94,30 @@ export default function ArticleCard({
             )}
           </div>
         </Link>
+
         <div className="p-3.5 sm:p-4 flex-1 flex flex-col">
-          <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
-            <span className="text-[11px] sm:text-xs text-gray-600">{date}</span>
+          <div className="flex items-center gap-2 mb-1.5 sm:mb-2 text-[11px] sm:text-xs text-gray-600">
+            <span>{date}</span>
+            <span>•</span>
+            <span>{views} views</span>
           </div>
+
           <Link href={`/article/${article._id}`}>
             <h3 className="font-bold text-[15px] sm:text-base leading-snug line-clamp-2 group-hover:text-primary transition">
               {article.title}
             </h3>
           </Link>
+
           <p className="text-sm text-gray-600 mt-1.5 sm:mt-2 line-clamp-2 flex-1">
             {article.content}
           </p>
+
           <div className="flex items-center justify-between mt-2">
             <p className="text-xs text-gray-600">
               {article.district && <span>{article.district} • </span>}
               {article.reporter}
             </p>
+
             <ShareButtons
               url={`/article/${article._id}`}
               title={article.title}
