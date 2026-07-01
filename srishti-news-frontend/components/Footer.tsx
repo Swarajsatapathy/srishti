@@ -102,7 +102,7 @@ export default function Footer() {
   Designed & Developed by S Swaraj | Contact:{" "}
   <a
     href="tel:+918260190379"
-    className="hover:text-primary transition-colors"
+    className="hover:text-primary transition-colors" 
   >
     +91 8260190379
   </a>
