@@ -291,28 +291,28 @@ export default function Home() {
 
  const loadArticles = async () => {
   const response = await apiRequest<{ articles: Article[] }>(
-    "/api/articles?limit=1000&sortBy=createdAt&order=desc"
+    "/api/articles?limit=100000&sortBy=createdAt&order=desc"
   );
   setArticles(response.data.articles || []);
 };
 
   const loadVideos = async () => {
     const response = await apiRequest<{ videos: Video[] }>(
-      "/api/videos?limit=1000&sortBy=createdAt&order=desc"
+      "/api/videos?limit=100000&sortBy=createdAt&order=desc"
     );
     setVideos(response.data.videos || []);
   };
 
   const loadReporters = async () => {
     const response = await apiRequest<{ reporters: Reporter[] }>(
-  "/api/reporters?limit=1000&sortBy=serialNumber&order=asc"
+  "/api/reporters?limit=100000&sortBy=serialNumber&order=asc"
 );
     setReporters(response.data.reporters || []);
   };
 
   const loadAdvertisements = async () => {
     const response = await apiRequest<{ advertisements: Advertisement[] }>(
-      "/api/advertisements?limit=1000&sortBy=createdAt&order=desc"
+      "/api/advertisements?limit=100000&sortBy=createdAt&order=desc"
     );
     setAdvertisements(response.data.advertisements || []);
   };
