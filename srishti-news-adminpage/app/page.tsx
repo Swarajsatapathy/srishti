@@ -65,6 +65,13 @@ type ApiResponse<T> = {
   data: T;
 };
 
+type PaginationMeta = {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
 type TabType = "articles" | "videos" | "reporters" | "advertisements";
 
 const placements = [
@@ -112,7 +119,46 @@ const odishaDistricts = [
   "Sundargarh (ସୁନ୍ଦରଗଡ଼)",
 ];
 
-const API_BASE = process.env.NEXT_PUBLIC_BASE_URL;
+const API_BASE = (process.env.NEXT_PUBLIC_BASE_URL || "").replace(/\/+$/, "");
+const ADMIN_PAGE_SIZE = 30;
+
+function PaginationControls({
+  pagination,
+  disabled,
+  onPageChange,
+}: {
+  pagination: PaginationMeta;
+  disabled: boolean;
+  onPageChange: (page: number) => void;
+}) {
+  if (pagination.totalPages <= 1) {
+    return null;
+  }
+
+  return (
+    <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
+      <button
+        type="button"
+        disabled={disabled || pagination.page <= 1}
+        onClick={() => onPageChange(pagination.page - 1)}
+        className="rounded-lg border border-border px-3 py-2 text-xs font-semibold text-muted transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        Previous
+      </button>
+      <span className="text-xs text-muted">
+        Page {pagination.page} of {pagination.totalPages}
+      </span>
+      <button
+        type="button"
+        disabled={disabled || pagination.page >= pagination.totalPages}
+        onClick={() => onPageChange(pagination.page + 1)}
+        className="rounded-lg border border-border px-3 py-2 text-xs font-semibold text-muted transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        Next
+      </button>
+    </div>
+  );
+}
 
 const parseTags = (value: string) =>
   value
@@ -155,49 +201,75 @@ async function apiRequest<T>(
   options?: RequestInit
 ): Promise<ApiResponse<T>> {
   if (!API_BASE) {
-    throw new Error("NEXT_PUBLIC_BASE_URL is missing in .env");
+    throw new Error("NEXT_PUBLIC_BASE_URL is missing in the deployment environment.");
   }
 
+  const method = (options?.method || "GET").toUpperCase();
   const token = localStorage.getItem("srishti-news-admin-token");
-  const headers: Record<string, string> = {};
+  const headers = new Headers(options?.headers);
 
-  // Preserve any existing headers from options
-  if (options?.headers) {
-    const h = options.headers as Record<string, string>;
-    Object.assign(headers, h);
+  // GET endpoints are public. Avoiding Authorization here prevents an
+  // unnecessary CORS preflight and makes list loading faster.
+  if (token && method !== "GET" && method !== "HEAD") {
+    headers.set("Authorization", `Bearer ${token}`);
   }
 
-  // Attach JWT token if present (don't set Content-Type for FormData)
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
+  const maxAttempts = method === "GET" ? 3 : 1;
+  let lastError: Error | null = null;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const response = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        method,
+        headers,
+        cache: "no-store",
+      });
+
+      if (response.status === 401) {
+        localStorage.removeItem("srishti-news-admin-token");
+        setTimeout(() => window.location.reload(), 0);
+        throw new Error("Session expired. Please login again.");
+      }
+
+      const contentType = response.headers.get("content-type") || "";
+      const json = contentType.includes("application/json")
+        ? await response.json()
+        : null;
+
+      if (response.ok && json?.success) {
+        return json as ApiResponse<T>;
+      }
+
+      const message =
+        json?.message ||
+        `Backend request failed with status ${response.status}.`;
+
+      if (
+        method === "GET" &&
+        [500, 502, 503, 504].includes(response.status) &&
+        attempt < maxAttempts
+      ) {
+        await new Promise((resolve) => setTimeout(resolve, 700 * attempt));
+        continue;
+      }
+
+      throw new Error(message);
+    } catch (error) {
+      lastError =
+        error instanceof Error ? error : new Error("Unable to reach the backend.");
+
+      if (attempt < maxAttempts) {
+        await new Promise((resolve) => setTimeout(resolve, 700 * attempt));
+        continue;
+      }
+    }
   }
 
-  let response: Response;
-
-  try {
-    response = await fetch(`${API_BASE}${path}`, {
-      ...options,
-      headers,
-    });
-  } catch {
-    throw new Error(
-      "Unable to reach the backend. Check API URL/CORS and keep article image uploads under 5MB total."
-    );
-  }
-
-  // Auto-logout on 401
-  if (response.status === 401) {
-    localStorage.removeItem("srishti-news-admin-token");
-    window.location.reload();
-    throw new Error("Session expired. Please login again.");
-  }
-
-  const json = await response.json();
-  if (!response.ok || !json.success) {
-    throw new Error(json.message || "Request failed");
-  }
-
-  return json;
+  throw new Error(
+    lastError?.message ||
+      "Unable to reach the backend. Check NEXT_PUBLIC_BASE_URL and CORS."
+  );
 }
 
 export default function Home() {
@@ -210,11 +282,37 @@ export default function Home() {
   const [authError, setAuthError] = useState("");
   const [status, setStatus] = useState<string>("");
   const [busy, setBusy] = useState(false);
+  const [loadingList, setLoadingList] = useState(false);
 
   const [articles, setArticles] = useState<Article[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
   const [reporters, setReporters] = useState<Reporter[]>([]); 
   const [advertisements, setAdvertisements] = useState<Advertisement[]>([]);
+
+  const [articlePagination, setArticlePagination] = useState<PaginationMeta>({
+    total: 0,
+    page: 1,
+    limit: ADMIN_PAGE_SIZE,
+    totalPages: 1,
+  });
+  const [videoPagination, setVideoPagination] = useState<PaginationMeta>({
+    total: 0,
+    page: 1,
+    limit: ADMIN_PAGE_SIZE,
+    totalPages: 1,
+  });
+  const [reporterPagination, setReporterPagination] = useState<PaginationMeta>({
+    total: 0,
+    page: 1,
+    limit: ADMIN_PAGE_SIZE,
+    totalPages: 1,
+  });
+  const [adPagination, setAdPagination] = useState<PaginationMeta>({
+    total: 0,
+    page: 1,
+    limit: ADMIN_PAGE_SIZE,
+    totalPages: 1,
+  });
 
   const [articleEditId, setArticleEditId] = useState<string | null>(null);
   const [videoEditId, setVideoEditId] = useState<string | null>(null);
@@ -276,46 +374,110 @@ export default function Home() {
     setAuthReady(true);
   }, []);
 
+  const loadArticles = async (page = articlePagination.page) => {
+    const response = await apiRequest<{
+      articles: Article[];
+      pagination: PaginationMeta;
+    }>(
+      `/api/articles?page=${page}&limit=${ADMIN_PAGE_SIZE}&sortBy=createdAt&order=desc`
+    );
+    setArticles(response.data?.articles || []);
+    setArticlePagination(
+      response.data?.pagination || {
+        total: response.data?.articles?.length || 0,
+        page,
+        limit: ADMIN_PAGE_SIZE,
+        totalPages: 1,
+      }
+    );
+  };
+
+  const loadVideos = async (page = videoPagination.page) => {
+    const response = await apiRequest<{
+      videos: Video[];
+      pagination: PaginationMeta;
+    }>(
+      `/api/videos?page=${page}&limit=${ADMIN_PAGE_SIZE}&sortBy=createdAt&order=desc`
+    );
+    setVideos(response.data?.videos || []);
+    setVideoPagination(
+      response.data?.pagination || {
+        total: response.data?.videos?.length || 0,
+        page,
+        limit: ADMIN_PAGE_SIZE,
+        totalPages: 1,
+      }
+    );
+  };
+
+  const loadReporters = async (page = reporterPagination.page) => {
+    const response = await apiRequest<{
+      reporters: Reporter[];
+      pagination: PaginationMeta;
+    }>(
+      `/api/reporters?page=${page}&limit=${ADMIN_PAGE_SIZE}&sortBy=serialNumber&order=asc`
+    );
+    setReporters(response.data?.reporters || []);
+    setReporterPagination(
+      response.data?.pagination || {
+        total: response.data?.reporters?.length || 0,
+        page,
+        limit: ADMIN_PAGE_SIZE,
+        totalPages: 1,
+      }
+    );
+  };
+
+  const loadAdvertisements = async (page = adPagination.page) => {
+    const response = await apiRequest<{
+      advertisements: Advertisement[];
+      pagination: PaginationMeta;
+    }>(
+      `/api/advertisements?page=${page}&limit=${ADMIN_PAGE_SIZE}&sortBy=createdAt&order=desc`
+    );
+    setAdvertisements(response.data?.advertisements || []);
+    setAdPagination(
+      response.data?.pagination || {
+        total: response.data?.advertisements?.length || 0,
+        page,
+        limit: ADMIN_PAGE_SIZE,
+        totalPages: 1,
+      }
+    );
+  };
+
+  const loadTab = async (tab: TabType, page?: number) => {
+    setLoadingList(true);
+    setStatus("");
+
+    try {
+      if (tab === "articles") await loadArticles(page ?? articlePagination.page);
+      if (tab === "videos") await loadVideos(page ?? videoPagination.page);
+      if (tab === "reporters") await loadReporters(page ?? reporterPagination.page);
+      if (tab === "advertisements") {
+        await loadAdvertisements(page ?? adPagination.page);
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Unable to load records.";
+      setStatus(`Error loading ${tab}: ${message}`);
+    } finally {
+      setLoadingList(false);
+    }
+  };
+
+  const changeTab = (tab: TabType) => {
+    setActiveTab(tab);
+    void loadTab(tab);
+  };
+
   useEffect(() => {
     if (!isAuthed) {
       return;
     }
 
-    void Promise.allSettled([
-      loadArticles(),
-      loadVideos(),
-      loadReporters(),
-      loadAdvertisements(),
-    ]);
+    void loadTab("articles", 1);
   }, [isAuthed]);
-
- const loadArticles = async () => {
-  const response = await apiRequest<{ articles: Article[] }>(
-    "/api/articles?limit=100000&sortBy=createdAt&order=desc"
-  );
-  setArticles(response.data.articles || []);
-};
-
-  const loadVideos = async () => {
-    const response = await apiRequest<{ videos: Video[] }>(
-      "/api/videos?limit=100000&sortBy=createdAt&order=desc"
-    );
-    setVideos(response.data.videos || []);
-  };
-
-  const loadReporters = async () => {
-    const response = await apiRequest<{ reporters: Reporter[] }>(
-  "/api/reporters?limit=100000&sortBy=serialNumber&order=asc"
-);
-    setReporters(response.data.reporters || []);
-  };
-
-  const loadAdvertisements = async () => {
-    const response = await apiRequest<{ advertisements: Advertisement[] }>(
-      "/api/advertisements?limit=100000&sortBy=createdAt&order=desc"
-    );
-    setAdvertisements(response.data.advertisements || []);
-  };
 
   const withBusy = async (work: () => Promise<void>, message: string) => {
     setBusy(true);
@@ -772,7 +934,7 @@ export default function Home() {
           {(["articles", "videos", "reporters", "advertisements"] as TabType[]).map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => changeTab(tab)}
               className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${
                 activeTab === tab
                   ? "bg-accent text-background shadow-md shadow-accent/25"
@@ -939,9 +1101,15 @@ export default function Home() {
           </form>
 
           <div className="rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border">
-            <h2 className="mb-4 text-lg font-bold text-foreground">Articles <span className="ml-1 text-sm font-normal text-muted">({articles.length})</span></h2>
+            <h2 className="mb-4 text-lg font-bold text-foreground">Articles <span className="ml-1 text-sm font-normal text-muted">({articlePagination.total})</span></h2>
             <div className="max-h-[65vh] space-y-2.5 overflow-auto pr-1">
-              {articles.map((article) => (
+              {loadingList && (
+                <p className="py-8 text-center text-sm text-muted">Loading articles...</p>
+              )}
+              {!loadingList && articles.length === 0 && (
+                <p className="py-8 text-center text-sm text-muted">No articles found.</p>
+              )}
+              {!loadingList && articles.map((article) => (
                 <div
                   key={article._id}
                   className="rounded-lg border border-border bg-background p-3.5 text-sm transition hover:border-accent/30 hover:shadow-md hover:shadow-accent/5"
@@ -967,6 +1135,11 @@ export default function Home() {
                 </div>
               ))}
             </div>
+            <PaginationControls
+              pagination={articlePagination}
+              disabled={loadingList}
+              onPageChange={(page) => void loadTab("articles", page)}
+            />
           </div>
         </section>
       )}
@@ -1092,9 +1265,15 @@ export default function Home() {
           </form>
 
           <div className="rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border">
-            <h2 className="mb-4 text-lg font-bold text-foreground">Videos <span className="ml-1 text-sm font-normal text-muted">({videos.length})</span></h2>
+            <h2 className="mb-4 text-lg font-bold text-foreground">Videos <span className="ml-1 text-sm font-normal text-muted">({videoPagination.total})</span></h2>
             <div className="max-h-[65vh] space-y-2.5 overflow-auto pr-1">
-              {videos.map((video) => (
+              {loadingList && (
+                <p className="py-8 text-center text-sm text-muted">Loading videos...</p>
+              )}
+              {!loadingList && videos.length === 0 && (
+                <p className="py-8 text-center text-sm text-muted">No videos found.</p>
+              )}
+              {!loadingList && videos.map((video) => (
                 <div
                   key={video._id}
                   className="rounded-lg border border-border bg-background p-3.5 text-sm transition hover:border-accent/30 hover:shadow-md hover:shadow-accent/5"
@@ -1120,6 +1299,11 @@ export default function Home() {
                 </div>
               ))}
             </div>
+            <PaginationControls
+              pagination={videoPagination}
+              disabled={loadingList}
+              onPageChange={(page) => void loadTab("videos", page)}
+            />
           </div>
         </section>
       )}
@@ -1228,10 +1412,16 @@ export default function Home() {
 
           <div className="rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border">
             <h2 className="mb-4 text-lg font-bold text-foreground">
-              Reporters <span className="ml-1 text-sm font-normal text-muted">({reporters.length})</span>
+              Reporters <span className="ml-1 text-sm font-normal text-muted">({reporterPagination.total})</span>
             </h2>
             <div className="max-h-[65vh] space-y-2.5 overflow-auto pr-1">
-              {reporters.map((reporter) => (
+              {loadingList && (
+                <p className="py-8 text-center text-sm text-muted">Loading reporters...</p>
+              )}
+              {!loadingList && reporters.length === 0 && (
+                <p className="py-8 text-center text-sm text-muted">No reporters found.</p>
+              )}
+              {!loadingList && reporters.map((reporter) => (
                 <div
                   key={reporter._id}
                   className="rounded-lg border border-border bg-background p-3.5 text-sm transition hover:border-accent/30 hover:shadow-md hover:shadow-accent/5"
@@ -1258,6 +1448,11 @@ export default function Home() {
                 </div>
               ))}
             </div>
+            <PaginationControls
+              pagination={reporterPagination}
+              disabled={loadingList}
+              onPageChange={(page) => void loadTab("reporters", page)}
+            />
           </div>
         </section>
       )}
@@ -1412,10 +1607,16 @@ export default function Home() {
 
           <div className="rounded-xl bg-surface p-6 shadow-lg ring-1 ring-border">
             <h2 className="mb-4 text-lg font-bold text-foreground">
-              Advertisements <span className="ml-1 text-sm font-normal text-muted">({advertisements.length})</span>
+              Advertisements <span className="ml-1 text-sm font-normal text-muted">({adPagination.total})</span>
             </h2>
             <div className="max-h-[65vh] space-y-2.5 overflow-auto pr-1">
-              {advertisements.map((ad) => (
+              {loadingList && (
+                <p className="py-8 text-center text-sm text-muted">Loading advertisements...</p>
+              )}
+              {!loadingList && advertisements.length === 0 && (
+                <p className="py-8 text-center text-sm text-muted">No advertisements found.</p>
+              )}
+              {!loadingList && advertisements.map((ad) => (
                 <div
                   key={ad._id}
                   className="rounded-lg border border-border bg-background p-3.5 text-sm transition hover:border-accent/30 hover:shadow-md hover:shadow-accent/5"
@@ -1453,6 +1654,11 @@ export default function Home() {
                 </div>
               ))}
             </div>
+            <PaginationControls
+              pagination={adPagination}
+              disabled={loadingList}
+              onPageChange={(page) => void loadTab("advertisements", page)}
+            />
           </div>
         </section>
       )}
