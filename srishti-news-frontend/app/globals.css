@@ -9,7 +9,10 @@
   --font-sans: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Global responsive foundations */
+/* =========================================================
+   GLOBAL RESPONSIVE FOUNDATIONS
+========================================================= */
+
 *,
 *::before,
 *::after {
@@ -17,24 +20,27 @@
 }
 
 html {
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
+  margin: 0;
+  overflow-x: hidden;
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
-  overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Ensure images never overflow their containers */
-img, video {
+/* Prevent media from overflowing */
+
+img,
+video {
   max-width: 100%;
   height: auto;
 }
@@ -44,24 +50,32 @@ iframe {
 }
 
 /* Prevent input zoom on iOS */
+
 @media (max-width: 768px) {
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     font-size: 16px !important;
   }
 }
 
-/* Focus-visible ring for keyboard accessibility */
+/* Keyboard focus */
+
 :focus-visible {
+  border-radius: 2px;
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
-  border-radius: 2px;
 }
 
-/* Flash ticker animation */
+/* =========================================================
+   FLASH TICKER
+========================================================= */
+
 @keyframes ticker-scroll {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -75,29 +89,35 @@ iframe {
   animation-play-state: paused;
 }
 
-/* Line clamp utilities */
+/* =========================================================
+   LINE CLAMP UTILITIES
+========================================================= */
+
 .line-clamp-1 {
   display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
   overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }
 
 .line-clamp-2 {
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
   overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .line-clamp-3 {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
   overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
-/* Custom scrollbar */
+/* =========================================================
+   CUSTOM SCROLLBAR
+========================================================= */
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -107,10 +127,376 @@ iframe {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
   border-radius: 3px;
+  background: #cbd5e1;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-primary);
+}
+
+/* =========================================================
+   SRISHTI NEWS REPORTER ID CARD
+   Minimal Red, White and Navy Theme
+========================================================= */
+
+.reporterIdCard {
+  position: relative;
+  width: 1011px;
+  height: 638px;
+  overflow: hidden;
+  border: 8px solid #20205c;
+  border-radius: 38px;
+  background: #ffffff;
+  box-sizing: border-box;
+  box-shadow: 0 18px 40px rgba(32, 32, 92, 0.18);
+  color: #222222;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================================================
+   ID CARD HEADER
+========================================================= */
+
+.reporterIdCardHeader {
+  position: relative;
+  display: flex;
+  height: 160px;
+  align-items: center;
+  padding: 0 42px;
+  background: #c91520;
+  box-sizing: border-box;
+  color: #ffffff;
+}
+
+.reporterIdLogoWrapper {
+  display: flex;
+  width: 150px;
+  height: 112px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 4px solid #ffffff;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.reporterIdLogo {
+  display: block;
+  width: 140px;
+  height: 102px;
+  object-fit: contain;
+}
+
+.reporterIdHeaderContent {
+  margin-left: 28px;
+}
+
+.reporterIdHeaderContent h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.reporterIdHeaderContent p {
+  margin: 10px 0 0;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.reporterIdHeaderMark {
+  position: absolute;
+  top: 25px;
+  right: 32px;
+  padding: 9px 16px;
+  border: 2px solid #ffffff;
+  border-radius: 8px;
+  background: #20205c;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+/* =========================================================
+   ID CARD BODY
+========================================================= */
+
+.reporterIdCardBody {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 35px;
+  height: 406px;
+  padding: 40px 45px 20px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.reporterIdPhotoColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* =========================================================
+   REPORTER PHOTO
+========================================================= */
+
+.reporterIdPhotoFrame {
+  display: flex;
+  width: 205px;
+  height: 258px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 3px solid #c91520;
+  border-radius: 20px;
+  background: #f4f4f7;
+  box-shadow: 0 10px 22px rgba(32, 32, 92, 0.15);
+}
+
+.reporterIdPhoto {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.reporterIdPhotoFallback {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background: #20205c;
+  color: #ffffff;
+  font-size: 64px;
+  font-weight: 900;
+}
+
+/* =========================================================
+   VALIDITY
+========================================================= */
+
+.reporterIdValidity {
+  width: 190px;
+  margin-top: 23px;
+  padding: 10px 15px 11px;
+  border: 2px solid #c91520;
+  border-radius: 13px;
+  background: #fff7f7;
+  box-sizing: border-box;
+}
+
+.reporterIdValidity span {
+  display: block;
+  color: #777777;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.reporterIdValidity strong {
+  display: block;
+  margin-top: 5px;
+  color: #20205c;
+  font-size: 21px;
+  font-weight: 900;
+}
+
+/* =========================================================
+   REPORTER INFORMATION
+========================================================= */
+
+.reporterIdInformation {
+  position: relative;
+  min-width: 0;
+  padding-top: 10px;
+}
+
+.reporterIdInformation h1 {
+  max-width: 650px;
+  margin: 0 0 15px;
+  overflow: hidden;
+  color: #20205c;
+  font-size: 41px;
+  font-weight: 900;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.reporterIdDetails {
+  width: 100%;
+}
+
+.reporterIdDetailRow {
+  display: grid;
+  grid-template-columns: 175px minmax(0, 1fr);
+  min-height: 43px;
+  align-items: center;
+  border-bottom: 1px solid #d5d5dd;
+}
+
+.reporterIdDetailRow span {
+  color: #a9151d;
+  font-size: 21px;
+  font-weight: 900;
+}
+
+.reporterIdDetailRow strong {
+  overflow: hidden;
+  color: #252525;
+  font-size: 20px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   AUTHORIZED SIGNATURE
+========================================================= */
+
+.reporterIdSignature {
+  position: absolute;
+  right: 22px;
+  bottom: 3px;
+  min-width: 215px;
+  text-align: center;
+}
+
+.reporterIdSignatureLine {
+  width: 105px;
+  margin: 0 auto 4px;
+  border-bottom: 1.5px solid #20205c;
+}
+
+.reporterIdSignatureLine span {
+  position: relative;
+  bottom: 3px;
+  color: #20205c;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.reporterIdSignature .reporterIdSignerName {
+  display: block;
+  margin: 1px 0 0;
+  color: #a9151d;
+  font-family:
+    "Segoe Script",
+    "Lucida Handwriting",
+    "Brush Script MT",
+    cursive;
+  font-size: 27px;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.reporterIdSignature p {
+  margin: 3px 0 0;
+  color: #20205c;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   ID CARD FOOTER
+========================================================= */
+
+.reporterIdCardFooter {
+  display: flex;
+  height: 56px;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 0 25px;
+  background: #20205c;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.reporterIdFooterDivider {
+  width: 2px;
+  height: 24px;
+  background: #c91520;
+}
+
+/* =========================================================
+   DOWNLOAD BUTTON
+========================================================= */
+
+.reporterIdDownloadOnly {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.reporterIdDownloadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 9px;
+  background: #c91520;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 800;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.reporterIdDownloadButton:hover {
+  background: #a91019;
+  box-shadow: 0 8px 18px rgba(201, 21, 32, 0.22);
+  transform: translateY(-1px);
+}
+
+.reporterIdDownloadButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
+.reporterIdDownloadError {
+  max-width: 500px;
+  margin: 8px 0 0;
+  color: #c91520;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* =========================================================
+   OFF-SCREEN ID CARD CAPTURE AREA
+========================================================= */
+
+.reporterIdCardCaptureArea {
+  position: fixed;
+  top: 0;
+  left: -12000px;
+  width: 1011px;
+  height: 638px;
+  overflow: visible;
+  pointer-events: none;
 }

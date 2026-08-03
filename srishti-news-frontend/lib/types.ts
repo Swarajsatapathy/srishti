@@ -47,11 +47,16 @@ export interface Video {
 export interface Reporter {
   _id: string;
   serialNumber?: number;
+  reporterId?: string;
   name: string;
   designation: string;
-  message: string;
+  message?: string;
   district?: string;
-  photo: { url: string; key: string };
+  validUpto?: string;
+  photo?: {
+    url?: string;
+    key?: string;
+  };
   createdAt: string;
   updatedAt: string;
 }

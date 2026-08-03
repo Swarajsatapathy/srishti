@@ -8,6 +8,12 @@ const reporterSchema = new mongoose.Schema(
       min: [1, "Serial number must be at least 1"],
     },
 
+    reporterId: {
+      type: String,
+      unique: true,
+      trim: true,
+    },
+
     name: {
       type: String,
       required: [true, "Reporter name is required"],
@@ -34,6 +40,11 @@ const reporterSchema = new mongoose.Schema(
       default: "",
     },
 
+    validUpto: {
+      type: String,
+      trim: true,
+    },
+
     photo: {
       url: { type: String, default: "" },
       key: { type: String, default: "" },
@@ -41,7 +52,7 @@ const reporterSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 reporterSchema.index({ serialNumber: 1 });
