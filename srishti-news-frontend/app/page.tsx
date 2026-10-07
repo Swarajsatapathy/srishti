@@ -82,33 +82,33 @@ export default async function Home() {
       <FlashTicker items={flashItems} />
 
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8">
-        {/* Row 1: Web News + Video News */}
+        {/* Row 1: Advertisement (left) + Web News (right) */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-stretch">
+          <div>
+            <AdvertisementCarousel ads={ads} fullWidth />
+          </div>
           <div>
             <MainStory articles={webNewsArticles.length > 0 ? webNewsArticles : (featured || [])} />
           </div>
+        </div>
+
+        {/* Row 2: Video News (left) + Editor's Picks (right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <div>
             <VideoNewsSection videos={latestVideos} />
           </div>
-        </div>
-
-        {/* Row 2: Editor's Picks (left) + Reporters (right) */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <div>
             <EditorsPicks articles={editorsPicks || []} videos={editorsPickVids || []} />
           </div>
-          <div>
-            <ReportersSection reporters={reporters} />
-          </div>
         </div>
 
-        {/* Row 3: Trending Story + Advertisement */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        {/* Row 3: Trending Story + Reporters */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <div>
             <TrendingStories articles={trending || []} videos={trendingVids || []} />
           </div>
           <div>
-            <AdvertisementCarousel ads={ads} fullWidth />
+            <ReportersSection reporters={reporters} />
           </div>
         </div>
 

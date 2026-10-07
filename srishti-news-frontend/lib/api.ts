@@ -125,6 +125,13 @@ export async function getReporterById(id: string) {
 
 // ─── Advertisements ─────────────────────────────────────────────
 
+export async function getAdvertisements(params?: Record<string, string>) {
+  const query = params ? `?${new URLSearchParams(params).toString()}` : "";
+  return fetchApi<{ advertisements: Advertisement[]; pagination: Pagination }>(
+    `/api/advertisements${query}`
+  );
+}
+
 export async function getActiveAds(placement?: string) {
   const query = placement ? `?placement=${placement}` : "";
 
@@ -145,4 +152,19 @@ export async function getActiveAds(placement?: string) {
   }
 
   return all.advertisements.filter((ad) => ad.isActive);
+}
+
+export async function getAdvertisementById(id: string) {
+  return fetchApi<Advertisement>(`/api/advertisements/${id}`);
+}
+
+export async function trackAdClick(id: string) {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    await fetch(`${BASE_URL}/api/advertisements/${id}/click`, {
+      method: "POST",
+    });
+  } catch {
+    // Ignore tracking errors
+  }
 }

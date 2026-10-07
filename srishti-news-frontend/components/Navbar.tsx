@@ -8,6 +8,7 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/editors-desk", label: "Editor's Desk" },
+  { href: "/advertisement", label: "Advertisement" },
   { href: "/web-news", label: "Web News" },
   { href: "/videos", label: "Video News" },
   { href: "/live", label: "Live with Srishti" },
