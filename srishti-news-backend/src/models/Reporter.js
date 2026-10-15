@@ -40,6 +40,18 @@ const reporterSchema = new mongoose.Schema(
       default: "",
     },
 
+    phoneNumber: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    bloodGroup: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     validUpto: {
       type: String,
       trim: true,

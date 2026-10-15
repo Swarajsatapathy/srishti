@@ -276,7 +276,7 @@ export default function AdvertisementCarousel({
               aria-label={`Go to slide ${i + 1}`}
               className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                 i === current
-                  ? "bg-red-600 w-5"
+                  ? "bg-primary w-5"
                   : "bg-gray-300 w-2 hover:bg-gray-400"
               }`}
             />

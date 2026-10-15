@@ -140,7 +140,7 @@ export default async function AdvertisementPage({ params }: PageProps) {
 
       {/* Call to Action Button */}
       {destinationUrl && (
-        <div className="mb-8 p-5 sm:p-6 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl border border-red-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mb-8 p-5 sm:p-6 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <h3 className="text-base sm:text-lg font-bold text-gray-900">
               ଅଧିକ ସୂଚନା ପାଇଁ ୱେବସାଇଟ୍ ପରିଦର୍ଶନ କରନ୍ତୁ

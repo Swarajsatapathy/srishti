@@ -42,6 +42,8 @@ type Reporter = {
   designation: string;
   message?: string;
   district?: string;
+  phoneNumber?: string;
+  bloodGroup?: string;
   validUpto?: string;
   photo?: {
     url?: string;
@@ -123,6 +125,8 @@ const odishaDistricts = [
   "Subarnapur (ସୁବର୍ଣ୍ଣପୁର)",
   "Sundargarh (ସୁନ୍ଦରଗଡ଼)",
 ];
+
+const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const API_BASE = (process.env.NEXT_PUBLIC_BASE_URL || "").replace(/\/+$/, "");
 const ADMIN_PAGE_SIZE = 30;
@@ -361,7 +365,8 @@ export default function Home() {
     reporterId: "",
     name: "",
     designation: "",
-    message: "",
+    phoneNumber: "",
+    bloodGroup: "",
     district: "",
     validUpto: "",
   });
@@ -588,7 +593,8 @@ export default function Home() {
       reporterId: "",
       name: "",
       designation: "",
-      message: "",
+      phoneNumber: "",
+      bloodGroup: "",
       district: "",
       validUpto: "",
     });
@@ -749,7 +755,8 @@ export default function Home() {
         formData.append("reporterId", reporterForm.reporterId);
         formData.append("name", reporterForm.name);
         formData.append("designation", reporterForm.designation);
-        formData.append("message", reporterForm.message);
+        formData.append("phoneNumber", reporterForm.phoneNumber);
+        formData.append("bloodGroup", reporterForm.bloodGroup);
         formData.append("district", reporterForm.district);
         formData.append("validUpto", reporterForm.validUpto);
         if (reporterPhoto) {
@@ -776,7 +783,8 @@ export default function Home() {
       reporterId: reporter.reporterId || "",
       name: reporter.name,
       designation: reporter.designation,
-      message: reporter.message || "",
+      phoneNumber: reporter.phoneNumber || "",
+      bloodGroup: reporter.bloodGroup || "",
       district: reporter.district || "",
       validUpto: reporter.validUpto || "",
     });
@@ -1126,17 +1134,6 @@ export default function Home() {
                 }
                 required
               />
-              <textarea
-                className="h-32 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-                placeholder="Content"
-                value={articleForm.content}
-                onChange={(event) =>
-                  setArticleForm((current) => ({
-                    ...current,
-                    content: event.target.value,
-                  }))
-                }
-              />
               <input
                 className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                 placeholder="Reporter"
@@ -1148,6 +1145,17 @@ export default function Home() {
                   }))
                 }
                 required
+              />
+              <textarea
+                className="h-32 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+                placeholder="Content"
+                value={articleForm.content}
+                onChange={(event) =>
+                  setArticleForm((current) => ({
+                    ...current,
+                    content: event.target.value,
+                  }))
+                }
               />
               <select
                 className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
@@ -1326,17 +1334,6 @@ export default function Home() {
                 }
                 required
               />
-              <textarea
-                className="h-24 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-                placeholder="Content"
-                value={videoForm.content}
-                onChange={(event) =>
-                  setVideoForm((current) => ({
-                    ...current,
-                    content: event.target.value,
-                  }))
-                }
-              />
               <input
                 className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                 placeholder="Reporter"
@@ -1348,6 +1345,17 @@ export default function Home() {
                   }))
                 }
                 required
+              />
+              <textarea
+                className="h-24 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+                placeholder="Content"
+                value={videoForm.content}
+                onChange={(event) =>
+                  setVideoForm((current) => ({
+                    ...current,
+                    content: event.target.value,
+                  }))
+                }
               />
               <select
                 className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
@@ -1553,17 +1561,35 @@ export default function Home() {
                 }
                 required
               />
-              <textarea
-                className="h-24 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-                placeholder="Message"
-                value={reporterForm.message}
+              <input
+                type="tel"
+                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+                placeholder="Phone / Mobile Number (optional)"
+                value={reporterForm.phoneNumber}
                 onChange={(event) =>
                   setReporterForm((current) => ({
                     ...current,
-                    message: event.target.value,
+                    phoneNumber: event.target.value,
                   }))
                 }
               />
+              <select
+                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+                value={reporterForm.bloodGroup}
+                onChange={(event) =>
+                  setReporterForm((current) => ({
+                    ...current,
+                    bloodGroup: event.target.value,
+                  }))
+                }
+              >
+                <option value="">Select Blood Group (optional)</option>
+                {bloodGroups.map((bg) => (
+                  <option key={bg} value={bg}>
+                    {bg}
+                  </option>
+                ))}
+              </select>
               <select
                 className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
                 value={reporterForm.district}
@@ -1678,6 +1704,24 @@ export default function Home() {
                           Reporter ID:{" "}
                           <span className="font-semibold text-foreground">
                             {reporter.reporterId}
+                          </span>
+                        </p>
+                      )}
+
+                      {reporter.phoneNumber && (
+                        <p className="mt-0.5 text-xs text-muted">
+                          Phone:{" "}
+                          <span className="font-semibold text-foreground">
+                            {reporter.phoneNumber}
+                          </span>
+                        </p>
+                      )}
+
+                      {reporter.bloodGroup && (
+                        <p className="mt-0.5 text-xs text-muted">
+                          Blood Group:{" "}
+                          <span className="font-semibold text-danger">
+                            {reporter.bloodGroup}
                           </span>
                         </p>
                       )}

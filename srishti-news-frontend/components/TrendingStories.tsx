@@ -129,7 +129,7 @@ export default function TrendingStories({ articles, videos = [] }: TrendingStori
                 ) : (
                   <div className="w-full h-full bg-linear-to-br from-gray-200 to-gray-300" />
                 )}
-                <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full shadow">
+                <div className="absolute top-3 left-3 bg-primary text-white text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full shadow">
                   {i + 1}
                 </div>
                 <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
@@ -153,7 +153,7 @@ export default function TrendingStories({ articles, videos = [] }: TrendingStori
             aria-label={`Go to story ${i + 1}`}
             className={`w-2 h-2 rounded-full transition-all duration-200 ${
               i === currentIndex
-                ? "bg-red-600 w-4"
+                ? "bg-primary w-4"
                 : "bg-gray-300 hover:bg-gray-400"
             }`}
           />

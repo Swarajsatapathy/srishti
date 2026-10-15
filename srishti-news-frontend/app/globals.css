@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #c41e22;
-  --color-primary-dark: #a01a1d;
-  --color-secondary: #1a1a2e;
+  --color-primary: #D9531E;
+  --color-primary-dark: #B83D04;
+  --color-secondary: #14532d;
   --color-background: #ffffff;
   --color-foreground: #171717;
   --font-sans: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -136,132 +136,138 @@ iframe {
 }
 
 /* =========================================================
-   SRISHTI NEWS REPORTER ID CARD
-   Minimal Red, White and Navy Theme
+   SRISHTI NEWS OFFICIAL PORTRAIT ID CARD
 ========================================================= */
 
-.reporterIdCard {
+.idCardPortrait {
   position: relative;
-  width: 1011px;
-  height: 638px;
+  width: 591px;
+  height: 1004px;
   overflow: hidden;
-  border: 8px solid #20205c;
-  border-radius: 38px;
   background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
   box-sizing: border-box;
-  box-shadow: 0 18px 40px rgba(32, 32, 92, 0.18);
-  color: #222222;
   font-family: Arial, Helvetica, sans-serif;
+  color: #1a202c;
 }
 
-/* =========================================================
-   ID CARD HEADER
-========================================================= */
-
-.reporterIdCardHeader {
-  position: relative;
-  display: flex;
-  height: 160px;
-  align-items: center;
-  padding: 0 42px;
-  background: #c91520;
-  box-sizing: border-box;
-  color: #ffffff;
+/* Background vector art */
+.idCardPortraitBgSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.reporterIdLogoWrapper {
+/* Background diagonal watermark logo */
+.idCardPortraitWatermark {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  width: 430px;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 2;
   display: flex;
-  width: 150px;
-  height: 112px;
-  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  border: 4px solid #ffffff;
-  border-radius: 18px;
-  background: #ffffff;
 }
 
-.reporterIdLogo {
-  display: block;
-  width: 140px;
-  height: 102px;
-  object-fit: contain;
-}
-
-.reporterIdHeaderContent {
-  margin-left: 28px;
-}
-
-.reporterIdHeaderContent h2 {
-  margin: 0;
-  color: #ffffff;
-  font-size: 48px;
-  font-weight: 900;
-  line-height: 1.05;
-}
-
-.reporterIdHeaderContent p {
-  margin: 10px 0 0;
-  color: #ffffff;
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-
-.reporterIdHeaderMark {
+/* Right-side vertical PRESS banner */
+.idCardPortraitPress {
   position: absolute;
-  top: 25px;
-  right: 32px;
-  padding: 9px 16px;
-  border: 2px solid #ffffff;
-  border-radius: 8px;
-  background: #20205c;
-  color: #ffffff;
-  font-size: 17px;
-  font-weight: 900;
-  letter-spacing: 2px;
-}
-
-/* =========================================================
-   ID CARD BODY
-========================================================= */
-
-.reporterIdCardBody {
-  display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
-  gap: 35px;
-  height: 406px;
-  padding: 40px 45px 20px;
-  background: #ffffff;
-  box-sizing: border-box;
-}
-
-.reporterIdPhotoColumn {
+  right: 98px;
+  top: 50%;
+  transform: translateY(-50%) scaleX(1.18);
+  z-index: 5;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 6px;
+  font-family: "Arial Black", Gadget, sans-serif;
+  font-size: 38px;
+  font-weight: 900;
+  color: #dc2626;
+  line-height: 1;
+  user-select: none;
 }
 
-/* =========================================================
-   REPORTER PHOTO
-========================================================= */
-
-.reporterIdPhotoFrame {
+/* Top centered logo wrapper */
+.idCardPortraitLogoWrapper {
+  position: relative;
+  z-index: 5;
+  margin-top: 26px;
   display: flex;
-  width: 205px;
-  height: 258px;
-  align-items: center;
   justify-content: center;
-  overflow: hidden;
-  border: 3px solid #c91520;
-  border-radius: 20px;
-  background: #f4f4f7;
-  box-shadow: 0 10px 22px rgba(32, 32, 92, 0.15);
+  align-items: center;
 }
 
-.reporterIdPhoto {
+.idCardPortraitLogo {
+  display: block;
+  width: 310px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Center photo row with blood group on the left */
+.idCardPortraitPhotoRow {
+  position: relative;
+  z-index: 5;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.idCardPortraitBloodGroup {
+  position: absolute;
+  left: 108px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  z-index: 6;
+}
+
+.idCardPortraitBloodDrop {
+  width: 30px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(185, 28, 28, 0.28));
+}
+
+.idCardPortraitBloodText {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: center;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #991b1b;
+  line-height: 1;
+  letter-spacing: 0.5px;
+}
+
+.idCardPortraitPhotoFrame {
+  width: 210px;
+  height: 265px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f1f5f9;
+  border: 2px solid #2563eb;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.idCardPortraitPhoto {
   display: block;
   width: 100%;
   height: 100%;
@@ -269,177 +275,173 @@ iframe {
   object-position: top;
 }
 
-.reporterIdPhotoFallback {
+.idCardPortraitPhotoFallback {
   display: flex;
   width: 100%;
   height: 100%;
   align-items: center;
   justify-content: center;
-  background: #20205c;
+  background: #15803d;
   color: #ffffff;
-  font-size: 64px;
+  font-size: 54px;
   font-weight: 900;
 }
 
-/* =========================================================
-   VALIDITY
-========================================================= */
-
-.reporterIdValidity {
-  width: 190px;
-  margin-top: 23px;
-  padding: 10px 15px 11px;
-  border: 2px solid #c91520;
-  border-radius: 13px;
-  background: #fff7f7;
-  box-sizing: border-box;
-}
-
-.reporterIdValidity span {
-  display: block;
-  color: #777777;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.reporterIdValidity strong {
-  display: block;
-  margin-top: 5px;
-  color: #20205c;
-  font-size: 21px;
-  font-weight: 900;
-}
-
-/* =========================================================
-   REPORTER INFORMATION
-========================================================= */
-
-.reporterIdInformation {
+/* Reporter name and designation */
+.idCardPortraitIdentity {
   position: relative;
-  min-width: 0;
-  padding-top: 10px;
+  z-index: 5;
+  text-align: center;
+  margin-top: 18px;
 }
 
-.reporterIdInformation h1 {
-  max-width: 650px;
-  margin: 0 0 15px;
-  overflow: hidden;
-  color: #20205c;
-  font-size: 41px;
+.idCardPortraitName {
+  font-size: 28px;
   font-weight: 900;
-  line-height: 1.05;
-  text-overflow: ellipsis;
+  color: #167734;
   text-transform: uppercase;
-  white-space: nowrap;
+  letter-spacing: 0.5px;
+  margin: 0;
+  line-height: 1.15;
 }
 
-.reporterIdDetails {
-  width: 100%;
-}
-
-.reporterIdDetailRow {
-  display: grid;
-  grid-template-columns: 175px minmax(0, 1fr);
-  min-height: 43px;
-  align-items: center;
-  border-bottom: 1px solid #d5d5dd;
-}
-
-.reporterIdDetailRow span {
-  color: #a9151d;
+.idCardPortraitDesignation {
   font-size: 21px;
+  font-weight: 700;
+  color: #1a365d;
+  margin: 6px 0 0;
+  line-height: 1.2;
+}
+
+/* Details Table: ID No, District, Mobile, Validity */
+.idCardPortraitDetails {
+  position: relative;
+  z-index: 5;
+  width: 410px;
+  margin: 18px auto 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.idCardPortraitDetailRow {
+  display: grid;
+  grid-template-columns: 125px 20px 1fr;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.idCardPortraitLabel {
+  font-size: 19px;
   font-weight: 900;
+  color: #b91c1c;
 }
 
-.reporterIdDetailRow strong {
-  overflow: hidden;
-  color: #252525;
-  font-size: 20px;
-  font-weight: 800;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* =========================================================
-   AUTHORIZED SIGNATURE
-========================================================= */
-
-.reporterIdSignature {
-  position: absolute;
-  right: 22px;
-  bottom: 3px;
-  min-width: 215px;
+.idCardPortraitColon {
+  font-size: 19px;
+  font-weight: 900;
+  color: #1a365d;
   text-align: center;
 }
 
-.reporterIdSignatureLine {
-  width: 105px;
-  margin: 0 auto 4px;
-  border-bottom: 1.5px solid #20205c;
-}
-
-.reporterIdSignatureLine span {
-  position: relative;
-  bottom: 3px;
-  color: #20205c;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 17px;
-  font-style: italic;
-  font-weight: 700;
-}
-
-.reporterIdSignature .reporterIdSignerName {
-  display: block;
-  margin: 1px 0 0;
-  color: #a9151d;
-  font-family:
-    "Segoe Script",
-    "Lucida Handwriting",
-    "Brush Script MT",
-    cursive;
-  font-size: 27px;
-  font-style: italic;
-  font-weight: 500;
-  letter-spacing: 0;
-  line-height: 1.1;
+.idCardPortraitValue {
+  font-size: 19px;
+  font-weight: 800;
+  color: #1a365d;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.reporterIdSignature p {
-  margin: 3px 0 0;
-  color: #20205c;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-/* =========================================================
-   ID CARD FOOTER
-========================================================= */
-
-.reporterIdCardFooter {
+/* Bottom Row: QR Code on the left, Issuing Authority on the right */
+.idCardPortraitBottomRow {
+  position: relative;
+  z-index: 5;
   display: flex;
-  height: 56px;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 460px;
+  margin: 24px auto 0;
+}
+
+.idCardPortraitQrFrame {
+  width: 98px;
+  height: 98px;
+  background: #ffffff;
+  padding: 3px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 18px;
-  padding: 0 25px;
-  background: #20205c;
   box-sizing: border-box;
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: 800;
 }
 
-.reporterIdFooterDivider {
-  width: 2px;
-  height: 24px;
-  background: #c91520;
+.idCardPortraitQr {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.idCardPortraitAuthority {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 28px;
+  margin-right: 16px;
+}
+
+.idCardPortraitAuthTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2563eb;
+  letter-spacing: 0.3px;
+}
+
+.idCardPortraitAuthName {
+  font-size: 20px;
+  font-weight: 900;
+  color: #b91c1c;
+  margin-top: 3px;
+  line-height: 1.1;
+}
+
+.idCardPortraitAuthRole {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a365d;
+  margin-top: 2px;
+}
+
+/* Footer credentials & contact info */
+.idCardPortraitFooter {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  margin-top: 18px;
+}
+
+.idCardPortraitRni {
+  font-size: 14px;
+  font-weight: 700;
+  color: #b91c1c;
+  margin: 0;
+  line-height: 1.35;
+  letter-spacing: 0.3px;
+}
+
+.idCardPortraitContact {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #1a365d;
+  margin: 2px 0 0;
+  line-height: 1.35;
 }
 
 /* =========================================================
-   DOWNLOAD BUTTON
+   DOWNLOAD BUTTON & CAPTURE AREA
 ========================================================= */
 
 .reporterIdDownloadOnly {
@@ -455,11 +457,12 @@ iframe {
   padding: 12px 20px;
   border: none;
   border-radius: 9px;
-  background: #c91520;
-  color: #ffffff;
+  background: #D9531E !important;
+  color: #ffffff !important;
   cursor: pointer;
   font-size: 14px;
   font-weight: 800;
+  box-shadow: 0 4px 14px rgba(217, 83, 30, 0.28);
   transition:
     background 0.2s ease,
     box-shadow 0.2s ease,
@@ -467,8 +470,8 @@ iframe {
 }
 
 .reporterIdDownloadButton:hover {
-  background: #a91019;
-  box-shadow: 0 8px 18px rgba(201, 21, 32, 0.22);
+  background: #B83D04 !important;
+  box-shadow: 0 8px 18px rgba(217, 83, 30, 0.35) !important;
   transform: translateY(-1px);
 }
 
@@ -487,16 +490,12 @@ iframe {
   text-align: right;
 }
 
-/* =========================================================
-   OFF-SCREEN ID CARD CAPTURE AREA
-========================================================= */
-
 .reporterIdCardCaptureArea {
   position: fixed;
   top: 0;
   left: -12000px;
-  width: 1011px;
-  height: 638px;
+  width: 591px;
+  height: 1004px;
   overflow: visible;
   pointer-events: none;
 }

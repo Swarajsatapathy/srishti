@@ -6,7 +6,7 @@ export default function Header() {
   return (
     <header>
       {/* Top Bar */}
-      <div className="bg-[#1a1a2e] text-white text-sm">
+      <div className="bg-secondary text-white text-sm">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 flex justify-between items-center">
           {/* Left: Clock + Date */}
           <LiveClock />

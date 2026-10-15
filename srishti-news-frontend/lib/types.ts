@@ -52,6 +52,8 @@ export interface Reporter {
   designation: string;
   message?: string;
   district?: string;
+  phoneNumber?: string;
+  bloodGroup?: string;
   validUpto?: string;
   photo?: {
     url?: string;

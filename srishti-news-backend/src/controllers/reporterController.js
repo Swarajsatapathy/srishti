@@ -30,6 +30,8 @@ export const createReporter = asyncHandler(async (req, res) => {
     message,
     district,
     validUpto,
+    phoneNumber,
+    bloodGroup,
   } = req.body;
 
   if (!serialNumber || !name || !designation) {
@@ -100,12 +102,20 @@ export const createReporter = asyncHandler(async (req, res) => {
     };
   }
 
+  const incomingPhone = phoneNumber ?? req.body.phone ?? req.body.mobileNumber;
+  const normalizedPhoneNumber =
+    typeof incomingPhone === "string" ? incomingPhone.trim() : "";
+  const normalizedBloodGroup =
+    typeof bloodGroup === "string" ? bloodGroup.trim().toUpperCase() : "";
+
   const reporterData = {
     serialNumber: serial,
     name: name.trim(),
     designation: designation.trim(),
     message: message?.trim() || "",
     district: district?.trim() || "",
+    phoneNumber: normalizedPhoneNumber,
+    bloodGroup: normalizedBloodGroup,
     photo,
   };
 
@@ -165,6 +175,12 @@ export const getReporters = asyncHandler(async (req, res) => {
       },
       {
         district: {
+          $regex: search,
+          $options: "i",
+        },
+      },
+      {
+        phoneNumber: {
           $regex: search,
           $options: "i",
         },
@@ -269,6 +285,8 @@ export const updateReporter = asyncHandler(async (req, res) => {
     message,
     district,
     validUpto,
+    phoneNumber,
+    bloodGroup,
   } = req.body;
 
   // Update serial number
@@ -362,6 +380,21 @@ export const updateReporter = asyncHandler(async (req, res) => {
 
   if (district !== undefined) {
     reporter.district = district.trim();
+  }
+
+  const incomingPhone =
+    phoneNumber !== undefined
+      ? phoneNumber
+      : req.body.phone !== undefined
+      ? req.body.phone
+      : req.body.mobileNumber;
+
+  if (incomingPhone !== undefined) {
+    reporter.phoneNumber = String(incomingPhone).trim();
+  }
+
+  if (bloodGroup !== undefined) {
+    reporter.bloodGroup = String(bloodGroup).trim().toUpperCase();
   }
 
   // Replace photo if a new one is uploaded

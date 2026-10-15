@@ -46,7 +46,7 @@ export default function VideoCard({ video }: VideoCardProps) {
             )}
             {/* Play button overlay */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-black/50 rounded-full flex items-center justify-center group-hover:bg-red-600/80 transition-colors duration-200">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-black/50 rounded-full flex items-center justify-center group-hover:bg-primary/80 transition-colors duration-200">
                 <svg
                   className="w-5 h-5 sm:w-6 sm:h-6 text-white ml-0.5"
                   fill="currentColor"
