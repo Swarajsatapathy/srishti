@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SocialShare from "@/components/SocialShare";
+import AutoRefresh from "@/components/AutoRefresh";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 export const viewport: Viewport = {
@@ -50,6 +51,7 @@ export default function RootLayout({
   return (
     <html lang="or">
       <body className="antialiased">
+        <AutoRefresh intervalMs={30000} />
         <Header />
         <Navbar />
         <SocialShare />

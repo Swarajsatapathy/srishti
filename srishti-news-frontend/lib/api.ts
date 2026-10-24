@@ -11,37 +11,53 @@ interface ApiResponse<T> {
 
 async function fetchApi<T>(
   endpoint: string,
-  revalidate = 60,
+  revalidate = 0,
   retries = 3
 ): Promise<T | null> {
+  const retryableStatuses = [429, 500, 502, 503, 504];
+
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const res = await fetch(`${BASE_URL}${endpoint}`, {
-        next: { revalidate },
-      });
+      const fetchOptions: RequestInit = {
+        signal: AbortSignal.timeout(15000),
+        ...(revalidate === 0
+          ? { cache: "no-store" }
+          : { next: { revalidate } }),
+      };
+
+      const res = await fetch(`${BASE_URL}${endpoint}`, fetchOptions);
 
       if (res.ok) {
         const json: ApiResponse<T> = await res.json();
         return json.data ?? null;
       }
 
-      console.error(`API error ${res.status} for ${BASE_URL}${endpoint}`);
+      const isRetryable = retryableStatuses.includes(res.status);
 
-      // Retry only for temporary backend/database errors
-      if ((res.status === 503 || res.status === 500) && attempt < retries) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Retry transient backend/gateway/cold-start errors
+      if (isRetryable && attempt < retries) {
+        const delay = 500 * Math.pow(1.5, attempt) + Math.random() * 300;
+        console.warn(
+          `[API retry ${attempt + 1}/${retries}] HTTP ${res.status} for ${endpoint}. Retrying in ${Math.round(delay)}ms...`
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
       }
 
+      console.error(`API error ${res.status} for ${BASE_URL}${endpoint}`);
       return null;
     } catch (error) {
-      console.error(`API fetch error for ${endpoint}:`, error);
-
       if (attempt < retries) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const delay = 500 * Math.pow(1.5, attempt) + Math.random() * 300;
+        console.warn(
+          `[API fetch retry ${attempt + 1}/${retries}] error for ${endpoint}. Retrying in ${Math.round(delay)}ms...`,
+          error
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
       }
 
+      console.error(`API fetch error for ${endpoint}:`, error);
       return null;
     }
   }

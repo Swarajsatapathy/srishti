@@ -5,6 +5,9 @@ import type { Metadata } from "next";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
 import ShareButtons from "@/components/ShareButtons";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }

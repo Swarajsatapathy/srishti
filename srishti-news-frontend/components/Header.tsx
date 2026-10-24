@@ -90,10 +90,10 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-center">
           <Link href="/">
             <Image
-              src="/banner/WhatsApp Image 2026-03-13 at 5.37.37 PM.jpeg"
+              src="/banner/srishti-banner.jpg"
               alt="Srishti News"
-              width={800}
-              height={160}
+              width={989}
+              height={194}
               className="h-20 sm:h-28 md:h-44 lg:h-52 w-auto object-contain"
               priority
             />
