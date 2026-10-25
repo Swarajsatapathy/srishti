@@ -144,12 +144,12 @@ iframe {
   width: 591px;
   height: 1004px;
   overflow: hidden;
-  background: #ffffff;
+  background: #FAF8F2;
   border-radius: 24px;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #1a202c;
+  font-family: Arial, "Segoe UI", Helvetica, sans-serif;
+  color: #111827;
 }
 
 /* Background vector art */
@@ -166,11 +166,11 @@ iframe {
 /* Background diagonal watermark logo */
 .idCardPortraitWatermark {
   position: absolute;
-  top: 54%;
+  top: 56%;
   left: 50%;
-  transform: translate(-50%, -50%) rotate(-30deg);
-  width: 430px;
-  opacity: 0.08;
+  transform: translate(-50%, -50%);
+  width: 420px;
+  opacity: 0.06;
   pointer-events: none;
   z-index: 2;
   display: flex;
@@ -181,27 +181,28 @@ iframe {
 /* Right-side vertical PRESS banner */
 .idCardPortraitPress {
   position: absolute;
-  right: 98px;
+  right: 92px;
   top: 50%;
-  transform: translateY(-50%) scaleX(1.18);
+  transform: translateY(-50%);
   z-index: 5;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  font-family: "Arial Black", Gadget, sans-serif;
-  font-size: 38px;
-  font-weight: 900;
-  color: #dc2626;
-  line-height: 1;
+  gap: 3px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: #8b1515;
+  line-height: 1.12;
   user-select: none;
+  text-shadow: 0 1px 2px rgba(139, 21, 21, 0.18);
 }
 
 /* Top centered logo wrapper */
 .idCardPortraitLogoWrapper {
   position: relative;
   z-index: 5;
-  margin-top: 26px;
+  margin-top: 28px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -209,7 +210,7 @@ iframe {
 
 .idCardPortraitLogo {
   display: block;
-  width: 310px;
+  width: 315px;
   height: auto;
   object-fit: contain;
 }
@@ -218,7 +219,7 @@ iframe {
 .idCardPortraitPhotoRow {
   position: relative;
   z-index: 5;
-  margin-top: 20px;
+  margin-top: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -226,18 +227,18 @@ iframe {
 
 .idCardPortraitBloodGroup {
   position: absolute;
-  left: 108px;
+  left: 104px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   z-index: 6;
 }
 
 .idCardPortraitBloodDrop {
-  width: 30px;
+  width: 28px;
   height: auto;
   display: block;
   filter: drop-shadow(0 2px 4px rgba(185, 28, 28, 0.28));
@@ -247,10 +248,10 @@ iframe {
   display: inline-flex;
   align-items: flex-start;
   justify-content: center;
-  font-family: "Times New Roman", Times, serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 22px;
   font-weight: 700;
-  color: #991b1b;
+  color: #8b1515;
   line-height: 1;
   letter-spacing: 0.5px;
 }
@@ -258,11 +259,11 @@ iframe {
 .idCardPortraitPhotoFrame {
   width: 210px;
   height: 265px;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   background: #f1f5f9;
-  border: 2px solid #2563eb;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border: 2px solid #1e3a8a;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
   flex-shrink: 0;
   box-sizing: border-box;
 }
@@ -296,28 +297,31 @@ iframe {
 }
 
 .idCardPortraitName {
-  font-size: 28px;
-  font-weight: 900;
-  color: #167734;
+  font-size: 27px;
+  font-weight: 800;
+  color: #125e3c;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0;
-  line-height: 1.15;
+  line-height: 1.2;
+  font-family: Arial, "Segoe UI", sans-serif;
 }
 
 .idCardPortraitDesignation {
-  font-size: 21px;
-  font-weight: 700;
-  color: #1a365d;
-  margin: 6px 0 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f2b5c;
+  margin: 5px 0 0;
   line-height: 1.2;
+  font-family: Arial, "Segoe UI", sans-serif;
+  letter-spacing: 0.2px;
 }
 
 /* Details Table: ID No, District, Mobile, Validity */
 .idCardPortraitDetails {
   position: relative;
   z-index: 5;
-  width: 410px;
+  width: 425px;
   margin: 18px auto 0;
   display: flex;
   flex-direction: column;
@@ -325,31 +329,42 @@ iframe {
 
 .idCardPortraitDetailRow {
   display: grid;
-  grid-template-columns: 125px 20px 1fr;
+  grid-template-columns: 120px 20px 1fr;
   align-items: center;
-  padding: 6px 0;
+  padding: 6.5px 0;
 }
 
 .idCardPortraitLabel {
-  font-size: 19px;
-  font-weight: 900;
-  color: #b91c1c;
+  font-size: 18.5px;
+  font-weight: 700;
+  color: #111827;
+  font-family: Arial, "Segoe UI", sans-serif;
 }
 
 .idCardPortraitColon {
-  font-size: 19px;
-  font-weight: 900;
-  color: #1a365d;
+  font-size: 18.5px;
+  font-weight: 700;
+  color: #111827;
   text-align: center;
+  font-family: Arial, "Segoe UI", sans-serif;
 }
 
 .idCardPortraitValue {
-  font-size: 19px;
-  font-weight: 800;
-  color: #1a365d;
+  font-size: 18.5px;
+  font-weight: 700;
+  color: #111827;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: Arial, "Segoe UI", sans-serif;
+}
+
+.idCardPortraitDetailDivider {
+  height: 1px;
+  background-color: #d1d5db;
+  opacity: 0.75;
+  width: 100%;
+  margin: 1px 0;
 }
 
 /* Bottom Row: QR Code on the left, Issuing Authority on the right */
@@ -359,18 +374,18 @@ iframe {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  width: 460px;
-  margin: 24px auto 0;
+  width: 440px;
+  margin: 22px auto 0;
 }
 
 .idCardPortraitQrFrame {
-  width: 98px;
-  height: 98px;
+  width: 94px;
+  height: 94px;
   background: #ffffff;
   padding: 3px;
-  border: 2px solid #e2e8f0;
+  border: 1.5px solid #d1d5db;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -389,29 +404,29 @@ iframe {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 28px;
-  margin-right: 16px;
+  margin-bottom: 8px;
+  margin-right: 12px;
 }
 
 .idCardPortraitAuthTitle {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
-  color: #2563eb;
+  color: #374151;
   letter-spacing: 0.3px;
 }
 
 .idCardPortraitAuthName {
   font-size: 20px;
-  font-weight: 900;
-  color: #b91c1c;
+  font-weight: 800;
+  color: #800000;
   margin-top: 3px;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .idCardPortraitAuthRole {
-  font-size: 15px;
-  font-weight: 700;
-  color: #1a365d;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #374151;
   margin-top: 2px;
 }
 
@@ -420,22 +435,22 @@ iframe {
   position: relative;
   z-index: 5;
   text-align: center;
-  margin-top: 18px;
+  margin-top: 16px;
 }
 
 .idCardPortraitRni {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 700;
-  color: #b91c1c;
+  color: #1f2937;
   margin: 0;
   line-height: 1.35;
   letter-spacing: 0.3px;
 }
 
 .idCardPortraitContact {
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 700;
-  color: #1a365d;
+  color: #111827;
   margin: 2px 0 0;
   line-height: 1.35;
 }

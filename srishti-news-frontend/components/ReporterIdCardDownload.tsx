@@ -23,6 +23,53 @@ type ReporterIdCardDownloadProps = {
   reporter: Reporter;
 };
 
+// Generate authentic guilloche security waves for banknote / ID card pattern
+const generateGuillochePaths = (): string[] => {
+  const paths: string[] = [];
+  const width = 591;
+
+  // 1. Dual-frequency horizontal sinusoidal wave bands with counter-phases (creates diamond moiré security netting)
+  for (let y = 45; y <= 955; y += 20) {
+    const freq1 = 0.016;
+    const freq2 = 0.034;
+    const amp1 = 9;
+    const amp2 = 4.5;
+    const phase = (y / 1004) * Math.PI * 4;
+
+    let d1 = `M 38 ${y.toFixed(1)}`;
+    for (let x = 45; x <= width - 38; x += 15) {
+      const dy =
+        Math.sin(x * freq1 + phase) * amp1 +
+        Math.cos(x * freq2 + phase * 0.5) * amp2;
+      d1 += ` L ${x} ${(y + dy).toFixed(1)}`;
+    }
+    paths.push(d1);
+
+    let d2 = `M 38 ${y.toFixed(1)}`;
+    for (let x = 45; x <= width - 38; x += 15) {
+      const dy =
+        Math.sin(x * freq1 - phase) * amp1 -
+        Math.cos(x * freq2 - phase * 0.5) * amp2;
+      d2 += ` L ${x} ${(y + dy).toFixed(1)}`;
+    }
+    paths.push(d2);
+  }
+
+  // 2. Lateral sweeping security arcs radiating inward from left and right margins
+  for (let r = 70; r <= 360; r += 22) {
+    paths.push(
+      `M 38 ${(500 - r * 0.72).toFixed(1)} Q ${(38 + r * 0.55).toFixed(1)} 500 38 ${(500 + r * 0.72).toFixed(1)}`
+    );
+    paths.push(
+      `M ${width - 38} ${(500 - r * 0.72).toFixed(1)} Q ${(width - 38 - r * 0.55).toFixed(1)} 500 ${width - 38} ${(500 + r * 0.72).toFixed(1)}`
+    );
+  }
+
+  return paths;
+};
+
+const GUILLOCHE_PATHS = generateGuillochePaths();
+
 const formatValidDate = (dateValue?: string) => {
   if (!dateValue) {
     return "Not Updated";
@@ -192,6 +239,8 @@ export default function ReporterIdCardDownload({
     }
   };
 
+  const bgInfo = formatBloodGroup(reporter.bloodGroup);
+
   return (
     <>
       {/* Only this button is visible on the reporter page */}
@@ -216,22 +265,14 @@ export default function ReporterIdCardDownload({
         </button>
 
         {downloadError && (
-          <p className="reporterIdDownloadError">
-            {downloadError}
-          </p>
+          <p className="reporterIdDownloadError">{downloadError}</p>
         )}
       </div>
 
       {/* Off-screen card used only for PNG generation */}
-      <div
-        className="reporterIdCardCaptureArea"
-        aria-hidden="true"
-      >
-        <div
-          ref={cardRef}
-          className="idCardPortrait"
-        >
-          {/* Background Decorative Graphic Overlay */}
+      <div className="reporterIdCardCaptureArea" aria-hidden="true">
+        <div ref={cardRef} className="idCardPortrait">
+          {/* Vector Background Graphic: Guilloche, Watermark, Borders & Corners */}
           <svg
             className="idCardPortraitBgSvg"
             viewBox="0 0 591 1004"
@@ -239,89 +280,156 @@ export default function ReporterIdCardDownload({
             xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="none"
           >
-            {/* Subtle polygonal watermark facets */}
-            <g opacity="0.38">
-              <polygon points="0,320 200,480 0,580" fill="#f1f5f9" />
-              <polygon points="0,580 260,680 0,790" fill="#e2e8f0" opacity="0.6" />
-              <polygon points="200,480 430,550 260,680" fill="#f8fafc" />
-              <polygon points="430,550 591,440 480,660" fill="#f1f5f9" opacity="0.5" />
-              <polygon points="260,680 480,660 360,860" fill="#e2e8f0" opacity="0.5" />
-              <polygon points="0,790 260,680 160,930" fill="#f8fafc" />
-              <polygon points="360,860 591,760 460,940" fill="#f1f5f9" opacity="0.4" />
+            {/* Base ivory card background */}
+            <rect width="591" height="1004" rx="24" fill="#FAF8F2" />
+
+            {/* Guilloche security wavy linework pattern */}
+            <g stroke="#4f6c56" strokeWidth="0.75" opacity="0.14" fill="none">
+              {GUILLOCHE_PATHS.map((d, index) => (
+                <path key={index} d={d} />
+              ))}
             </g>
 
-            {/* Top Right warm ambient arc */}
-            <path
-              d="M160 0 C320 35 480 30 591 10 L591 0 Z"
-              fill="#fed7aa"
-              opacity="0.45"
-            />
-            <path
-              d="M260 0 C400 25 500 20 591 0 Z"
-              fill="#fde68a"
-              opacity="0.35"
+            {/* Subtle central watermark text behind details */}
+            <g opacity="0.065" pointerEvents="none">
+              <text
+                x="295"
+                y="545"
+                textAnchor="middle"
+                fontFamily="Arial, Helvetica, sans-serif"
+                fontWeight="900"
+                fontSize="56"
+                fill="#3b5242"
+                letterSpacing="4"
+              >
+                SRISHTI
+              </text>
+              <text
+                x="295"
+                y="600"
+                textAnchor="middle"
+                fontFamily="'Times New Roman', Georgia, serif"
+                fontWeight="900"
+                fontSize="46"
+                fill="#3b5242"
+                letterSpacing="6"
+              >
+                NEWS
+              </text>
+            </g>
+
+            {/* Outer dark forest green card border */}
+            <rect
+              x="12"
+              y="12"
+              width="567"
+              height="980"
+              rx="20"
+              ry="20"
+              fill="none"
+              stroke="#0e3e2e"
+              strokeWidth="4.5"
             />
 
-            {/* Top Left sweeping orange ribbon */}
-            <path
-              d="M0 0 L320 0 C220 50 140 120 78 240 C35 320 32 400 32 445 C15 448 0 435 0 410 Z"
-              fill="#ea580c"
-            />
-            <path
-              d="M0 0 L270 0 C180 40 110 100 55 200 C15 280 0 350 0 390 Z"
-              fill="#f97316"
-            />
-
-            {/* Top Left green vertical capsule */}
-            <rect x="32" y="0" width="46" height="300" rx="23" fill="#15803d" />
-
-            {/* Top Left orange outer border strip */}
-            <rect x="0" y="0" width="32" height="445" rx="16" fill="#f97316" />
-
-            {/* Bottom Right orange vertical pillar */}
-            <rect x="522" y="626" width="69" height="378" rx="34.5" fill="#f97316" />
-
-            {/* Bottom light green wave */}
-            <path
-              d="M0 975 Q220 955 420 985 Q490 995 540 1004 L0 1004 Z"
-              fill="#86efac"
+            {/* Inner gold hairline border */}
+            <rect
+              x="20"
+              y="20"
+              width="551"
+              height="964"
+              rx="14"
+              ry="14"
+              fill="none"
+              stroke="#b88d3b"
+              strokeWidth="1.3"
             />
 
-            {/* Bottom deep forest green swooping wave */}
+            {/* Left dark vertical column */}
             <path
-              d="M0 978 C160 978 320 972 420 968 C490 962 540 910 591 855 L591 1004 L0 1004 Z"
-              fill="#15803d"
+              d="M 23 36 L 23 968 L 38 968 L 38 36 Z"
+              fill="#0a3233"
             />
+
+            {/* Left vertical gold pinstripe */}
+            <line
+              x1="42"
+              y1="20"
+              x2="42"
+              y2="984"
+              stroke="#b88d3b"
+              strokeWidth="1.3"
+            />
+
+            {/* Bottom-Left Corner Accent Fold */}
+            <g id="bottomLeftCorner">
+              <path
+                d="M 12 920 L 78 986 L 78 1004 L 24 1004 Q 12 1004 12 992 Z"
+                fill="#0e3e2e"
+              />
+              <line
+                x1="12"
+                y1="920"
+                x2="78"
+                y2="986"
+                stroke="#e0a93b"
+                strokeWidth="2.5"
+              />
+              <polygon
+                points="32,1004 90,946 122,976 86,1004"
+                fill="#d9531e"
+              />
+              <polygon
+                points="32,1004 62,968 90,988 74,1004"
+                fill="#e86522"
+              />
+              <line
+                x1="32"
+                y1="1004"
+                x2="122"
+                y2="976"
+                stroke="#e0a93b"
+                strokeWidth="1.5"
+              />
+            </g>
+
+            {/* Bottom-Right Corner Accent Fold */}
+            <g id="bottomRightCorner">
+              <path
+                d="M 579 920 L 513 986 L 513 1004 L 567 1004 Q 579 1004 579 992 Z"
+                fill="#0e3e2e"
+              />
+              <line
+                x1="579"
+                y1="920"
+                x2="513"
+                y2="986"
+                stroke="#e0a93b"
+                strokeWidth="2.5"
+              />
+              <polygon
+                points="559,1004 501,946 469,976 505,1004"
+                fill="#d9531e"
+              />
+              <polygon
+                points="559,1004 529,968 501,988 517,1004"
+                fill="#e86522"
+              />
+              <line
+                x1="559"
+                y1="1004"
+                x2="469"
+                y2="976"
+                stroke="#e0a93b"
+                strokeWidth="1.5"
+              />
+              {/* Star sparkle on right accent */}
+              <path
+                d="M 545 943 Q 545 955 557 955 Q 545 955 545 967 Q 545 955 533 955 Q 545 955 545 943 Z"
+                fill="#edf7f0"
+              />
+              <circle cx="545" cy="955" r="1.5" fill="#ffffff" />
+            </g>
           </svg>
-
-          {/* Diagonal Background Watermark Logo */}
-          <div
-            className="idCardPortraitWatermark"
-            style={{
-              position: "absolute",
-              top: "54%",
-              left: "50%",
-              transform: "translate(-50%, -50%) rotate(-30deg)",
-              width: "430px",
-              opacity: 0.08,
-              pointerEvents: "none",
-              zIndex: 2,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <img
-              src="/id-card-logo.png"
-              alt=""
-              style={{
-                display: "block",
-                width: "100%",
-                height: "auto",
-                objectFit: "contain",
-              }}
-            />
-          </div>
 
           {/* Top Logo */}
           <div className="idCardPortraitLogoWrapper">
@@ -332,484 +440,202 @@ export default function ReporterIdCardDownload({
             />
           </div>
 
-          {/* Photo and Blood Group Row */}
+          {/* Photo and Flanking Badges Row */}
           <div className="idCardPortraitPhotoRow">
+            {/* Left: Blood Group */}
             <div className="idCardPortraitBloodGroup">
-              {(() => {
-                const bg = formatBloodGroup(reporter.bloodGroup);
-                if (!bg) return null;
-                return (
-                  <>
-                    <img
-                      src="/blood-drop.png"
-                      alt="Blood Group"
-                      className="idCardPortraitBloodDrop"
-                      style={{
-                        width: "30px",
-                        height: "auto",
-                        display: "block",
-                        filter:
-                          "drop-shadow(0 2px 4px rgba(185, 28, 28, 0.28))",
-                      }}
-                    />
-                    <div
-                      className="idCardPortraitBloodText"
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "flex-start",
-                        justifyContent: "center",
-                        fontFamily: '"Times New Roman", Times, serif',
-                        fontWeight: 700,
-                        color: "#991b1b",
-                        lineHeight: 1,
-                        marginTop: "5px",
-                        letterSpacing: "0.5px",
-                      }}
-                    >
-                      <span style={{ fontSize: "22px", fontWeight: 700 }}>
-                        {bg.type}
+              {bgInfo && (
+                <>
+                  <img
+                    src="/blood-drop.png"
+                    alt="Blood Group"
+                    className="idCardPortraitBloodDrop"
+                  />
+                  <div className="idCardPortraitBloodText">
+                    <span>{bgInfo.type}</span>
+                    {bgInfo.rh && (
+                      <span
+                        style={{
+                          fontSize: "16px",
+                          fontWeight: 700,
+                          marginLeft: "1px",
+                          transform: "translateY(-4px)",
+                          color: "#8b1515",
+                        }}
+                      >
+                        {bgInfo.rh}
                       </span>
-                      {bg.rh && (
-                        <span
-                          style={{
-                            fontSize: "16px",
-                            fontWeight: 700,
-                            marginLeft: "2px",
-                            transform: "translateY(-3px)",
-                            color: "#dc2626",
-                          }}
-                        >
-                          {bg.rh}
-                        </span>
-                      )}
-                    </div>
-                  </>
-                );
-              })()}
+                    )}
+                  </div>
+                </>
+              )}
             </div>
 
-            <div
-              className="idCardPortraitPhotoFrame"
-              style={{
-                width: "210px",
-                height: "265px",
-                borderRadius: "8px",
-                overflow: "hidden",
-                background: "#f1f5f9",
-                border: "2px solid #2563eb",
-                boxShadow: "0 4px 16px rgba(0, 0, 0, 0.12)",
-                flexShrink: 0,
-                boxSizing: "border-box",
-              }}
-            >
+            {/* Center: Photo Frame */}
+            <div className="idCardPortraitPhotoFrame">
               {reporterPhotoUrl ? (
                 <img
                   src={reporterPhotoUrl}
                   alt={reporter.name}
                   className="idCardPortraitPhoto"
                   crossOrigin="anonymous"
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    objectPosition: "top",
-                  }}
                 />
               ) : (
-                <div
-                  className="idCardPortraitPhotoFallback"
-                  style={{
-                    display: "flex",
-                    width: "100%",
-                    height: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "#15803d",
-                    color: "#ffffff",
-                    fontSize: "54px",
-                    fontWeight: 900,
-                  }}
-                >
+                <div className="idCardPortraitPhotoFallback">
                   {reporterInitials || "SN"}
                 </div>
               )}
             </div>
 
-            {/* Vertical PRESS Banner aligned with Photo */}
-            <div
-              className="idCardPortraitPress"
-              style={{
-                position: "absolute",
-                right: "98px",
-                top: "50%",
-                transform: "translateY(-50%) scaleX(1.18)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "6px",
-                fontFamily: '"Arial Black", Gadget, sans-serif',
-                fontSize: "38px",
-                fontWeight: 900,
-                color: "#dc2626",
-                lineHeight: 1,
-                userSelect: "none",
-              }}
-            >
+            {/* Right: Vertical PRESS Banner with Ornamental Flourishes */}
+            <div className="idCardPortraitPress">
+              {/* Top Ornamental Flourish */}
+              <svg
+                width="40"
+                height="12"
+                viewBox="0 0 40 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <line
+                  x1="2"
+                  y1="6"
+                  x2="15"
+                  y2="6"
+                  stroke="#b88d3b"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
+                <polygon points="20,1 25,6 20,11 15,6" fill="#b88d3b" />
+                <line
+                  x1="25"
+                  y1="6"
+                  x2="38"
+                  y2="6"
+                  stroke="#b88d3b"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
+              </svg>
+
               <span>P</span>
               <span>R</span>
               <span>E</span>
               <span>S</span>
               <span>S</span>
+
+              {/* Bottom Ornamental Flourish */}
+              <svg
+                width="40"
+                height="12"
+                viewBox="0 0 40 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <line
+                  x1="2"
+                  y1="6"
+                  x2="15"
+                  y2="6"
+                  stroke="#b88d3b"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
+                <polygon points="20,1 25,6 20,11 15,6" fill="#b88d3b" />
+                <line
+                  x1="25"
+                  y1="6"
+                  x2="38"
+                  y2="6"
+                  stroke="#b88d3b"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
+              </svg>
             </div>
           </div>
 
-          {/* Name & Designation */}
+          {/* Reporter Identity (Name & Designation) */}
           <div className="idCardPortraitIdentity">
             <h1 className="idCardPortraitName">{reporter.name}</h1>
-            <h2 className="idCardPortraitDesignation">
+            <h2
+              className="idCardPortraitDesignation"
+              style={{ fontWeight: 800 }}
+            >
               {reporter.designation || "District Correspondent"}
             </h2>
           </div>
 
-          {/* Details Table */}
-          <div
-            className="idCardPortraitDetails"
-            style={{
-              position: "relative",
-              zIndex: 5,
-              width: "410px",
-              margin: "18px auto 0",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <div
-              className="idCardPortraitDetailRow"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "125px 20px 1fr",
-                alignItems: "center",
-                padding: "6px 0",
-              }}
-            >
-              <span
-                className="idCardPortraitLabel"
-                style={{ fontSize: "19px", fontWeight: 900, color: "#b91c1c" }}
-              >
-                ID No
-              </span>
-              <span
-                className="idCardPortraitColon"
-                style={{
-                  fontSize: "19px",
-                  fontWeight: 900,
-                  color: "#1a365d",
-                  textAlign: "center",
-                }}
-              >
-                :
-              </span>
-              <span
-                className="idCardPortraitValue"
-                style={{ fontSize: "19px", fontWeight: 800, color: "#1a365d" }}
-              >
+          {/* Details Table: ID No, District, Mobile, Validity */}
+          <div className="idCardPortraitDetails">
+            {/* Row 1: ID No */}
+            <div className="idCardPortraitDetailRow">
+              <span className="idCardPortraitLabel">ID No</span>
+              <span className="idCardPortraitColon">:</span>
+              <span className="idCardPortraitValue">
                 {reporter.reporterId || "Not Assigned"}
               </span>
             </div>
+            <div className="idCardPortraitDetailDivider" />
 
-            {/* Separating line 1 */}
-            <div
-              style={{
-                height: "1.5px",
-                backgroundColor: "#cbd5e1",
-                width: "100%",
-                margin: "2px 0",
-              }}
-            />
-
-            <div
-              className="idCardPortraitDetailRow"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "125px 20px 1fr",
-                alignItems: "center",
-                padding: "6px 0",
-              }}
-            >
-              <span
-                className="idCardPortraitLabel"
-                style={{ fontSize: "19px", fontWeight: 900, color: "#b91c1c" }}
-              >
-                District
-              </span>
-              <span
-                className="idCardPortraitColon"
-                style={{
-                  fontSize: "19px",
-                  fontWeight: 900,
-                  color: "#1a365d",
-                  textAlign: "center",
-                }}
-              >
-                :
-              </span>
-              <span
-                className="idCardPortraitValue"
-                style={{ fontSize: "19px", fontWeight: 800, color: "#1a365d" }}
-              >
+            {/* Row 2: District */}
+            <div className="idCardPortraitDetailRow">
+              <span className="idCardPortraitLabel">District</span>
+              <span className="idCardPortraitColon">:</span>
+              <span className="idCardPortraitValue">
                 {reporter.district || "Odisha"}
               </span>
             </div>
+            <div className="idCardPortraitDetailDivider" />
 
-            {/* Separating line 2 */}
-            <div
-              style={{
-                height: "1.5px",
-                backgroundColor: "#cbd5e1",
-                width: "100%",
-                margin: "2px 0",
-              }}
-            />
-
-            <div
-              className="idCardPortraitDetailRow"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "125px 20px 1fr",
-                alignItems: "center",
-                padding: "6px 0",
-              }}
-            >
-              <span
-                className="idCardPortraitLabel"
-                style={{ fontSize: "19px", fontWeight: 900, color: "#b91c1c" }}
-              >
-                Mobile
-              </span>
-              <span
-                className="idCardPortraitColon"
-                style={{
-                  fontSize: "19px",
-                  fontWeight: 900,
-                  color: "#1a365d",
-                  textAlign: "center",
-                }}
-              >
-                :
-              </span>
-              <span
-                className="idCardPortraitValue"
-                style={{ fontSize: "19px", fontWeight: 800, color: "#1a365d" }}
-              >
+            {/* Row 3: Mobile */}
+            <div className="idCardPortraitDetailRow">
+              <span className="idCardPortraitLabel">Mobile</span>
+              <span className="idCardPortraitColon">:</span>
+              <span className="idCardPortraitValue">
                 {reporter.phoneNumber || "Not Updated"}
               </span>
             </div>
+            <div className="idCardPortraitDetailDivider" />
 
-            {/* Separating line 3 */}
-            <div
-              style={{
-                height: "1.5px",
-                backgroundColor: "#cbd5e1",
-                width: "100%",
-                margin: "2px 0",
-              }}
-            />
-
-            <div
-              className="idCardPortraitDetailRow"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "125px 20px 1fr",
-                alignItems: "center",
-                padding: "6px 0",
-              }}
-            >
-              <span
-                className="idCardPortraitLabel"
-                style={{ fontSize: "19px", fontWeight: 900, color: "#b91c1c" }}
-              >
-                Validity
-              </span>
-              <span
-                className="idCardPortraitColon"
-                style={{
-                  fontSize: "19px",
-                  fontWeight: 900,
-                  color: "#1a365d",
-                  textAlign: "center",
-                }}
-              >
-                :
-              </span>
-              <span
-                className="idCardPortraitValue"
-                style={{ fontSize: "19px", fontWeight: 800, color: "#1a365d" }}
-              >
+            {/* Row 4: Validity */}
+            <div className="idCardPortraitDetailRow">
+              <span className="idCardPortraitLabel">Validity</span>
+              <span className="idCardPortraitColon">:</span>
+              <span className="idCardPortraitValue">
                 {formatValidDate(reporter.validUpto)}
               </span>
             </div>
-
-            {/* Separating line under Validity */}
-            <div
-              style={{
-                height: "1.5px",
-                backgroundColor: "#cbd5e1",
-                width: "100%",
-                margin: "2px 0",
-              }}
-            />
+            <div className="idCardPortraitDetailDivider" />
           </div>
 
-          {/* QR Code and Issuing Authority Row */}
-          <div
-            className="idCardPortraitBottomRow"
-            style={{
-              position: "relative",
-              zIndex: 5,
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-              width: "460px",
-              margin: "24px auto 0",
-            }}
-          >
-            <div
-              className="idCardPortraitQrFrame"
-              style={{
-                width: "98px",
-                height: "98px",
-                background: "#ffffff",
-                padding: "3px",
-                border: "2px solid #e2e8f0",
-                borderRadius: "8px",
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxSizing: "border-box",
-              }}
-            >
+          {/* Verification QR Code and Issuing Authority Row */}
+          <div className="idCardPortraitBottomRow">
+            <div className="idCardPortraitQrFrame">
               <img
                 src="/srishti-qr.png"
                 alt="Verification QR Code"
                 className="idCardPortraitQr"
-                style={{
-                  display: "block",
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                }}
               />
             </div>
 
-            <div
-              className="idCardPortraitAuthority"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                textAlign: "center",
-                marginBottom: "28px",
-                marginRight: "16px",
-              }}
-            >
-              <span
-                className="idCardPortraitAuthTitle"
-                style={{
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  color: "#2563eb",
-                  letterSpacing: "0.3px",
-                }}
-              >
-                Issuing Authority
-              </span>
-              <span
-                className="idCardPortraitAuthName"
-                style={{
-                  fontSize: "20px",
-                  fontWeight: 900,
-                  color: "#b91c1c",
-                  marginTop: "3px",
-                  lineHeight: 1.1,
-                }}
-              >
+            <div className="idCardPortraitAuthority">
+              <span className="idCardPortraitAuthTitle">Issuing Authority</span>
+              <span className="idCardPortraitAuthName" style={{ color: "#800000" }}>
                 Manoj Satapathy
               </span>
-              <span
-                className="idCardPortraitAuthRole"
-                style={{
-                  fontSize: "15px",
-                  fontWeight: 700,
-                  color: "#1a365d",
-                  marginTop: "2px",
-                }}
-              >
-                Founder Editor
-              </span>
+              <span className="idCardPortraitAuthRole">Founder Editor</span>
             </div>
           </div>
 
           {/* Footer Registration & Contact info */}
-          <div
-            className="idCardPortraitFooter"
-            style={{
-              position: "relative",
-              zIndex: 5,
-              textAlign: "center",
-              marginTop: "18px",
-            }}
-          >
-            <p
-              className="idCardPortraitRni"
-              style={{
-                fontSize: "14px",
-                fontWeight: 700,
-                color: "#b91c1c",
-                margin: 0,
-                lineHeight: 1.35,
-                letterSpacing: "0.3px",
-              }}
-            >
+          <div className="idCardPortraitFooter">
+            <p className="idCardPortraitRni">
               RNI Regd. No.: ODIODI/2011/40163
             </p>
-            <p
-              className="idCardPortraitContact"
-              style={{
-                fontSize: "14.5px",
-                fontWeight: 700,
-                color: "#1a365d",
-                margin: "2px 0 0",
-                lineHeight: 1.35,
-              }}
-            >
-              www.srishtinews.in
-            </p>
-            <p
-              className="idCardPortraitContact"
-              style={{
-                fontSize: "14.5px",
-                fontWeight: 700,
-                color: "#1a365d",
-                margin: "2px 0 0",
-                lineHeight: 1.35,
-              }}
-            >
-              srishtinews@gmail.com
-            </p>
-            <p
-              className="idCardPortraitContact"
-              style={{
-                fontSize: "14.5px",
-                fontWeight: 700,
-                color: "#1a365d",
-                margin: "2px 0 0",
-                lineHeight: 1.35,
-              }}
-            >
-              +91 96684 21545
-            </p>
+            <p className="idCardPortraitContact">www.srishtinews.in</p>
+            <p className="idCardPortraitContact">srishtinews@gmail.com</p>
+            <p className="idCardPortraitContact">+91 96684 21545</p>
           </div>
         </div>
       </div>
