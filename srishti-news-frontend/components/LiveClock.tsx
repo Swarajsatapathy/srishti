@@ -6,9 +6,12 @@ export default function LiveClock() {
   const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
-    setNow(new Date());
     const timer = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(timer);
+    const initialTimer = setTimeout(() => setNow(new Date()), 0);
+    return () => {
+      clearInterval(timer);
+      clearTimeout(initialTimer);
+    };
   }, []);
 
   const date = now
@@ -38,17 +41,46 @@ export default function LiveClock() {
 
   return (
     <div className="flex items-center gap-1.5 sm:gap-3">
-      <div className="flex items-center gap-1 sm:gap-1.5">
-        <span className="w-5 h-5 rounded-full bg-yellow-400 flex items-center justify-center shrink-0">
-          <svg className="w-3 h-3 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <polyline points="12 6 12 12 16 14" />
-          </svg>
-        </span>
-        <span className="font-mono text-[11px] sm:text-sm tracking-wider">{time}</span>
+      {/* Date */}
+      <div className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm text-white">
+        <svg
+          className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+        {/* Full date on tablet+, short date on small mobile */}
+        <span className="hidden sm:inline font-medium">{date}</span>
+        <span className="sm:hidden font-medium">{shortDate}</span>
       </div>
-      <span className="text-[11px] sm:text-sm md:hidden text-white/80">{shortDate}</span>
-      <span className="text-sm hidden md:inline text-white/80">{date}</span>
+
+      {/* Separator */}
+      <span className="text-white/60">|</span>
+
+      {/* Time */}
+      <div className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm text-white">
+        <svg
+          className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span className="font-semibold font-mono tracking-tight">{time}</span>
+      </div>
     </div>
   );
 }

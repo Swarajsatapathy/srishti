@@ -28,9 +28,12 @@ const connectDB = async () => {
       console.log('Connecting to MongoDB...');
       const conn = await mongoose.connect(uri, {
         dbName: 'srishti-news',
-        serverSelectionTimeoutMS: 15000,
-        socketTimeoutMS: 45000,
-        connectTimeoutMS: 15000,
+        maxPoolSize: 2,
+        minPoolSize: 0,
+        maxIdleTimeMS: 5000,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 30000,
+        connectTimeoutMS: 10000,
       });
 
       isConnected = conn.connections[0].readyState === 1;

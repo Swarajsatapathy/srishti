@@ -5,7 +5,7 @@ import app from './app.js';
 // serverless.yml handles API Gateway OPTIONS/preflight requests.
 // Keeping CORS in one response layer avoids duplicate
 // Access-Control-Allow-Origin headers, which browsers reject.
-export const handler = serverless(app, {
+const serverlessHandler = serverless(app, {
   binary: [
     'multipart/form-data',
     'image/*',
@@ -13,3 +13,10 @@ export const handler = serverless(app, {
     'application/octet-stream',
   ],
 });
+
+export const handler = async (event, context) => {
+  // Prevent AWS Lambda from waiting for MongoDB's background heartbeat / keepalive timers
+  // to drain before freezing the container and returning the HTTP response.
+  context.callbackWaitsForEmptyEventLoop = false;
+  return serverlessHandler(event, context);
+};

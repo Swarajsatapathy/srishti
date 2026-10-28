@@ -28,8 +28,11 @@ export default function ShareButtons({
       : url
         ? `${window.location.origin}${url}`
         : window.location.href;
-    setResolvedUrl(currentUrl);
-    setCanNativeShare(!!navigator.share);
+    const timer = setTimeout(() => {
+      setResolvedUrl(currentUrl);
+      setCanNativeShare(!!navigator.share);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [url]);
 
   const encodedUrl = encodeURIComponent(resolvedUrl);

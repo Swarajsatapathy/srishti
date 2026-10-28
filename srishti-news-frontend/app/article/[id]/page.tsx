@@ -6,8 +6,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import ShareButtons from "@/components/ShareButtons";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 30;
 
 interface PageProps {
   params: Promise<{ id: string }>;

@@ -13,8 +13,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 30;
 
 interface PageProps {
   searchParams: Promise<{ page?: string }>;
@@ -33,7 +32,7 @@ export default async function AdvertisementListingPage({ searchParams }: PagePro
 
   // Fallback to active ads if getAdvertisements is empty
   let ads = data?.advertisements || [];
-  let pagination = data?.pagination;
+  const pagination = data?.pagination;
 
   if (ads.length === 0) {
     const activeAds = await getActiveAds();

@@ -5,7 +5,8 @@ export default function SocialShare() {
   const [shareUrl, setShareUrl] = useState("");
 
   useEffect(() => {
-    setShareUrl(window.location.href);
+    const timer = setTimeout(() => setShareUrl(window.location.href), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   return (

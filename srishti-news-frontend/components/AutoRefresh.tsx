@@ -13,9 +13,10 @@ interface AutoRefreshProps {
 
 export default function AutoRefresh({ intervalMs = 30000 }: AutoRefreshProps) {
   const router = useRouter();
-  const lastRefreshRef = useRef<number>(Date.now());
+  const lastRefreshRef = useRef<number>(0);
 
   useEffect(() => {
+    lastRefreshRef.current = Date.now();
     const triggerRefresh = () => {
       const now = Date.now();
 

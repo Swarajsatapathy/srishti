@@ -1,3 +1,11 @@
+import FlashTicker from "@/components/FlashTicker";
+import MainStory from "@/components/MainStory";
+import VideoNewsSection from "@/components/VideoNewsSection";
+import EditorsPicks from "@/components/EditorsPicks";
+import TrendingStories from "@/components/TrendingStories";
+import LatestNewsCarousel from "@/components/LatestNewsCarousel";
+import AdvertisementCarousel from "@/components/AdvertisementCarousel";
+import ReportersSection from "@/components/ReportersSection";
 import {
   getFlashStories,
   getFlashVideos,
@@ -10,19 +18,9 @@ import {
   getVideos,
   getActiveAds,
   getReporters,
-}from "@/lib/api";
+} from "@/lib/api";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
-import FlashTicker from "@/components/FlashTicker";
-import MainStory from "@/components/MainStory";
-import VideoNewsSection from "@/components/VideoNewsSection";
-import EditorsPicks from "@/components/EditorsPicks";
-import TrendingStories from "@/components/TrendingStories";
-import LatestNewsCarousel from "@/components/LatestNewsCarousel";
-import AdvertisementCarousel from "@/components/AdvertisementCarousel";
-import ReportersSection from "@/components/ReportersSection";
+export const revalidate = 30;
 
 export default async function Home() {
   const [flashArticles, flashVideos, featured, editorsPicks, editorsPickVids, trending, trendingVids, latestData, webNewsData, videosData, homepageAds, reportersData] =
@@ -49,10 +47,10 @@ export default async function Home() {
       getVideos({ published: "true", limit: "10", sortBy: "publishedAt", order: "desc" }),
       getActiveAds("homepage"),
       getReporters({
-  limit: "20",
-  sortBy: "serialNumber",
-  order: "asc",
-}),
+        limit: "20",
+        sortBy: "serialNumber",
+        order: "asc",
+      }),
     ]);
 
   const latestArticles = latestData?.articles || [];

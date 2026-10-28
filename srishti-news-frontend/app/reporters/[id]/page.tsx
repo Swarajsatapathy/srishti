@@ -4,8 +4,7 @@ import { getImageUrl } from "@/lib/imageUrl";
 import { notFound } from "next/navigation";
 import ReporterIdCardDownload from "../../../components/ReporterIdCardDownload";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 30;
 
 type PageProps = {
   params: Promise<{

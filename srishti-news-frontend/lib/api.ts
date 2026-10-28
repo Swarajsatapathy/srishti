@@ -11,10 +11,10 @@ interface ApiResponse<T> {
 
 async function fetchApi<T>(
   endpoint: string,
-  revalidate = 0,
-  retries = 3
+  revalidate = 30,
+  retries = 1
 ): Promise<T | null> {
-  const retryableStatuses = [429, 500, 502, 503, 504];
+  const retryableStatuses = [500, 502, 503, 504];
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
