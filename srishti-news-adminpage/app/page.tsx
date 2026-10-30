@@ -69,6 +69,7 @@ type Advertisement = {
 type ApiResponse<T> = {
   success: boolean;
   message?: string;
+  errors?: string[];
   data: T;
 };
 
@@ -252,7 +253,13 @@ async function apiRequest<T>(
         return json as ApiResponse<T>;
       }
 
+      const errorDetails =
+        Array.isArray(json?.errors) && json.errors.length > 0
+          ? json.errors.join(". ")
+          : null;
+
       const message =
+        errorDetails ||
         json?.message ||
         `Backend request failed with status ${response.status}.`;
 
